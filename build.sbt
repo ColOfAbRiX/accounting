@@ -1,9 +1,13 @@
+val ScalaVersion = "2.13.0"
+val AccountingVersion = "0.1.0-SNAPSHOT"
+
 // Libaries
-val Http4sVersion = "0.20.10"
-val CirceVersion = "0.11.1"
-val ScalatestVersion = "3.0.8"
-val LogbackVersion = "1.2.3"
 val PureconfigVersion = "0.12.1"
+val Http4sVersion = "0.21.0-M5"
+val CirceVersion = "0.12.3"
+val ScalatestVersion = "3.0.8"
+val ScalacheckVersion = "1.14.1"
+val LogbackVersion = "1.2.3"
 
 // Compiler plugins
 val WartRemoverVersion = "2.4.3"
@@ -17,7 +21,6 @@ scalacOptions ++= Seq(
   "-language:higherKinds",
   "-language:postfixOps",
   "-feature",
-  "-Ypartial-unification",
   "-Xfatal-warnings",
 )
 
@@ -31,12 +34,26 @@ wartremoverErrors ++= Warts.allBut(
 )
 
 // Root project
-lazy val root = (project in file("."))
+lazy val accountingRoot: Project = project
+  .in(file("."))
   .settings(
     organization := "com.colofabrix.scala",
-    name := "accounting",
-    version := "0.0.1-SNAPSHOT",
-    scalaVersion := "2.12.8",
+    name := "accounting-root",
+    version := AccountingVersion,
+    scalaVersion := ScalaVersion
+  )
+  .aggregate(
+    accountingService
+  )
+
+// Root project
+lazy val accountingService = project
+  .in(file("accounting-service"))
+  .settings(
+    organization := "com.colofabrix.scala",
+    name := "accounting-service",
+    version := AccountingVersion,
+    scalaVersion := ScalaVersion,
     libraryDependencies ++= Seq(
       "com.github.pureconfig" %% "pureconfig"          % PureconfigVersion,
       "org.http4s"            %% "http4s-blaze-server" % Http4sVersion,
@@ -45,6 +62,7 @@ lazy val root = (project in file("."))
       "org.http4s"            %% "http4s-dsl"          % Http4sVersion,
       "io.circe"              %% "circe-generic"       % CirceVersion,
       "org.scalatest"         %% "scalatest"           % ScalatestVersion % "test",
+      "org.scalacheck"        %% "scalacheck"          % ScalacheckVersion % "test",
       "ch.qos.logback"        %  "logback-classic"     % LogbackVersion
     ),
     addCompilerPlugin("org.typelevel"   %% "kind-projector"     % KindProjectorVersion),
