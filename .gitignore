@@ -1,11 +1,11 @@
-target
+.bloop
+.history
+.idea
+.metals
 *.class
-*.log
 *.iml
 *.ipr
 *.iws
-.idea
+*.log
 out
-.bloop
-.history
-.metals
+target
