@@ -1,16 +1,28 @@
 package com.colofabrix.scala.accounting.model
 
-import kantan.csv.{ CsvReader => KantanCsvReader, ReadResult, rfc }
+import fs2._
+import cats._
+import cats.implicits._
 import java.io.File
 import kantan.csv.ops._
 import kantan.csv.java8._
 import kantan.csv.generic._
+import kantan.csv.{ CsvReader => KCsvReader, ReadResult, rfc }
 
-object Readers {
-  type CsvReader[A] = KantanCsvReader[ReadResult[A]]
+sealed trait Reader {
+}
 
-  def read[A](file: File)(implicit reader: BankCsvReader[A]): CsvReader[A] = {
-    reader.reader(file)
+object KantanCsvReader extends Reader {
+  type CsvReader[A] = KCsvReader[ReadResult[A]]
+
+  def readStream[A: BankCsvReader](file: File): Stream[Pure, Either[Exception, A]] = {
+    Stream.unfold(read[A](file)) { i =>
+      if( i.hasNext ) Some(i.next(), i) else None
+    }
+  }
+
+  def read[A: BankCsvReader](file: File): CsvReader[A] = {
+    implicitly[BankCsvReader[A]].reader(file)
   }
 
   sealed trait BankCsvReader[A] {
