@@ -11,9 +11,8 @@ import model._
 
 object Main extends App {
 
-
-  val file = new java.io.File("barclays.csv")
-  val csv = KantanCsvReader.read[BarclaysRow](file)
-  csv.foreach(println)
+  // val file = new java.io.File("barclays.csv")
+  // val csv = CsvReader.read[BarclaysRow](file)
+  // csv.foreach(println)
 
 }

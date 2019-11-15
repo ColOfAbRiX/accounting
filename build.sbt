@@ -65,15 +65,13 @@ lazy val accountingService = project
     libraryDependencies ++= Seq(
       "co.fs2"                     %% "fs2-core"            % FS2Version,
       "com.nrinaudo"               %% "kantan.csv-cats"     % KantanCsvVersion,
-      "com.nrinaudo"               %% "kantan.csv-generic"  % KantanCsvVersion,
-      "com.nrinaudo"               %% "kantan.csv-java8"    % KantanCsvVersion,
       "com.nrinaudo"               %% "kantan.csv"          % KantanCsvVersion,
       "io.circe"                   %% "circe-generic"       % CirceVersion,
       "org.http4s"                 %% "http4s-blaze-client" % Http4sVersion,
       "org.http4s"                 %% "http4s-blaze-server" % Http4sVersion,
       "org.http4s"                 %% "http4s-circe"        % Http4sVersion,
-      "org.http4s"                 %% "http4s-dsl"          % Http4sVersion
-      // "ch.qos.logback"             %  "logback-classic"     % LogbackVersion,
+      "org.http4s"                 %% "http4s-dsl"          % Http4sVersion,
+      "ch.qos.logback"             %  "logback-classic"     % LogbackVersion
       // "com.github.julien-truffaut" %%  "monocle-law"        % MonocleVersion % "test",
       // "com.github.julien-truffaut" %% "monocle-core"        % MonocleVersion,
       // "com.github.julien-truffaut" %% "monocle-macro"       % MonocleVersion,

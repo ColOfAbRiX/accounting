@@ -8,6 +8,7 @@ final case object HalifaxBank
 final case object StarlingBank
 final case object AmexBank
 
+
 sealed trait BankCsvRow
 
 final case class BarclaysRow(
