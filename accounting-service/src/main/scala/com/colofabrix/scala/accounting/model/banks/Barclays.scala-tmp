@@ -8,8 +8,6 @@ import com.colofabrix.scala.accounting.model.BankCsvInterpreterUtils._
 object Barclays {
 
   final class BarclaysCsvFile extends BankFileConverter[BarclaysRow] {
-    val csvConfig = kantan.csv.rfc
-
     val dateFormat = "dd/MM/yyyy"
 
     def adaptFile(file: CsvFile[String]): CsvFile[String] = file.drop(1)

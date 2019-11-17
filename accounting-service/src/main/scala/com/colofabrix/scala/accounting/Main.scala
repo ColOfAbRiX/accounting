@@ -1,5 +1,8 @@
 package com.colofabrix.scala.accounting
 
+import monix.eval.Task
+import monix.reactive.Observable
+import monix.execution.Scheduler.Implicits.global
 import cats.effect.{ExitCode, IO, IOApp}
 import cats.implicits._
 import model._
@@ -11,8 +14,16 @@ import model._
 
 object Main extends App {
 
-  // val file = new java.io.File("barclays.csv")
-  // val csv = CsvReader.read[BarclaysRow](file)
-  // csv.foreach(println)
+  val file = new java.io.File("samples/sample_barclays.csv")
+  val reader = new KantanCsvReader
+  val result = reader.readFile(file)
 
+  println(s"Result: $result")
+  result.foreach { observable =>
+    println(s"Observable: $observable")
+    println("Running for each element:")
+    observable.foreachL(println).runToFuture
+  }
+
+  Thread.sleep(5000)
 }

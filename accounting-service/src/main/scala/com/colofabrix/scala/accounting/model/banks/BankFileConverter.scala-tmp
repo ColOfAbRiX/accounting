@@ -1,0 +1,30 @@
+package com.colofabrix.scala.accounting.model.banks
+
+import com.colofabrix.scala.accounting.model._
+import com.colofabrix.scala.accounting.model.BankCsvInterpreterUtils._
+import scala.util._
+import java.time.format.DateTimeFormatter
+import java.time.LocalDate
+
+
+trait BankFileConverter[A <: BankCsvRow] {
+  def dateFormat: String
+  def adaptFile(file: CsvFile[String]): CsvFile[String]
+  def convertRow(row: CsvRow[String]): Try[A]
+
+  def parseLocalDate(index: Int)(implicit row: List[String]): Try[LocalDate] = Try {
+    LocalDate.parse(row(index).trim, DateTimeFormatter.ofPattern(dateFormat))
+  }
+
+  def parseBigDecimal(index: Int)(implicit row: List[String]): Try[BigDecimal] = Try {
+    BigDecimal(row(index).trim)
+  }
+
+  def parseString(index: Int)(implicit row: List[String]): Try[String] = Try {
+    row(index).trim
+  }
+
+  def parseInt(index: Int)(implicit row: List[String]): Try[Int] = Try {
+    row(index).trim.toInt
+  }
+}

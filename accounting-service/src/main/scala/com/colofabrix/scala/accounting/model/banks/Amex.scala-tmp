@@ -8,8 +8,6 @@ import com.colofabrix.scala.accounting.model.BankCsvInterpreterUtils._
 object Amex {
 
   final class AmexCsvFile extends BankFileConverter[AmexRow] {
-    val csvConfig = kantan.csv.rfc
-
     val dateFormat = "dd/MM/yyyy"
 
     def adaptFile(file: CsvFile[String]): CsvFile[String] = file

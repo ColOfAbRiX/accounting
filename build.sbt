@@ -63,22 +63,22 @@ lazy val accountingService = project
     version := AccountingVersion,
     scalaVersion := ScalaVersion,
     libraryDependencies ++= Seq(
+      "ch.qos.logback"             %  "logback-classic"     % LogbackVersion,
       "co.fs2"                     %% "fs2-core"            % FS2Version,
       "com.nrinaudo"               %% "kantan.csv-cats"     % KantanCsvVersion,
       "com.nrinaudo"               %% "kantan.csv"          % KantanCsvVersion,
       "io.circe"                   %% "circe-generic"       % CirceVersion,
+      "io.monix"                   %% "monix"               % MonixVersion,
       "org.http4s"                 %% "http4s-blaze-client" % Http4sVersion,
       "org.http4s"                 %% "http4s-blaze-server" % Http4sVersion,
       "org.http4s"                 %% "http4s-circe"        % Http4sVersion,
-      "org.http4s"                 %% "http4s-dsl"          % Http4sVersion,
-      "ch.qos.logback"             %  "logback-classic"     % LogbackVersion
+      "org.http4s"                 %% "http4s-dsl"          % Http4sVersion
       // "com.github.julien-truffaut" %%  "monocle-law"        % MonocleVersion % "test",
       // "com.github.julien-truffaut" %% "monocle-core"        % MonocleVersion,
       // "com.github.julien-truffaut" %% "monocle-macro"       % MonocleVersion,
       // "com.github.pureconfig"      %% "pureconfig"          % PureconfigVersion,
       // "com.softwaremill.tapir"     %% "tapir-core"          % TapirVersion,
       // "com.softwaremill.tapir"     %% "tapir-http4s-server" % TapirVersion
-      // "io.monix"                   %% "monix"               % MonixVersion,
       // "org.scalacheck"             %% "scalacheck"          % ScalacheckVersion % "test",
       // "org.scalatest"              %% "scalatest"           % ScalatestVersion % "test",
       // "org.tpolecat"               %% "doobie-core"         % DoobieVersion,
