@@ -1,11 +1,9 @@
 package com.colofabrix.scala.accounting
 
-import monix.eval.Task
-import monix.reactive.Observable
 import monix.execution.Scheduler.Implicits.global
 import cats.effect.{ExitCode, IO, IOApp}
 import cats.implicits._
-import model._
+import readers._
 
 // object Main extends IOApp {
 //   def run(args: List[String]) =
@@ -15,7 +13,7 @@ import model._
 object Main extends App {
 
   val file = new java.io.File("samples/sample_barclays.csv")
-  val reader = new KantanCsvReader
+  val reader = CsvReaderType(KantanCsvReaderType)
   val result = reader.readFile(file)
 
   println(s"Result: $result")

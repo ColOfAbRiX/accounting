@@ -2,14 +2,7 @@ package com.colofabrix.scala.accounting.model
 
 import java.time._
 
-sealed trait BankType
-final case object BarclaysBank
-final case object HalifaxBank
-final case object StarlingBank
-final case object AmexBank
-
-
-sealed trait BankCsvRow
+sealed trait BankTransaction
 
 final case class BarclaysRow(
   number: Option[Int],
@@ -18,7 +11,7 @@ final case class BarclaysRow(
   amount: BigDecimal,
   subcategory: String,
   memo: String
-) extends BankCsvRow
+) extends BankTransaction
 
 final case class HalifaxRow(
   date: LocalDate,
@@ -26,7 +19,7 @@ final case class HalifaxRow(
   reference: String,
   description: String,
   amount: BigDecimal
-) extends BankCsvRow
+) extends BankTransaction
 
 final case class StarlingRow(
   date: LocalDate,
@@ -35,7 +28,7 @@ final case class StarlingRow(
   `type`: String,
   amount: BigDecimal,
   balance: BigDecimal
-) extends BankCsvRow
+) extends BankTransaction
 
 final case class AmexRow(
   date: LocalDate,
@@ -43,4 +36,4 @@ final case class AmexRow(
   amount: BigDecimal,
   description: String,
   extra: String
-) extends BankCsvRow
+) extends BankTransaction
