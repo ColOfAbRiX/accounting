@@ -1,9 +1,9 @@
 package com.colofabrix.scala.accounting
 
+import com.colofabrix.scala.accounting.model._
+import com.colofabrix.scala.accounting.model.Barclays._
+import com.colofabrix.scala.accounting.model.CsvDefinitions.CsvReaderType
 import monix.execution.Scheduler.Implicits.global
-import cats.effect.{ExitCode, IO, IOApp}
-import cats.implicits._
-import readers._
 
 // object Main extends IOApp {
 //   def run(args: List[String]) =
@@ -16,12 +16,14 @@ object Main extends App {
   val reader = CsvReaderType(KantanCsvReaderType)
   val result = reader.readFile(file)
 
-  println(s"Result: $result")
   result.foreach { observable =>
-    println(s"Observable: $observable")
-    println("Running for each element:")
-    observable.foreachL(println).runToFuture
+    val result = for {
+      row <- InputCleaning.fileCleaning(observable)
+    } yield {
+      row
+    }
+    result.foreachL(println).runToFuture
   }
 
-  Thread.sleep(5000)
+  Thread.sleep(3000)
 }
