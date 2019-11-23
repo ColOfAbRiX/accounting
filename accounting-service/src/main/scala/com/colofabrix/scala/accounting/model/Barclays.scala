@@ -1,11 +1,13 @@
 package com.colofabrix.scala.accounting.model
 
 import java.time.LocalDate
+import cats.data.Validated
 import cats.implicits._
-import com.colofabrix.scala.accounting.model.CsvDefinitions._
+import com.colofabrix.scala.accounting.csv._
+import com.colofabrix.scala.accounting.csv.CsvDefinitions._
 import monix.reactive.Observable
 import shapeless._
-import shapeless.ops.tuple.ZipApply
+import shapeless.ops.hlist._
 import shapeless.syntax.std.tuple._
 import shapeless.syntax.std.traversable._
 
@@ -27,48 +29,69 @@ object Barclays {
   /**
    * Barclays Csv File Worker
    */
-  final class BarclaysCsvFile extends CsvCleaner[BarclaysTransaction] with CsvConverter[BarclaysTransaction] {
+  object BarclaysCsvFile extends CsvCleaner[BarclaysTransaction] with CsvConverter[BarclaysTransaction] {
+    import CsvRawTypeParser._
+
+    val dateFormat = "dd/MM/yyyy"
 
     // Cleaner
 
-    def cleanFile(file: Observable[List[String]]): Observable[List[String]] = {
+    def cleanFile(file: CsvStream): Observable[List[String]] = {
       for {
         row <- file.drop(1)
       } yield {
         row
       }
-  }
+    }
 
-  val fieldsDefinition = HList(
-    CsvField("number",      0, _ => 0.valid),
-    CsvField("date",        1, parseLocalDate),
-    CsvField("account",     2, parseString),
-    CsvField("amount",      3, parseBigDecimal),
-    CsvField("subcategory", 4, parseString),
-    CsvField("memo",        5, parseString)
-  )
+    val fieldsDefinition = HList(
+      CsvFieldDef(0, "number",      parse[Option[Int]]),
+      CsvFieldDef(1, "date",        parse[LocalDate](dateFormat)),
+      CsvFieldDef(2, "account",     parse[String]),
+      CsvFieldDef(3, "amount",      parse[BigDecimal]),
+      CsvFieldDef(4, "subcategory", parse[String]),
+      CsvFieldDef(5, "memo",        parse[String])
+    )
 
-  type ConstructorType = Int :: LocalDate :: String :: BigDecimal :: String :: String :: HNil
+    type Converters =
+      (String => CsvValidated[Option[Int]]) ::
+      (String => CsvValidated[LocalDate]) ::
+      (String => CsvValidated[String]) ::
+      (String => CsvValidated[scala.BigDecimal]) ::
+      (String => CsvValidated[String]) ::
+      (String => CsvValidated[String]) ::
+      HNil
 
-  // Converter
+    type RowType =
+      String ::
+      String ::
+      String ::
+      String ::
+      String ::
+      String ::
+      HNil
 
-    def convertRowTemp(row: List[String]): List[BarclaysTransaction] = {
+    //val fieldsDefinition = CsvField(2, "account", cell => stringParser.parse(cell)) :: HNil
+    //type Converters = (String => CsvValidated[String]) :: HNil
+    //type RowType = String :: HNil
+
+    // Converter
+
+    def convertRow(row: List[String]): CsvValidated[BarclaysTransaction] = {
+
       object extractConverters extends Poly1 {
-        implicit def converter[A] = at[CsvField[A]](_.convert)
+        implicit def converter[A] = at[CsvFieldDef[A]](_.convert)
       }
 
       val converters = fieldsDefinition.map(extractConverters)
-      val values = row.toHList[ConstructorType].get
+      val values = row.toHList[RowType].get
 
-      val zipApply = ZipApply[converters.type, values.type]
-
-      zipApply(converters, values)
+      val zipApply = ZipApply[Converters, RowType]
+      val result = zipApply(converters, values).tupled
 
       ???
     }
 
-    val dateFormat = "dd/MM/yyyy"
-    def convertRow(row: List[String]): CsvValidated[BarclaysTransaction] = ???
     //def convertRow(row: List[String]): Try[BarclaysTransaction] = ???
     //  implicit val implRow = row
     //
@@ -88,8 +111,8 @@ object Barclays {
       */
   }
 
-  implicit val barclaysConverter: CsvConverter[BarclaysTransaction] = new BarclaysCsvFile()
-
-  implicit val barclaysCsvCleaner: CsvCleaner[BarclaysTransaction] = new BarclaysCsvFile()
+  //implicit val barclaysConverter: CsvConverter[BarclaysTransaction] = new BarclaysCsvFile()
+  //
+  //implicit val barclaysCsvCleaner: CsvCleaner[BarclaysTransaction] = new BarclaysCsvFile()
 
 }

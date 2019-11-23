@@ -1,11 +1,11 @@
-package com.colofabrix.scala.accounting.model
+package com.colofabrix.scala.accounting.csv
 
+import java.io.File
+import scala.util._
 import cats.data._
 import cats.implicits._
-import java.io.File
+import com.colofabrix.scala.accounting.csv.CsvDefinitions._
 import monix.reactive.Observable
-import scala.util._
-import com.colofabrix.scala.accounting.model.CsvDefinitions._
 
 
 /**
