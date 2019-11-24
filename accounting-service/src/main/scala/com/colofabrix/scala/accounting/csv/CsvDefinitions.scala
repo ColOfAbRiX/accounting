@@ -11,14 +11,14 @@ object CsvDefinitions {
 
   type CsvStream = Observable[CsvRow]
 
-  type CsvValidated[A] = Validated[Throwable, A]
+  type CsvValidationResult[A] = ValidatedNec[Throwable, A]
 
 
   /**
     * Interface for a generic CSV reader that reads raw data
     */
   trait CsvReader {
-    def readFile(file: File): CsvValidated[CsvStream]
+    def readFile(file: File): CsvValidationResult[CsvStream]
   }
 
 
@@ -49,7 +49,7 @@ object CsvDefinitions {
     /**
       * Converts a Csv row into a BankTransaction
       */
-    def convertRow(row: CsvRow): CsvValidated[A]
+    def convertRow(row: CsvRow): CsvValidationResult[A]
   }
 
 
@@ -70,6 +70,6 @@ object CsvDefinitions {
   case class CsvFieldDef[A](
       index: Int,
       name: String,
-      convert: String => CsvValidated[A]
+      convert: String => CsvValidationResult[A]
   )
 }
