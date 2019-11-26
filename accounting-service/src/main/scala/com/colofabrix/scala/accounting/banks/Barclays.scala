@@ -3,7 +3,6 @@ package com.colofabrix.scala.accounting.banks
 import java.time.LocalDate
 import cats.implicits._
 import com.colofabrix.scala.accounting.csv.CsvDefinitions._
-import com.colofabrix.scala.accounting.csv.CsvTypeParser
 import com.colofabrix.scala.accounting.csv.CsvTypeParser._
 import com.colofabrix.scala.accounting.model.BarclaysTransaction
 import shapeless._
@@ -18,7 +17,10 @@ object Barclays {
   object BarclaysCsvFile extends CsvConverter[BarclaysTransaction] {
     /** Converts a Csv row into a BankTransaction */
     def filterFile(file: CsvStream): CsvValidated[CsvStream] = {
-      file.drop(1).validNec
+      file
+        .drop(1)
+        .filter(row => row.nonEmpty)
+        .validNec
     }
 
     /** Converts a Csv row into a BankTransaction */

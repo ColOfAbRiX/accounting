@@ -3,6 +3,8 @@ package com.colofabrix.scala.accounting.csv
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
 import scala.util._
+import cats.data.Kleisli
+import cats.Id
 import com.colofabrix.scala.accounting.csv.CsvDefinitions.{CsvRow, CsvValidated}
 import com.colofabrix.scala.accounting.utils.AccountingOps._
 
@@ -17,7 +19,7 @@ trait CsvTypeParser[A] {
 object CsvTypeParser {
 
   type CsvRowParser[A] = CsvRow => CsvValidated[A]
-
+  type CsvRowParser2[A] = Kleisli[Id, CsvRow, CsvValidated[A]]
 
   /** Type-safe method to parse a value given a function to extract what to parse from a CsvRow */
   def parse[A](extract: CsvRow => String)(implicit parser: CsvTypeParser[A]): CsvRowParser[A] = {

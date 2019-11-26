@@ -1,0 +1,6 @@
+Allow parsers, or CsvConverters, to play with the parsed value before the case class creation
+Implements parsers as Kleisli
+Load the default CsvReader as global singleton
+Make the default CsvReader configurable via properties
+Write the pipeline to input Csv files of different banks
+Write tests for all banks
