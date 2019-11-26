@@ -3,7 +3,8 @@ package com.colofabrix.scala.accounting.banks
 import java.time.LocalDate
 import cats.implicits._
 import com.colofabrix.scala.accounting.csv.CsvDefinitions._
-import com.colofabrix.scala.accounting.csv.CsvRawTypeParser._
+import com.colofabrix.scala.accounting.csv.CsvTypeParser._
+import com.colofabrix.scala.accounting.model.AmexTransaction
 import shapeless._
 import shapeless.syntax.std.tuple._
 
@@ -11,20 +12,9 @@ import shapeless.syntax.std.tuple._
 object Amex {
 
   /**
-    * Transaction on a American Express CSV file
-    */
-  final case class AmexTransaction(
-    date: LocalDate,
-    reference: String,
-    amount: BigDecimal,
-    description: String,
-    extra: String
-  ) extends BankTransaction
-
-  /**
     * Amex Csv File Worker
     */
-  object BarclaysCsvFile extends CsvConverter[AmexTransaction] {
+  object AmexCsvFile extends CsvConverter[AmexTransaction] {
     /** Converts a Csv row into a BankTransaction */
     def filterFile(file: CsvStream): CsvValidated[CsvStream] = {
       file.drop(1).validNec
@@ -47,5 +37,7 @@ object Amex {
       parsers.map(applyRow).mapN(AmexTransaction)
     }
   }
+
+  implicit val amexCsvConverter: CsvConverter[AmexTransaction] = AmexCsvFile
 
 }

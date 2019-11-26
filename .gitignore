@@ -10,5 +10,7 @@
 out
 target
 
-// Temporary
+# Temporary
 *.csv
+/samples
+w

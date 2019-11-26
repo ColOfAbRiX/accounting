@@ -1,9 +1,8 @@
 package com.colofabrix.scala.accounting
 
-import com.colofabrix.scala.accounting.model._
-import com.colofabrix.scala.accounting.model.Barclays._
+import com.colofabrix.scala.accounting.banks.Barclays.BarclaysCsvFile
 import com.colofabrix.scala.accounting.csv.CsvDefinitions.CsvReaderType
-import com.colofabrix.scala.accounting.csv.KantanCsvReaderType
+import com.colofabrix.scala.accounting.csv.{InputCleaning, KantanCsvReaderType}
 import monix.execution.Scheduler.Implicits.global
 
 // object Main extends IOApp {
@@ -20,13 +19,12 @@ object Main extends App {
   // Print output
   result.foreach { observable =>
     val result = for {
-      row <- InputCleaning.cleanFile(observable).drop(1)
+      row <- InputCleaning.cleanFile(observable)
     } yield {
       row
     }
 
     val transactions = result.map{ row =>
-      print(s"Row: $row")
       BarclaysCsvFile.convertRow(row)
     }
 
