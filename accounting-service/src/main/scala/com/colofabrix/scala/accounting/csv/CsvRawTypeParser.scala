@@ -1,31 +1,42 @@
 package com.colofabrix.scala.accounting.csv
 
-import cats.implicits._
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
 import scala.util._
-import com.colofabrix.scala.accounting.csv.CsvDefinitions.CsvValidationResult
+import com.colofabrix.scala.accounting.csv.CsvDefinitions.CsvValidated
+import com.colofabrix.scala.accounting.utils.AccountingOps._
 
 
 /**
   * Converter to transform csv fields into JVM types
   */
 trait CsvRawTypeParser[A] {
-  def parse(cell: String): CsvValidationResult[A]
+  def parse(cell: String): CsvValidated[A]
 }
 
 object CsvRawTypeParser {
-  /** Method to create the default parser for the given type */
-  def apply[A](f: String => A): CsvRawTypeParser[A] = new CsvRawTypeParser[A] {
-    override def parse(cell: String): CsvValidationResult[A] = {
-      Try(f(cell)).toEither.toValidatedNec
-    }
-  }
+  type CsvCellParser[A] = String => CsvValidated[A]
+  type CsvRowParser[A] = List[String] => CsvValidated[A]
 
-  /** Type-safe method to parse a value */
-  def parse[A](implicit parser: CsvRawTypeParser[A]): String => CsvValidationResult[A] = {
+
+  /** Type-safe method to parse a value in a cell */
+  def parse[A](implicit parser: CsvRawTypeParser[A]): CsvCellParser[A] = {
     parser.parse
   }
+
+  /** Type-safe method to parse a value given a function to extract what to parse from a row */
+  def parse[A: CsvRawTypeParser](extract: List[String] => String): CsvRowParser[A] = { row =>
+    val extracted = Try(extract(row)).toValidatedNec
+    val parsed = implicitly[CsvRawTypeParser[A]].parse(_)
+    extracted andThen parsed
+  }
+
+
+  /** Method to create the default parser for the given type */
+  def apply[A](f: String => A): CsvRawTypeParser[A] = new CsvRawTypeParser[A] {
+    def parse(cell: String): CsvValidated[A] = Try(f(cell)).toValidatedNec
+  }
+
 
   /** String */
   implicit val stringParser: CsvRawTypeParser[String] = CsvRawTypeParser[String] {

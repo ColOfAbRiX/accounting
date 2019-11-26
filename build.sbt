@@ -9,12 +9,14 @@ val DoobieVersion     = "0.8.4"
 val FS2Version        = "2.1.0"
 val Http4sVersion     = "0.21.0-M5"
 val KantanCsvVersion  = "0.6.0"
+val KittensVersion    = "2.0.0"
 val LogbackVersion    = "1.2.3"
 val MonixVersion      = "3.1.0"
 val MonocleVersion    = "2.0.0"
 val PureconfigVersion = "0.12.1"
 val ScalacheckVersion = "1.14.1"
 val ScalatestVersion  = "3.0.8"
+val ShapelessVersion  = "2.3.3"
 val TapirVersion      = "0.11.9"
 
 // Compiler plugins
@@ -64,24 +66,26 @@ lazy val accountingService = project
     scalaVersion := ScalaVersion,
     libraryDependencies ++= Seq(
       "ch.qos.logback"             %  "logback-classic"     % LogbackVersion,
-      "com.nrinaudo"               %% "kantan.csv-cats"     % KantanCsvVersion,
+      "com.chuusai"                %% "shapeless"           % ShapelessVersion,
       "com.nrinaudo"               %% "kantan.csv"          % KantanCsvVersion,
+      "com.nrinaudo"               %% "kantan.csv-cats"     % KantanCsvVersion,
       "io.circe"                   %% "circe-generic"       % CirceVersion,
       "io.monix"                   %% "monix"               % MonixVersion,
       "org.http4s"                 %% "http4s-blaze-client" % Http4sVersion,
       "org.http4s"                 %% "http4s-blaze-server" % Http4sVersion,
       "org.http4s"                 %% "http4s-circe"        % Http4sVersion,
-      "org.http4s"                 %% "http4s-dsl"          % Http4sVersion
+      "org.http4s"                 %% "http4s-dsl"          % Http4sVersion,
       // "co.fs2"                     %% "fs2-core"            % FS2Version,
-      // "com.github.julien-truffaut" %%  "monocle-law"        % MonocleVersion % "test",
-      // "com.github.julien-truffaut" %% "monocle-core"        % MonocleVersion,
+      // "com.github.julien-truffaut" %%  "monocle-law"        % MonocleVersion
+      // "com.github.julien-truffaut" %% "monocle-core"        % MonocleVersion,% "test",
       // "com.github.julien-truffaut" %% "monocle-macro"       % MonocleVersion,
-      // "com.github.pureconfig"      %% "pureconfig"          % PureconfigVersion,
-      // "com.softwaremill.tapir"     %% "tapir-core"          % TapirVersion,
+      // "com.github.pureconfig"      %% "pureconfig"          % PureconfigVersi
+      // "com.softwaremill.tapir"     %% "tapir-core"          % TapirVersion,on,
       // "com.softwaremill.tapir"     %% "tapir-http4s-server" % TapirVersion
-      // "org.scalacheck"             %% "scalacheck"          % ScalacheckVersion % "test",
-      // "org.scalatest"              %% "scalatest"           % ScalatestVersion % "test",
-      // "org.tpolecat"               %% "doobie-core"         % DoobieVersion,
+      // "org.scalacheck"             %% "scalacheck"          % ScalacheckVersi
+      // "org.scalatest"              %% "scalatest"           % ScalatestVersioon % "test",
+      // "org.tpolecat"               %% "doobie-core"         % DoobieVersion,n % "test",
+      // "org.typelevel"              %% "kittens"             % KittensVersion
       // "org.wvlet.airframe"         %% "airframe"            % AirframeVersion
     ),
     addCompilerPlugin("com.olegpy"      %% "better-monadic-for" % BetterMonadicForVersion),
