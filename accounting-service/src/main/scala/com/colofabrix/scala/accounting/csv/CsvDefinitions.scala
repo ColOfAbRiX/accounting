@@ -1,18 +1,14 @@
 package com.colofabrix.scala.accounting.csv
 
-import java.io.File
 import cats.data._
-import com.colofabrix.scala.accounting.csv.CsvRawTypeParser.CsvRowParser
+import java.io.File
 import monix.reactive.Observable
-import shapeless.Poly1
 
 
 object CsvDefinitions {
 
   type CsvRow = List[String]
-
   type CsvStream = Observable[CsvRow]
-
   type CsvValidated[A] = ValidatedNec[Throwable, A]
 
 
@@ -43,14 +39,8 @@ object CsvDefinitions {
   trait CsvConverter[A] {
     /** Converts a Csv row into a BankTransaction */
     def convertRow(row: CsvRow): CsvValidated[A]
-  }
 
-
-  /**
-    * A CSV cleaner for a specific Bank
-    */
-  trait CsvCleaner[A] {
-    /** File cleanups specific of the Bank */
-    def cleanFile(row: CsvStream): CsvStream
+    /** Converts a Csv row into a BankTransaction */
+    def filterFile(file: CsvStream): CsvValidated[CsvStream]
   }
 }

@@ -1,4 +1,4 @@
-package com.colofabrix.scala.accounting.model
+package com.colofabrix.scala.accounting.banks
 
 import com.colofabrix.scala.accounting.csv.CsvDefinitions._
 import monix.reactive.Observable

@@ -74,7 +74,7 @@ object CSVEncoder {
 
   implicit val utilDateEncoder: CSVEncoder[java.util.Date] = pure(nullHandler(_)(date => List(date.toString)))
 
-  implicit val dateTimeEncoder: CSVEncoder[org.joda.time.DateTime] = pure(nullHandler(_)(date => List(date.toString)))
+  implicit val dateTimeEncoder: CSVEncoder[java.time.LocalDate] = pure(nullHandler(_)(date => List(date.toString)))
 
   implicit val timestampEncoder: CSVEncoder[java.sql.Timestamp] = pure(nullHandler(_)(timestamp => List(timestamp.toString)))
 

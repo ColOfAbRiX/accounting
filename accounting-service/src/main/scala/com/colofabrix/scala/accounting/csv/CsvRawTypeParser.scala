@@ -15,20 +15,17 @@ trait CsvRawTypeParser[A] {
 }
 
 object CsvRawTypeParser {
+
   type CsvCellParser[A] = String => CsvValidated[A]
   type CsvRowParser[A] = List[String] => CsvValidated[A]
 
 
-  /** Type-safe method to parse a value in a cell */
-  def parse[A](implicit parser: CsvRawTypeParser[A]): CsvCellParser[A] = {
-    parser.parse
-  }
-
   /** Type-safe method to parse a value given a function to extract what to parse from a row */
-  def parse[A: CsvRawTypeParser](extract: List[String] => String): CsvRowParser[A] = { row =>
-    val extracted = Try(extract(row)).toValidatedNec
-    val parsed = implicitly[CsvRawTypeParser[A]].parse(_)
-    extracted andThen parsed
+  def parse[A](extract: List[String] => String)(implicit parser: CsvRawTypeParser[A]): CsvRowParser[A] = {
+    row =>
+      val extracted = Try(extract(row)).toValidatedNec
+      val parsed = parser.parse _
+      extracted andThen parsed
   }
 
 

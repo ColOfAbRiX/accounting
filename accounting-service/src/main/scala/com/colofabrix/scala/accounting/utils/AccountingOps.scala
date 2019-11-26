@@ -12,8 +12,13 @@ object AccountingOps {
     */
   implicit class TryOps[A](tryObject: Try[A]) {
 
+    @inline
     def toValidated: Validated[Throwable, A] = tryObject.toEither.toValidated
+
+    @inline
     def toValidatedNel: ValidatedNel[Throwable, A] = tryObject.toEither.toValidatedNel
+
+    @inline
     def toValidatedNec: ValidatedNec[Throwable, A] = tryObject.toEither.toValidatedNec
 
   }
