@@ -25,7 +25,7 @@ object Amex {
       val parsers = (
         parse[LocalDate] (r => r(0))("dd/MM/yyyy"),
         parse[String]    (r => r(1)),
-        parse[BigDecimal](r => r(2)),
+        parse[BigDecimal](r => r(2)) map (value => -1.0 * value),
         parse[String]    (r => r(3)),
         parse[String]    (r => r(4))
       )

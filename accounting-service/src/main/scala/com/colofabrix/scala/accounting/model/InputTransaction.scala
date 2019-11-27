@@ -6,7 +6,7 @@ import java.time.LocalDate
 /**
   * Transaction in a specific Bank's format
   */
-sealed trait BankTransaction
+sealed trait InputTransaction
 
 /** Transaction on a Barclays CSV file */
 final case class BarclaysTransaction(
@@ -16,7 +16,7 @@ final case class BarclaysTransaction(
     amount: BigDecimal,
     subcategory: String,
     memo: String
-) extends BankTransaction
+) extends InputTransaction
 
 /** Transaction on a American Express CSV file */
 final case class AmexTransaction(
@@ -25,7 +25,7 @@ final case class AmexTransaction(
     amount: BigDecimal,
     description: String,
     extra: String
-) extends BankTransaction
+) extends InputTransaction
 
 /** Transaction on a Halifax CSV file */
 final case class HalifaxTransaction(
@@ -34,7 +34,7 @@ final case class HalifaxTransaction(
     reference: String,
     description: String,
     amount: BigDecimal
-) extends BankTransaction
+) extends InputTransaction
 
 /** Transaction on a Starling CSV file */
 final case class StarlingTransaction(
@@ -44,4 +44,4 @@ final case class StarlingTransaction(
     `type`: String,
     amount: BigDecimal,
     balance: BigDecimal
-) extends BankTransaction
+) extends InputTransaction

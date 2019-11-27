@@ -16,7 +16,7 @@ import monix.reactive.Observable
 
 object Main extends App {
 
-  val file = new java.io.File("samples/sample_halifax.csv")
+  val file = new java.io.File("samples/sample_amex.csv")
   val reader = CsvReaderType(KantanCsvReaderType)
   val result = reader.readFile(file)
 
@@ -24,7 +24,7 @@ object Main extends App {
   result.foreach { observable =>
     val result = for {
       row         <- InputCleaning.cleanFile(observable)
-      transaction <- Observable(HalifaxCsvFile.convertRow(row))
+      transaction <- Observable(AmexCsvFile.convertRow(row))
     } yield {
       transaction
     }
