@@ -1,5 +1,4 @@
-Allow parsers, or CsvConverters, to play with the parsed value before the case class creation
-Implements parsers as Kleisli
+Investigate if lenses could be a good option to extract values from CSV
 Investigate how to make the CSV converters more general using Shapeless Generic
 Filter out bad rows
 Manage validation results
