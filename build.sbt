@@ -80,12 +80,12 @@ lazy val accountingService = project
       // "com.github.julien-truffaut" %% "monocle-law"         % MonocleVersion
       // "com.github.julien-truffaut" %% "monocle-core"        % MonocleVersion,% "test",
       // "com.github.julien-truffaut" %% "monocle-macro"       % MonocleVersion,
-      // "com.github.pureconfig"      %% "pureconfig"          % PureconfigVersi
-      // "com.softwaremill.tapir"     %% "tapir-core"          % TapirVersion,on,
+      // "com.github.pureconfig"      %% "pureconfig"          % PureconfigVersion
+      // "com.softwaremill.tapir"     %% "tapir-core"          % TapirVersion,
       // "com.softwaremill.tapir"     %% "tapir-http4s-server" % TapirVersion
-      // "org.scalacheck"             %% "scalacheck"          % ScalacheckVersi
-      // "org.scalatest"              %% "scalatest"           % ScalatestVersioon % "test",
-      // "org.tpolecat"               %% "doobie-core"         % DoobieVersion,n % "test",
+      // "org.scalacheck"             %% "scalacheck"          % ScalacheckVersion
+      // "org.scalatest"              %% "scalatest"           % ScalatestVersion % "test",
+      // "org.tpolecat"               %% "doobie-core"         % DoobieVersion % "test",
       // "org.typelevel"              %% "kittens"             % KittensVersion
     ),
     addCompilerPlugin("com.olegpy"      %% "better-monadic-for" % BetterMonadicForVersion),
