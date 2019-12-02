@@ -8,12 +8,6 @@ import monix.reactive.Observable
 
 
 /**
- * Kantan CSV reader type
- */
-final case object KantanCsvReaderType extends CsvReaderType
-
-
-/**
  * Kantan CSV Reader
  */
 class KantanCsvReader extends CsvReader {
