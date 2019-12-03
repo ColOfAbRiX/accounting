@@ -30,7 +30,7 @@ object Halifax {
 
     /** Converts a Csv row */
     def convertRow(row: CsvRow): CsvValidated[HalifaxTransaction] = {
-      convertRowGeneric(parsers, row)
+      val result = convertRowGeneric(parsers, row)
       ???
     }
   }

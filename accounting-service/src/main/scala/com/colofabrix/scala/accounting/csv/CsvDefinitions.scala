@@ -46,6 +46,8 @@ object CsvDefinitions {
   /**
     * Represents an object that can convert CSV files into type A
     */
+  import UnaryTCConstraint._
+
   trait CsvConverter[A] {
 
     /** Converts a Csv row into a BankTransaction */
@@ -62,8 +64,6 @@ object CsvDefinitions {
 
     // Some useful things here too: https://mpilquist.github.io/blog/2013/06/09/scodec-part-3/
 
-    import UnaryTCConstraint._
-
     private object ApplyRow extends Poly2 {
       implicit def aDefault[T, V <: HList] = at[CsvRowParser[T], (CsvRow, V)] {
         case (rowParser, (row, accumulator)) => (row, rowParser(row) :: accumulator)
@@ -74,8 +74,8 @@ object CsvDefinitions {
       P <: HList : *->*[CsvRowParser]#λ, O <: HList](
       input: P, row: CsvRow)(
       implicit
-        parsersFolder: RightFolder[P, (CsvRow, HNil.type), ApplyRow.type]
-    ): O = {
+        folder: RightFolder.Aux[P, (CsvRow, HNil.type), ApplyRow.type, O]
+    ): folder.Out = {
       input.foldRight((row, HNil))(ApplyRow)
     }
 
