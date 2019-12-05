@@ -1,12 +1,13 @@
 package com.colofabrix.scala.accounting.csv
 
 import cats.data._
-import java.io.File
 import com.colofabrix.scala.accounting.csv.CsvTypeParser.CsvRowParser
+import java.io.File
 import monix.reactive.Observable
 import shapeless._
-import shapeless.syntax.std.tuple._
 import shapeless.ops.hlist.RightFolder
+import shapeless.syntax.std.tuple._
+import shapeless.UnaryTCConstraint._
 
 
 object CsvDefinitions {
@@ -46,7 +47,6 @@ object CsvDefinitions {
   /**
     * Represents an object that can convert CSV files into type A
     */
-  import UnaryTCConstraint._
 
   trait CsvConverter[A] {
 
@@ -71,12 +71,14 @@ object CsvDefinitions {
     }
 
     def convertRowGeneric[
-      P <: HList : *->*[CsvRowParser]#λ, O <: HList](
-      input: P, row: CsvRow)(
-      implicit
-        folder: RightFolder.Aux[P, (CsvRow, HNil.type), ApplyRow.type, O]
-    ): folder.Out = {
-      input.foldRight((row, HNil))(ApplyRow)
+      HP <: HList : *->*[CsvRowParser]#λ,
+      HV <: HList](
+        input: HP,
+        row: CsvRow)(
+          implicit
+          folder: RightFolder.Aux[HP, (CsvRow, HNil.type), ApplyRow.type, (CsvRow, HV)]
+    ): HV = {
+      input.foldRight((row, HNil))(ApplyRow)._2
     }
 
   }

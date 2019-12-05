@@ -4,8 +4,8 @@ import com.colofabrix.scala.accounting.banks.Starling.StarlingCsvFile
 import com.colofabrix.scala.accounting.banks.Halifax.HalifaxCsvFile
 import com.colofabrix.scala.accounting.banks.Barclays.BarclaysCsvFile
 import com.colofabrix.scala.accounting.banks.Amex.AmexCsvFile
-import com.colofabrix.scala.accounting.csv.CsvDefinitions.CsvReaderType
-import com.colofabrix.scala.accounting.csv.{InputCleaning, KantanCsvReaderType}
+import com.colofabrix.scala.accounting.csv.CsvDefinitions._
+import com.colofabrix.scala.accounting.csv._
 import monix.execution.Scheduler.Implicits.global
 import monix.reactive.Observable
 

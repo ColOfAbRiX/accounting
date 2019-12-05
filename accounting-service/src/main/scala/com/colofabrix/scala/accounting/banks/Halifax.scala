@@ -32,7 +32,10 @@ object Halifax {
     def convertRow(row: CsvRow): CsvValidated[HalifaxTransaction] = {
       val result = convertRowGeneric(parsers, row)
 
-      ???
+      println(result)
+
+      // Temporary
+      new RuntimeException().invalidNec[HalifaxTransaction]
     }
   }
 

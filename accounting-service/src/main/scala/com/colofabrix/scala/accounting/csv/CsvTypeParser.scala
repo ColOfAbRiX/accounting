@@ -44,6 +44,11 @@ object CsvTypeParser {
     _.trim.toInt
   }
 
+  /** Parser for result type "Double" */
+  implicit val doubleParser: CsvTypeParser[Double] = CsvTypeParser[Double] {
+    _.trim.toDouble
+  }
+
   /** Parser for result type "BigDecimal" */
   implicit val bigDecimalParser: CsvTypeParser[BigDecimal] = CsvTypeParser[BigDecimal] {
     BigDecimal(_)
