@@ -62,13 +62,13 @@ object CsvDefinitions {
     // during the computation. Inside the computation we apply a parser using row as parameter and
     // then we append it to the accumulator.
 
-    // Some useful things here too: https://mpilquist.github.io/blog/2013/06/09/scodec-part-3/
-
     private object ApplyRow extends Poly2 {
       implicit def aDefault[T, V <: HList] = at[CsvRowParser[T], (CsvRow, V)] {
         case (rowParser, (row, accumulator)) => (row, rowParser(row) :: accumulator)
       }
     }
+
+    // Type constraint taken here: https://mpilquist.github.io/blog/2013/06/09/scodec-part-3/
 
     def convertRowGeneric[
       HP <: HList : *->*[CsvRowParser]#λ,
@@ -76,9 +76,10 @@ object CsvDefinitions {
         input: HP,
         row: CsvRow)(
           implicit
-          folder: RightFolder.Aux[HP, (CsvRow, HNil.type), ApplyRow.type, (CsvRow, HV)]
+          folder: RightFolder.Aux[HP, (CsvRow, HNil), ApplyRow.type, (CsvRow, HV)]
     ): HV = {
-      input.foldRight((row, HNil))(ApplyRow)._2
+      // HNil: HNil taken from https://stackoverflow.com/a/33304048
+      input.foldRight((row, HNil: HNil))(ApplyRow)._2
     }
 
   }

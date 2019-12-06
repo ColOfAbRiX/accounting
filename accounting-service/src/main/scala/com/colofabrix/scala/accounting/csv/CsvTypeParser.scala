@@ -36,7 +36,7 @@ object CsvTypeParser {
 
   /** Parser for result type "String" */
   implicit val stringParser: CsvTypeParser[String] = CsvTypeParser[String] {
-    _.trim.toLowerCase
+    _.trim.toLowerCase.replaceAll("\\s+", " ")
   }
 
   /** Parser for result type "Int" */
