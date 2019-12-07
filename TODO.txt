@@ -1,4 +1,3 @@
-Investigate if lenses could be a good option to extract values from CSV
 Investigate how to make the CSV converters more general using Shapeless Generic
 Filter out bad rows
 Manage validation results

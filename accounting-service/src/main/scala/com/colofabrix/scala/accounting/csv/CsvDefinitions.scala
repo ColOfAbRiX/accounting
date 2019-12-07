@@ -1,10 +1,12 @@
 package com.colofabrix.scala.accounting.csv
 
 import cats.data._
+import cats.sequence._
 import com.colofabrix.scala.accounting.csv.CsvTypeParser.CsvRowParser
 import java.io.File
 import monix.reactive.Observable
 import shapeless._
+import shapeless.ops.function.FnToProduct
 import shapeless.ops.hlist.RightFolder
 import shapeless.syntax.std.tuple._
 import shapeless.UnaryTCConstraint._
@@ -68,19 +70,34 @@ object CsvDefinitions {
       }
     }
 
-    // Type constraint taken here: https://mpilquist.github.io/blog/2013/06/09/scodec-part-3/
-
-    def convertRowGeneric[
-      HP <: HList : *->*[CsvRowParser]#λ,
-      HV <: HList](
-        input: HP,
-        row: CsvRow)(
-          implicit
-          folder: RightFolder.Aux[HP, (CsvRow, HNil), ApplyRow.type, (CsvRow, HV)]
-    ): HV = {
-      // HNil: HNil taken from https://stackoverflow.com/a/33304048
-      input.foldRight((row, HNil: HNil))(ApplyRow)._2
+    private object FoldValidate2 extends Poly2 {
+      implicit def uvCase[U, V] = at[CsvValidated[U], CsvValidated[V]] {
+        case (vu, vv) => vu.map { u => vv.map { v => u :: v :: HNil } }
+      }
     }
 
+    // UnaryTCConstraint taken from here: https://mpilquist.github.io/blog/2013/06/09/scodec-part-3/
+
+    def convertRowGeneric[
+      HParsers <: HList : *->*[CsvRowParser]#λ,
+      HParsed <: HList,
+      HValidated <: HList,
+      Factory,
+      Output](
+        parsers: HParsers,
+        row: CsvRow,
+        factory: Factory)(
+          implicit
+          folder: RightFolder.Aux[HParsers, (CsvRow, HNil), ApplyRow.type, (CsvRow, HParsed)],
+          traverser: Traverser.Aux[HParsed, FoldValidate2.type, CsvValidated[HValidated]],
+          f2p: FnToProduct.Aux[Factory, HValidated => Output]
+    ): CsvValidated[Output] = {
+      // HNil: HNil taken from https://stackoverflow.com/a/33304048
+      val parsed = parsers.foldRight((row, HNil: HNil))(ApplyRow)._2
+      val validated = parsed.traverse(FoldValidate2)
+      val hlFactory = f2p(factory)
+      val transaction = validated.map(hlFactory)
+      transaction
+    }
   }
 }

@@ -20,17 +20,19 @@ object Halifax {
       file.drop(1).validNec
     }
 
-    val parsers =
-      parse[LocalDate] (r => r(0))("dd/MM/yyyy") ::
-      parse[LocalDate] (r => r(1))("dd/MM/yyyy") ::
-      parse[String]    (r => r(2)) ::
-      parse[String]    (r => r(3)) ::
-      parse[BigDecimal](r => r(4)).map(value => -1.0 * value) ::
-      HNil
-
     /** Converts a Csv row */
     def convertRow(row: CsvRow): CsvValidated[HalifaxTransaction] = {
-      convertRowGeneric(parsers, row).tupled.mapN(HalifaxTransaction)
+      val parsers =
+        parse[LocalDate] (r => r(0))("dd/MM/yyyy") ::
+        parse[LocalDate] (r => r(1))("dd/MM/yyyy") ::
+        parse[String]    (r => r(2)) ::
+        parse[String]    (r => r(3)) ::
+        parse[BigDecimal](r => r(4)).map(value => -1.0 * value) ::
+        HNil
+
+      val factory = HalifaxTransaction.apply _
+
+      convertRowGeneric(parsers, row, factory)
     }
   }
 
