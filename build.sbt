@@ -75,8 +75,9 @@ lazy val accountingService = project
       "org.http4s"                 %% "http4s-blaze-server" % Http4sVersion,
       "org.http4s"                 %% "http4s-circe"        % Http4sVersion,
       "org.http4s"                 %% "http4s-dsl"          % Http4sVersion,
-      "org.typelevel"              %% "kittens"             % KittensVersion,
+      "org.scalatest"              %% "scalatest"           % ScalatestVersion % "test",
       "org.wvlet.airframe"         %% "airframe"            % AirframeVersion
+      // "org.typelevel"              %% "kittens"             % KittensVersion,
       // "co.fs2"                     %% "fs2-core"            % FS2Version,
       // "com.github.julien-truffaut" %% "monocle-law"         % MonocleVersion
       // "com.github.julien-truffaut" %% "monocle-core"        % MonocleVersion,% "test",
@@ -85,7 +86,6 @@ lazy val accountingService = project
       // "com.softwaremill.tapir"     %% "tapir-core"          % TapirVersion,
       // "com.softwaremill.tapir"     %% "tapir-http4s-server" % TapirVersion
       // "org.scalacheck"             %% "scalacheck"          % ScalacheckVersion
-      // "org.scalatest"              %% "scalatest"           % ScalatestVersion % "test",
       // "org.tpolecat"               %% "doobie-core"         % DoobieVersion % "test",
     ),
     addCompilerPlugin("com.olegpy"      %% "better-monadic-for" % BetterMonadicForVersion),

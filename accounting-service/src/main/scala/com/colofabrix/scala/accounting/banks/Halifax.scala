@@ -32,7 +32,7 @@ object Halifax {
 
       val factory = HalifaxTransaction.apply _
 
-      convertRowGeneric(parsers, row, factory)
+      ???
     }
   }
 

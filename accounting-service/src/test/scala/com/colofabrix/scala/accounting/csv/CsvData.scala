@@ -7,7 +7,7 @@ import com.colofabrix.scala.accounting.model.{AmexTransaction, BarclaysTransacti
 // Taken from real CSV files of banks
 object CsvData {
 
-  def date(year: Int, month: Int, day: Int): LocalDate = new LocalDate(year, month, day)
+  def date(year: Int, month: Int, day: Int): LocalDate = LocalDate.of(year, month, day)
 
   // Barclay's
 

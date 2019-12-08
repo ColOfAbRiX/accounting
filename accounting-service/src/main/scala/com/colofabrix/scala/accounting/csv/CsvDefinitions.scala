@@ -1,7 +1,7 @@
 package com.colofabrix.scala.accounting.csv
 
 import cats.data._
-import cats.sequence._
+import cats.implicits._
 import com.colofabrix.scala.accounting.csv.CsvTypeParser.CsvRowParser
 import java.io.File
 import monix.reactive.Observable
@@ -65,14 +65,11 @@ object CsvDefinitions {
     // then we append it to the accumulator.
 
     private object ApplyRow extends Poly2 {
-      implicit def aDefault[T, V <: HList] = at[CsvRowParser[T], (CsvRow, V)] {
-        case (rowParser, (row, accumulator)) => (row, rowParser(row) :: accumulator)
-      }
-    }
-
-    private object FoldValidate2 extends Poly2 {
-      implicit def uvCase[U, V] = at[CsvValidated[U], CsvValidated[V]] {
-        case (vu, vv) => vu.map { u => vv.map { v => u :: v :: HNil } }
+      implicit def aDefault[T, V <: HList] = at[CsvRowParser[T], (CsvRow, CsvValidated[V])] {
+        case (rowParser, (row, accumulator)) =>
+          val parsed = rowParser(row)
+          val next = (accumulator, parsed).mapN((v, t) => t :: v)
+          (row, next)
       }
     }
 
@@ -81,23 +78,27 @@ object CsvDefinitions {
     def convertRowGeneric[
       HParsers <: HList : *->*[CsvRowParser]#λ,
       HParsed <: HList,
-      HValidated <: HList,
       Factory,
       Output](
         parsers: HParsers,
         row: CsvRow,
         factory: Factory)(
           implicit
-          folder: RightFolder.Aux[HParsers, (CsvRow, HNil), ApplyRow.type, (CsvRow, HParsed)],
-          traverser: Traverser.Aux[HParsed, FoldValidate2.type, CsvValidated[HValidated]],
-          f2p: FnToProduct.Aux[Factory, HValidated => Output]
+          folder: RightFolder.Aux[
+            HParsers,
+            (CsvRow, CsvValidated[HNil]),
+            ApplyRow.type,
+            (CsvRow, CsvValidated[HParsed])],
+          f2p: FnToProduct.Aux[
+            Factory,
+            HParsed => Output]
     ): CsvValidated[Output] = {
       // HNil: HNil taken from https://stackoverflow.com/a/33304048
-      val parsed = parsers.foldRight((row, HNil: HNil))(ApplyRow)._2
-      val validated = parsed.traverse(FoldValidate2)
+      val seed      = (row, (HNil: HNil).validNec[Throwable])
+      val parsed    = parsers.foldRight(seed)(ApplyRow)._2
       val hlFactory = f2p(factory)
-      val transaction = validated.map(hlFactory)
-      transaction
+      val result    = parsed.map(hlFactory)
+      result
     }
   }
 }
