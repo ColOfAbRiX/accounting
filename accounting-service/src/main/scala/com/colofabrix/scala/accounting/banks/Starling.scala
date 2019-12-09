@@ -2,8 +2,9 @@ package com.colofabrix.scala.accounting.banks
 
 import java.time.LocalDate
 import cats.implicits._
+import com.colofabrix.scala.accounting.csv.CsvConverter
 import com.colofabrix.scala.accounting.csv.CsvDefinitions._
-import com.colofabrix.scala.accounting.csv.CsvTypeParser._
+import com.colofabrix.scala.accounting.csv.CsvFieldParser._
 import com.colofabrix.scala.accounting.model.StarlingTransaction
 import shapeless._
 import shapeless.syntax.std.tuple._
@@ -22,20 +23,16 @@ object Starling {
 
     /** Converts a Csv row into a BankTransaction */
     def convertRow(row: CsvRow): CsvValidated[StarlingTransaction] = {
-      val parsers = (
-        parse[LocalDate] (r => r(0))("dd/MM/yyyy"),
-        parse[String]    (r => r(1)),
-        parse[String]    (r => r(2)),
-        parse[String]    (r => r(3)),
-        parse[BigDecimal](r => r(4)),
-        parse[BigDecimal](r => r(5)),
-      )
+      val date         = parse[LocalDate] (r => r(0))("dd/MM/yyyy")
+      val counterParty = parse[String]    (r => r(1))
+      val reference    = parse[String]    (r => r(2))
+      val `type`       = parse[String]    (r => r(3))
+      val amount       = parse[BigDecimal](r => r(4))
+      val balance      = parse[BigDecimal](r => r(5))
 
-      object applyRow extends Poly1 {
-        implicit def aDefault[A] = at[CsvRowParser[A]](f => f(row))
-      }
+      val parsers = date :: counterParty :: reference :: `type` :: amount :: balance :: HNil
 
-      parsers.map(applyRow).mapN(StarlingTransaction)
+      convert(parsers, row, StarlingTransaction.apply _)
     }
   }
 

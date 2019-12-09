@@ -2,8 +2,9 @@ package com.colofabrix.scala.accounting.banks
 
 import java.time.LocalDate
 import cats.implicits._
+import com.colofabrix.scala.accounting.csv.CsvConverter
 import com.colofabrix.scala.accounting.csv.CsvDefinitions._
-import com.colofabrix.scala.accounting.csv.CsvTypeParser._
+import com.colofabrix.scala.accounting.csv.CsvFieldParser._
 import com.colofabrix.scala.accounting.model.HalifaxTransaction
 import shapeless._
 import shapeless.syntax.std.tuple._
@@ -22,17 +23,15 @@ object Halifax {
 
     /** Converts a Csv row */
     def convertRow(row: CsvRow): CsvValidated[HalifaxTransaction] = {
-      val parsers =
-        parse[LocalDate] (r => r(0))("dd/MM/yyyy") ::
-        parse[LocalDate] (r => r(1))("dd/MM/yyyy") ::
-        parse[String]    (r => r(2)) ::
-        parse[String]    (r => r(3)) ::
-        parse[BigDecimal](r => r(4)).map(value => -1.0 * value) ::
-        HNil
+      val date        = parse[LocalDate] (r => r(0))("dd/MM/yyyy")
+      val dateEntered = parse[LocalDate] (r => r(1))("dd/MM/yyyy")
+      val reference   = parse[String]    (r => r(2))
+      val description = parse[String]    (r => r(3))
+      val amount      = parse[BigDecimal](r => r(4)).map(value => -1.0 * value)
 
-      val factory = HalifaxTransaction.apply _
+      val parsers = date :: dateEntered :: reference :: description :: amount :: HNil
 
-      ???
+      convert(parsers, row, HalifaxTransaction.apply _)
     }
   }
 

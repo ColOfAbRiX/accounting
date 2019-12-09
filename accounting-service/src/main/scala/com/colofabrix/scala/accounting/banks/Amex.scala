@@ -2,8 +2,9 @@ package com.colofabrix.scala.accounting.banks
 
 import java.time.LocalDate
 import cats.implicits._
+import com.colofabrix.scala.accounting.csv.CsvConverter
 import com.colofabrix.scala.accounting.csv.CsvDefinitions._
-import com.colofabrix.scala.accounting.csv.CsvTypeParser._
+import com.colofabrix.scala.accounting.csv.CsvFieldParser._
 import com.colofabrix.scala.accounting.model.AmexTransaction
 import shapeless._
 import shapeless.syntax.std.tuple._
@@ -22,19 +23,15 @@ object Amex {
 
     /** Converts a Csv row into a BankTransaction */
     def convertRow(row: CsvRow): CsvValidated[AmexTransaction] = {
-      val parsers = (
-        parse[LocalDate] (r => r(0))("dd/MM/yyyy"),
-        parse[String]    (r => r(1)),
-        parse[BigDecimal](r => r(2)) map (value => -1.0 * value),
-        parse[String]    (r => r(3)),
-        parse[String]    (r => r(4))
-      )
+      val date        = parse[LocalDate] (r => r(0))("dd/MM/yyyy")
+      val reference   = parse[String]    (r => r(1))
+      val amount      = parse[BigDecimal](r => r(2)).map(value => -1.0 * value)
+      val description = parse[String]    (r => r(3))
+      val extra       = parse[String]    (r => r(4))
 
-      object applyRow extends Poly1 {
-        implicit def aDefault[A] = at[CsvRowParser[A]](f => f(row))
-      }
+      val parsers = date :: reference :: amount :: description :: extra :: HNil
 
-      parsers.map(applyRow).mapN(AmexTransaction)
+      convert(parsers, row, AmexTransaction.apply _)
     }
   }
 

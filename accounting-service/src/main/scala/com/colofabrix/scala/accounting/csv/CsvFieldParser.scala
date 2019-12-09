@@ -1,26 +1,27 @@
 package com.colofabrix.scala.accounting.csv
 
-import java.time.LocalDate
-import java.time.format.DateTimeFormatter
-import scala.util._
 import cats.data.Kleisli
+import cats.implicits._
 import com.colofabrix.scala.accounting.csv.CsvDefinitions.{CsvRow, CsvValidated}
 import com.colofabrix.scala.accounting.utils.AccountingOps._
+import java.time.format.DateTimeFormatter
+import java.time.LocalDate
+import scala.util._
 
 
 /**
   * Parser to transform Csv fields into JVM types
   */
-trait CsvTypeParser[A] {
+trait CsvFieldParser[A] {
   def parseCell(cell: String): CsvValidated[A]
 }
 
-object CsvTypeParser {
+object CsvFieldParser {
 
   type CsvRowParser[A] = Kleisli[CsvValidated, CsvRow, A]
 
   /** Type-safe method to parse a value given a function to extract what to parse from a CsvRow */
-  def parse[A](extract: CsvRow => String)(implicit parser: CsvTypeParser[A]): CsvRowParser[A] =
+  def parse[A](extract: CsvRow => String)(implicit parser: CsvFieldParser[A]): CsvRowParser[A] =
     Kleisli { row =>
       val extracted = Try(extract(row)).toValidatedNec
       val parsed = parser.parseCell _
@@ -29,40 +30,45 @@ object CsvTypeParser {
 
 
   /** Method to create the default parser for the given type */
-  def apply[A](f: String => A): CsvTypeParser[A] = new CsvTypeParser[A] {
+  def apply[A](f: String => A): CsvFieldParser[A] = new CsvFieldParser[A] {
     def parseCell(cell: String): CsvValidated[A] = Try(f(cell)).toValidatedNec
   }
 
 
   /** Parser for result type "String" */
-  implicit val stringParser: CsvTypeParser[String] = CsvTypeParser[String] {
+  implicit val stringParser: CsvFieldParser[String] = CsvFieldParser[String] {
     _.trim.toLowerCase.replaceAll("\\s+", " ")
   }
 
   /** Parser for result type "Int" */
-  implicit val intParser: CsvTypeParser[Int] = CsvTypeParser[Int] {
+  implicit val intParser: CsvFieldParser[Int] = CsvFieldParser[Int] {
     _.trim.toInt
   }
 
   /** Parser for result type "Double" */
-  implicit val doubleParser: CsvTypeParser[Double] = CsvTypeParser[Double] {
+  implicit val doubleParser: CsvFieldParser[Double] = CsvFieldParser[Double] {
     _.trim.toDouble
   }
 
   /** Parser for result type "BigDecimal" */
-  implicit val bigDecimalParser: CsvTypeParser[BigDecimal] = CsvTypeParser[BigDecimal] {
+  implicit val bigDecimalParser: CsvFieldParser[BigDecimal] = CsvFieldParser[BigDecimal] {
     BigDecimal(_)
   }
 
   /** Parser for result type "LocalDate" */
-  implicit def localDateParser(dateFormat: String): CsvTypeParser[LocalDate] = {
-    CsvTypeParser[LocalDate] { cell =>
+  implicit def localDateParser(dateFormat: String): CsvFieldParser[LocalDate] = {
+    CsvFieldParser[LocalDate] { cell =>
       LocalDate.parse(cell, DateTimeFormatter.ofPattern(dateFormat))
     }
   }
 
   /** Parser for result type "Option[A]" */
-  implicit def optionParser[A](implicit aParser: CsvTypeParser[A]): CsvTypeParser[Option[A]] = {
-    CsvTypeParser[Option[A]](aParser.parseCell(_).toOption)
+  implicit def optionParser[A](implicit aParser: CsvFieldParser[A]): CsvFieldParser[Option[A]] = {
+    CsvFieldParser[Option[A]](aParser.parseCell(_).toOption)
+  }
+
+  /** Parser for result type "List[A]" */
+  implicit def listParser[A](implicit aParser: CsvFieldParser[A]): CsvFieldParser[List[A]] = { cell =>
+    cell.split(",").toList.traverse(aParser.parseCell)
   }
 }

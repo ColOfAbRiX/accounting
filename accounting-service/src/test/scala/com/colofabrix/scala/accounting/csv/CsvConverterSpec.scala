@@ -3,8 +3,8 @@ package com.colofabrix.scala.accounting.csv
 import cats.implicits._
 import org.scalatest.{FlatSpec, Matchers}
 import com.colofabrix.scala.accounting.csv.CsvDefinitions._
-import com.colofabrix.scala.accounting.csv.CsvTypeParser._
-import shapeless.HNil
+import com.colofabrix.scala.accounting.csv.CsvFieldParser._
+import shapeless._
 
 
 class CsvConverterSpec extends FlatSpec with Matchers {
@@ -22,7 +22,7 @@ class CsvConverterSpec extends FlatSpec with Matchers {
 
       val factory = Person.apply _
 
-      convertRowGeneric(parsers, row, factory)
+      convert(parsers, row, factory)
     }
   }
 
