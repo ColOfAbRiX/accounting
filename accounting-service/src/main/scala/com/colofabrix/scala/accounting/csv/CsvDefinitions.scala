@@ -1,8 +1,7 @@
 package com.colofabrix.scala.accounting.csv
 
 import java.io.File
-import cats.data._
-import cats.Semigroup
+import com.colofabrix.scala.accounting.utils.AValidation._
 import monix.reactive.Observable
 
 
@@ -10,16 +9,15 @@ object CsvDefinitions {
 
   /** A line of the Csv file, simply a List[String */
   type CsvRow = List[String]
+
   /** A CsvStream is a steam of CsvRows */
   type CsvStream = Observable[CsvRow]
-  /** The type used to validate Csv data */
-  type CsvValidated[A] = ValidatedNec[Throwable, A]
 
   /**
     * Interface for a generic CSV reader that reads raw data
     */
   trait CsvReader {
-    def readFile(file: File): CsvValidated[CsvStream]
+    def readFile(file: File): AValidated[CsvStream]
   }
 
   /**
