@@ -12,13 +12,13 @@ import shapeless.UnaryTCConstraint.*->*
 /**
   * Represents an object that can convert CSV files into type A
   */
-trait CsvConverter[Transaction] {
+trait CsvConverter[T] {
 
   /** Converts a Csv row into a BankTransaction */
   def filterFile(file: CsvStream): AValidated[CsvStream]
 
   /** Converts a Csv row */
-  def convertRow(row: CsvRow): AValidated[Transaction]
+  def convertRow(row: CsvRow): AValidated[T]
 
   // -- The following has been adapted from https://stackoverflow.com/a/25316124 -- //
 
@@ -46,10 +46,10 @@ trait CsvConverter[Transaction] {
       parsers: HParsers)(
         implicit
         folder: RightFolder.Aux[HParsers, Accumulator[HNil], ApplyRow.type, Accumulator[HParsed]],
-        gen: Generic.Aux[Transaction, HParsed]
-  ): AValidated[Transaction] = {
+        gen: Generic.Aux[T, HParsed]
+  ): AValidated[T] = {
     parsers
-      .foldRight((row, (HNil: HNil).validNec[Throwable]))(ApplyRow)._2
+      .foldRight((row, (HNil: HNil).aValid))(ApplyRow)._2
       .map(gen.from)
   }
 }

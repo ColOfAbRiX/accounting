@@ -15,12 +15,10 @@ class KantanCsvReader extends CsvReader {
   import kantan.csv.ops._
 
   def readFile(file: File): AValidated[CsvStream] = {
-    val tryReader = Try {
+    Try {
       val csvReader = file.asUnsafeCsvReader[List[String]](rfc)
       Observable.fromIterable(csvReader.toIterable)
-    }
-
-    tryReader.toAValidated
+    }.toAValidated
   }
 
 }

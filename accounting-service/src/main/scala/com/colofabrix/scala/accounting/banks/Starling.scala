@@ -1,7 +1,6 @@
 package com.colofabrix.scala.accounting.banks
 
 import java.time.LocalDate
-import cats.implicits._
 import com.colofabrix.scala.accounting.csv.CsvConverter
 import com.colofabrix.scala.accounting.csv.CsvDefinitions._
 import com.colofabrix.scala.accounting.csv.CsvFieldParser._
@@ -19,7 +18,7 @@ object Starling {
   object StarlingCsvFile extends CsvConverter[StarlingTransaction] {
     /** Converts a Csv row into a BankTransaction */
     def filterFile(file: CsvStream): AValidated[CsvStream] = {
-      file.drop(1).validNec
+      file.drop(1).aValid
     }
 
     /** Converts a Csv row into a BankTransaction */

@@ -1,7 +1,6 @@
 package com.colofabrix.scala.accounting.banks
 
 import java.time.LocalDate
-import cats.implicits._
 import com.colofabrix.scala.accounting.csv.CsvConverter
 import com.colofabrix.scala.accounting.csv.CsvDefinitions._
 import com.colofabrix.scala.accounting.csv.CsvFieldParser._
@@ -22,7 +21,7 @@ object Barclays {
       file
         .drop(1)
         .filter(row => row.nonEmpty)
-        .validNec
+        .aValid
     }
 
     /** Converts a Csv row into a BankTransaction */
