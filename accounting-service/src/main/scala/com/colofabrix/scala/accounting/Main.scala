@@ -21,8 +21,7 @@ object Main extends App {
   // Print output
   result.foreach { observable =>
     val result = for {
-      row         <- InputCleaning.cleanFile(observable)
-      transaction <- List(HalifaxCsvFile.convertRow(row))
+      transaction <- HalifaxCsvFile.convertFile(observable)
     } yield {
       transaction
     }

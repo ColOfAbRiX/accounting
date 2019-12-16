@@ -7,6 +7,8 @@ import com.colofabrix.scala.accounting.utils.AValidation._
 import shapeless.ops.hlist.RightFolder
 import shapeless.{Generic, HList, HNil, Poly2}
 import shapeless.UnaryTCConstraint.*->*
+import cats.data.Validated.Invalid
+import cats.data.Validated.Valid
 
 
 /**
@@ -17,10 +19,10 @@ trait CsvConverter[T] {
   /** Converts a CSV file into a stream of transactions T */
   final def convertFile(file: CsvFile): AValidated[List[T]] = {
     // TODO: This shouldn't convert back and forth to Either
-    filterFile(file)
-      .toEither
-      .flatMap(_.traverse(convertRow).toEither)
-      .toAValidated
+    filterFile(file) match {
+      case Valid(validFile) => validFile.traverse(convertRow)
+      case i @ Invalid(_)   => i
+    }
   }
 
   /** Converts a Csv row into a BankTransaction */

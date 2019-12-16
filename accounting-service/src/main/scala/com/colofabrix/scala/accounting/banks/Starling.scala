@@ -17,7 +17,7 @@ object Starling {
    */
   object StarlingCsvFile extends CsvConverter[StarlingTransaction] {
     /** Converts a Csv row into a BankTransaction */
-    def filterFile(file: CsvFile): AValidated[CsvFile] = {
+    protected def filterFile(file: CsvFile): AValidated[CsvFile] = {
       file
         .drop(1)
         .filter { row =>
@@ -28,7 +28,7 @@ object Starling {
     }
 
     /** Converts a Csv row into a BankTransaction */
-    def convertRow(row: CsvRow): AValidated[StarlingTransaction] = {
+    protected def convertRow(row: CsvRow): AValidated[StarlingTransaction] = {
       convert(row) {
         val date         = parse[LocalDate] (r => r(0))("dd/MM/yyyy")
         val counterParty = parse[String]    (r => r(1))
