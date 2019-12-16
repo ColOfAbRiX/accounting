@@ -12,7 +12,6 @@ import cats.data.Validated.Invalid
 import cats.data.Validated.Valid
 import cats.scalatest._
 
-
 class TransactionConversionSpec extends FlatSpec with Matchers with ValidatedMatchers {
 
   "The input CSV for Barclays" should "be converted into a sequence of BarclaysTransaction" in {

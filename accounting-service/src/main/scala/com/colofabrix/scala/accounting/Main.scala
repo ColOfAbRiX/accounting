@@ -14,7 +14,7 @@ import com.colofabrix.scala.accounting.csv._
 
 object Main extends App {
 
-  val file = new java.io.File("samples/sample_halifax.csv")
+  val file   = new java.io.File("samples/sample_halifax.csv")
   val reader = CsvReaderType(KantanCsvReaderType)
   val result = reader.readFile(file)
 

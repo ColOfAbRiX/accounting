@@ -2,7 +2,6 @@ package com.colofabrix.scala.accounting.model
 
 import java.time.LocalDate
 
-
 /**
   * Transaction in a specific Bank's format
   */

@@ -2,10 +2,16 @@ package com.colofabrix.scala.accounting.csv
 
 import java.time.LocalDate
 import com.colofabrix.scala.accounting.csv.CsvDefinitions.CsvRow
-import com.colofabrix.scala.accounting.model.{AmexTransaction, BarclaysTransaction, HalifaxTransaction, StarlingTransaction}
+import com.colofabrix.scala.accounting.model.{
+  AmexTransaction,
+  BarclaysTransaction,
+  HalifaxTransaction,
+  StarlingTransaction
+}
 
 // Taken from real CSV files of banks (data anonymized)
 
+// format: off
 object CsvData {
 
   def date(year: Int, month: Int, day: Int): LocalDate = LocalDate.of(year, month, day)
@@ -24,7 +30,7 @@ object CsvData {
     List("	 ", "05/11/2019", "20-32-06 13152170", "-4.95", "PAYMENT", "CRV*YOUWORK (1219)     ON 04 NOV          BCC"),
     List("	 ", "04/11/2019", "20-32-06 13152170", "-100.00", "FT", "THOR A"),
     List(),
-    List(),
+    List()
   )
 
   val barclaysTransactions: List[BarclaysTransaction] = List(
@@ -36,7 +42,7 @@ object CsvData {
     BarclaysTransaction(None, date(2019, 11, 7), "20-32-06 13152170", -4.86, "payment", "crv*best food cent on 06 nov bcc"),
     BarclaysTransaction(None, date(2019, 11, 5), "20-32-06 13152170", -430.0, "payment", "halifax clarity ma 5353130107545290 bbp"),
     BarclaysTransaction(None, date(2019, 11, 5), "20-32-06 13152170", -4.95, "payment", "crv*youwork (1219) on 04 nov bcc"),
-    BarclaysTransaction(None, date(2019, 11, 4), "20-32-06 13152170", -100.0, "ft", "thor a"),
+    BarclaysTransaction(None, date(2019, 11, 4), "20-32-06 13152170", -100.0, "ft", "thor a")
   )
 
   // Halifax
@@ -52,7 +58,7 @@ object CsvData {
     List("19/10/2019", "22/10/2019", "10209091", "BOOKLET LIBRERIE        ", "12.12"),
     List("19/10/2019", "22/10/2019", "10209050", "PARKING GEST     ", "2.60"),
     List("19/10/2019", "21/10/2019", "10224975", "IPER CONAD              ", "31.17"),
-    List(),
+    List()
   )
 
   val halifaxTransactions: List[HalifaxTransaction] = List(
@@ -64,7 +70,7 @@ object CsvData {
     HalifaxTransaction(date(2019, 10, 19), date(2019, 10, 22), "10209649", "collina ristorante", -21.64),
     HalifaxTransaction(date(2019, 10, 19), date(2019, 10, 22), "10209091", "booklet librerie", -12.12),
     HalifaxTransaction(date(2019, 10, 19), date(2019, 10, 22), "10209050", "parking gest", -2.60),
-    HalifaxTransaction(date(2019, 10, 19), date(2019, 10, 21), "10224975", "iper conad", -31.17),
+    HalifaxTransaction(date(2019, 10, 19), date(2019, 10, 21), "10224975", "iper conad", -31.17)
   )
 
   // Starling
@@ -75,13 +81,13 @@ object CsvData {
     List("01/03/2019", "COLUMN F", "TOP UP STARLING", "FASTER PAYMENT", "100.00", "100.00"),
     List("04/03/2019", "Butler Brewery C Chelmsford", "IZ *BUTLER BREWERY C Chelmsford    GBR", "CONTACTLESS", "-8.00", "92.00"),
     List("04/03/2019", "Sainsbury's", "SAINSBURYS SACAT 0768  CHELMSFORD    GBR", "CONTACTLESS", "-3.70", "88.30"),
-    List(),
+    List()
   )
 
   val starlingTransactions: List[StarlingTransaction] = List(
     StarlingTransaction(date(2019, 3, 1), "column f", "top up starling", "faster payment", 100.0, 100.0),
     StarlingTransaction(date(2019, 3, 4), "butler brewery c chelmsford", "iz *butler brewery c chelmsford gbr", "contactless", -8.0, 92.0),
-    StarlingTransaction(date(2019, 3, 4), "sainsbury's", "sainsburys sacat 0768 chelmsford gbr", "contactless", -3.7, 88.3),
+    StarlingTransaction(date(2019, 3, 4), "sainsbury's", "sainsburys sacat 0768 chelmsford gbr", "contactless", -3.7, 88.3)
   )
 
   // American Express
@@ -97,7 +103,7 @@ object CsvData {
     List("26/10/2019", "Reference: AT193110050000011236226", " 35.23", "TRAINLINE.COM", " Process Date 27/10/2019"),
     List("27/10/2019", "Reference: AT193110050000011250107", " 2.40", "YGA TRAVEL CHARGE YGA.GOV.NL/CP", " Process Date 27/10/2019"),
     List("27/10/2019", "Reference: AT193110060000011238382", " 7.75", "THE LORD MORRIS", " Process Date 27/10/2019"),
-    List(),
+    List()
   )
 
   val amexTransactions: List[AmexTransaction] = List(
@@ -110,7 +116,8 @@ object CsvData {
     AmexTransaction(date(2019, 10, 26), "reference: at193100034000011266265", -2.4, "yga travel charge yga.gov.nl/cp", "process date 26/10/2019"),
     AmexTransaction(date(2019, 10, 26), "reference: at193110050000011236226", -35.23, "trainline.com", "process date 27/10/2019"),
     AmexTransaction(date(2019, 10, 27), "reference: at193110050000011250107", -2.4, "yga travel charge yga.gov.nl/cp", "process date 27/10/2019"),
-    AmexTransaction(date(2019, 10, 27), "reference: at193110060000011238382", -7.75,"the lord morris", "process date 27/10/2019"),
+    AmexTransaction(date(2019, 10, 27), "reference: at193110060000011238382", -7.75,"the lord morris", "process date 27/10/2019")
   )
 
 }
+// format: on

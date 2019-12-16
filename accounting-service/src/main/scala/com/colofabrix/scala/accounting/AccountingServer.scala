@@ -15,7 +15,7 @@ object AccountingServer {
     for {
       client <- BlazeClientBuilder[F](global).stream
       helloWorldAlg = HelloWorld.impl[F]
-      jokeAlg = Jokes.impl[F](client)
+      jokeAlg       = Jokes.impl[F](client)
 
       // Combine Service Routes into an HttpApp.
       // Can also be done via a Router if you
@@ -30,9 +30,9 @@ object AccountingServer {
       finalHttpApp = Logger.httpApp(true, true)(httpApp)
 
       exitCode <- BlazeServerBuilder[F]
-        .bindHttp(8080, "0.0.0.0")
-        .withHttpApp(finalHttpApp)
-        .serve
+                   .bindHttp(8080, "0.0.0.0")
+                   .withHttpApp(finalHttpApp)
+                   .serve
     } yield exitCode
   }.drain
 }

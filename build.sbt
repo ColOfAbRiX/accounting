@@ -45,6 +45,9 @@ wartremoverErrors ++= Warts.allBut(
   Wart.EitherProjectionPartial
 )
 
+// Formatting
+scalafmtOnCompile := true
+
 // Root project
 lazy val accountingRoot: Project = project
   .in(file("."))
