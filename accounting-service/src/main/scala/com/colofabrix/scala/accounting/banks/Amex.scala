@@ -17,8 +17,10 @@ object Amex {
     */
   object AmexCsvFile extends CsvConverter[AmexTransaction] {
     /** Converts a Csv row into a BankTransaction */
-    def filterFile(file: CsvStream): AValidated[CsvStream] = {
-      file.drop(1).aValid
+    def filterFile(file: CsvFile): AValidated[CsvFile] = {
+      file
+        .filter(row => row.nonEmpty)
+        .aValid
     }
 
     /** Converts a Csv row into a BankTransaction */
@@ -26,7 +28,7 @@ object Amex {
       convert(row) {
         val date        = parse[LocalDate] (r => r(0))("dd/MM/yyyy")
         val reference   = parse[String]    (r => r(1))
-        val amount      = parse[BigDecimal](r => r(2)).map(value => -1.0 * value)
+        val amount      = parse[BigDecimal](r => r(2)).map(amount => -1.0 * amount)
         val description = parse[String]    (r => r(3))
         val extra       = parse[String]    (r => r(4))
 

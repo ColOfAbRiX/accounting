@@ -17,8 +17,14 @@ object Starling {
    */
   object StarlingCsvFile extends CsvConverter[StarlingTransaction] {
     /** Converts a Csv row into a BankTransaction */
-    def filterFile(file: CsvStream): AValidated[CsvStream] = {
-      file.drop(1).aValid
+    def filterFile(file: CsvFile): AValidated[CsvFile] = {
+      file
+        .drop(1)
+        .filter { row =>
+          row.filter(x => x.trim.nonEmpty).nonEmpty &&
+          row(1).toLowerCase != "opening balance"
+        }
+        .aValid
     }
 
     /** Converts a Csv row into a BankTransaction */

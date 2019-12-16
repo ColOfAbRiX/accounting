@@ -6,8 +6,6 @@ import com.colofabrix.scala.accounting.banks.Barclays.BarclaysCsvFile
 import com.colofabrix.scala.accounting.banks.Amex.AmexCsvFile
 import com.colofabrix.scala.accounting.csv.CsvDefinitions._
 import com.colofabrix.scala.accounting.csv._
-import monix.execution.Scheduler.Implicits.global
-import monix.reactive.Observable
 
 // object Main extends IOApp {
 //   def run(args: List[String]) =
@@ -24,13 +22,11 @@ object Main extends App {
   result.foreach { observable =>
     val result = for {
       row         <- InputCleaning.cleanFile(observable)
-      transaction <- Observable(HalifaxCsvFile.convertRow(row))
+      transaction <- List(HalifaxCsvFile.convertRow(row))
     } yield {
       transaction
     }
 
-    result.foreachL(println).runToFuture
+    result.foreach(println)
   }
-
-  Thread.sleep(3000)
 }

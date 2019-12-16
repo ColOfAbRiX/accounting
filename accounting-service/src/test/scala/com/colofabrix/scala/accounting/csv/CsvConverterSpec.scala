@@ -14,9 +14,9 @@ class CsvConverterSpec extends FlatSpec with Matchers {
   case class Person(name: String, age: Int)
 
   object PersonConverter extends CsvConverter[Person] {
-    override def filterFile(file: CsvStream): AValidated[CsvStream] = file.aValid
+    def filterFile(file: CsvFile): AValidated[CsvFile] = file.aValid
 
-    override def convertRow(row: CsvRow): AValidated[Person] = {
+    def convertRow(row: CsvRow): AValidated[Person] = {
       convert(row) {
         parse[String](r => r(0) + " " + r(1)) ::
         parse[Int]   (r => r(2)) ::
@@ -26,14 +26,17 @@ class CsvConverterSpec extends FlatSpec with Matchers {
   }
 
   "A CSV row" should "be converted to case class" in {
-    val computed = PersonConverter.convertRow(List("fabrizio", "colonna", "34"))
+    val testRow = List("fabrizio", "colonna", "34")
+    val computed = PersonConverter.convertRow(testRow)
     val expected = Person("fabrizio colonna", 34).aValid
     computed should equal(expected)
   }
 
-  "A badly formatted CSV row" should "be converted to an invalid value" in {
-    val computed = PersonConverter.convertRow(List(null, "colonna", "abcd"))
-    val expected = Person("fabrizio colonna", 34).aValid
+  "A badly formatted CSV row" should "be invalid" in {
+    val testRow = List(null, "colonna", "abcd")
+    val computed = PersonConverter.convertRow(testRow)
+    val expected = "Exception on parsing CSV cell 'abcd': java.lang.NumberFormatException: For input string: \"abcd\""
+      .aInvalid
     computed should equal(expected)
   }
 }

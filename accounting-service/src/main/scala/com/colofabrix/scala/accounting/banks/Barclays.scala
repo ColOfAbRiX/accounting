@@ -17,7 +17,7 @@ object Barclays {
    */
   object BarclaysCsvFile extends CsvConverter[BarclaysTransaction] {
     /** Converts a Csv row into a BankTransaction */
-    def filterFile(file: CsvStream): AValidated[CsvStream] = {
+    def filterFile(file: CsvFile): AValidated[CsvFile] = {
       file
         .drop(1)
         .filter(row => row.nonEmpty)

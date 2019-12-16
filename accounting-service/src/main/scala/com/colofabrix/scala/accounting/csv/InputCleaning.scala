@@ -1,16 +1,15 @@
 package com.colofabrix.scala.accounting.csv
 
 import com.colofabrix.scala.accounting.csv.CsvDefinitions._
-import monix.reactive.Observable
 
 
 object InputCleaning {
 
   /** Processes the entire Csv file for cleanups */
-  def cleanFile(file: CsvStream): CsvStream = {
+  def cleanFile(file: CsvFile): CsvFile = {
     for {
       row  <- file
-      cell <- Observable(cleanRow(row))
+      cell <- List(cleanRow(row))
     } yield {
       cell
     }

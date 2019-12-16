@@ -25,7 +25,12 @@ object CsvFieldParser {
   @implicitNotFound("Couldn't find CsvFieldParser for type CsvFieldParser[${A}]")
   def parse[A](extract: CsvRow => String)(implicit parser: CsvFieldParser[A]): CsvRowParser[A] =
     Kleisli { row =>
-      val extracted = Try(extract(row)).toAValidated
+      val extracted = Try(extract(row))
+        .toEither
+        .leftMap { ex =>
+          s"Exception on parsing CSV row $row: ${ex.toString}"
+        }
+        .toAValidated
       val parsed = parser.parseCell _
       extracted andThen parsed
     }
@@ -33,7 +38,14 @@ object CsvFieldParser {
 
   /** Method to create the default parser for the given type */
   def apply[A](f: String => A): CsvFieldParser[A] = new CsvFieldParser[A] {
-    def parseCell(cell: String): AValidated[A] = Try(f(cell)).toAValidated
+    def parseCell(cell: String): AValidated[A] = {
+      Try(f(cell))
+        .toEither
+        .leftMap { ex =>
+          s"Exception on parsing CSV cell '$cell': ${ex.toString}"
+        }
+        .toAValidated
+    }
   }
 
 
@@ -53,14 +65,14 @@ object CsvFieldParser {
   }
 
   /** Parser for result type "BigDecimal" */
-  implicit val bigDecimalParser: CsvFieldParser[BigDecimal] = CsvFieldParser[BigDecimal] {
-    BigDecimal(_)
+  implicit val bigDecimalParser: CsvFieldParser[BigDecimal] = CsvFieldParser[BigDecimal] { cell =>
+    BigDecimal(cell.trim)
   }
 
   /** Parser for result type "LocalDate" */
   implicit def localDateParser(dateFormat: String): CsvFieldParser[LocalDate] = {
     CsvFieldParser[LocalDate] { cell =>
-      LocalDate.parse(cell, DateTimeFormatter.ofPattern(dateFormat))
+      LocalDate.parse(cell.trim, DateTimeFormatter.ofPattern(dateFormat))
     }
   }
 

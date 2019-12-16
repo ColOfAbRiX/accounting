@@ -4,7 +4,9 @@ import scala.util.Try
 import scala.util.matching.Regex
 import cats.data._
 import cats.implicits._
-import cats.kernel.{Monoid, Semigroup}
+import cats.kernel.Semigroup
+import scala.util.Success
+import scala.util.Failure
 
 
 /**
@@ -13,7 +15,7 @@ import cats.kernel.{Monoid, Semigroup}
 object AValidation {
 
   /** The type used to validate Csv data */
-  type AValidated[A] = ValidatedNec[String, A]
+  type AValidated[+A] = ValidatedNec[String, A]
 
   //  ENRICHMENT CLASSES  //
 
@@ -22,27 +24,47 @@ object AValidation {
     def toAValidated: AValidated[A] = {
       tryObject
         .toEither
-        .leftMap(_.getMessage)
+        .leftMap(_.toString)
         .toValidatedNec
     }
   }
 
   /** Enrichment for any object */
-  implicit class AnyOps[A](private val anyObject: A) extends AnyVal {
+  implicit class AnyOps[A <: Any](private val anyObject: A) extends AnyVal {
+    /** Mark the value as valid */
     def aValid: AValidated[A] = anyObject.validNec[String]
+    /** Mark the value as invalid */
     def aInvalid(msg: String): AValidated[A] = msg.invalidNec[A]
   }
 
   /** Enrichment for String */
   implicit class ErrorContainerOps(private val stringObject: String) extends AnyVal {
+    /** Mark the value as invalid */
     def aInvalid[A]: AValidated[A] = stringObject.invalidNec[A]
+  }
+
+  /** Enrichment for Either[String, A] */
+  implicit class EitherOps[A](private val eitherObject: Either[String, A]) extends AnyVal {
+    /** Converts an Either[String, A] into AValidated */
+    def toAValidated: AValidated[A] = eitherObject.toValidatedNec
+  }
+
+  /** Enrichment for Either[NonEmptyChain[String], A] */
+  implicit class EitherNecOps[A](private val eitherObject: Either[NonEmptyChain[String], A]) extends AnyVal {
+    /** Converts an Either[NonEmptyChain[String], A] into AValidated */
+    def toAValidated: AValidated[A] = eitherObject match {
+      case Left(error)  => Validated.invalid(error)
+      case Right(value) => value.aValid
+    }
   }
 
   //  COMBINATORS  //
 
+  /** Build a validation function as concatenation of the provided functions */
   def validateAll[A](
       validators: ((=> String, A) => AValidated[A])*)(
-      name: => String, value: A)(
+      name: => String,
+      value: A)(
         implicit aSemi: Semigroup[A]): AValidated[A] = {
     validators.foldLeft(value.aValid)(_ combine _(name, value))
   }

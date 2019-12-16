@@ -1,7 +1,7 @@
 package com.colofabrix.scala.accounting.csv
 
 import cats.implicits._
-import com.colofabrix.scala.accounting.csv.CsvDefinitions.{CsvRow, CsvStream}
+import com.colofabrix.scala.accounting.csv.CsvDefinitions.{CsvRow, CsvFile}
 import com.colofabrix.scala.accounting.csv.CsvFieldParser.CsvRowParser
 import com.colofabrix.scala.accounting.utils.AValidation._
 import shapeless.ops.hlist.RightFolder
@@ -14,11 +14,20 @@ import shapeless.UnaryTCConstraint.*->*
   */
 trait CsvConverter[T] {
 
+  /** Converts a CSV file into a stream of transactions T */
+  final def convertFile(file: CsvFile): AValidated[List[T]] = {
+    // TODO: This shouldn't convert back and forth to Either
+    filterFile(file)
+      .toEither
+      .flatMap(_.traverse(convertRow).toEither)
+      .toAValidated
+  }
+
   /** Converts a Csv row into a BankTransaction */
-  def filterFile(file: CsvStream): AValidated[CsvStream]
+  protected def filterFile(file: CsvFile): AValidated[CsvFile]
 
   /** Converts a Csv row */
-  def convertRow(row: CsvRow): AValidated[T]
+  protected def convertRow(row: CsvRow): AValidated[T]
 
   // -- The following has been adapted from https://stackoverflow.com/a/25316124 -- //
 
