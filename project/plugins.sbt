@@ -1,6 +1,13 @@
-//addSbtPlugin("io.github.davidgregory084" % "sbt-tpolecat"        % "0.1.3")
-addSbtPlugin("com.eed3si9n"              % "sbt-assembly"        % "0.14.6")
-addSbtPlugin("com.typesafe.sbt"          % "sbt-native-packager" % "1.3.25")
-addSbtPlugin("io.spray"                  % "sbt-revolver"        % "0.9.1")
-addSbtPlugin("org.scalameta"             % "sbt-scalafmt"        % "2.3.0")
-addSbtPlugin("org.wartremover"           % "sbt-wartremover"     % "2.4.3")
+val AssemblyVersion       = "0.14.6"
+val NativePackagerVersion = "1.3.25"
+val RevolverVersion       = "0.9.1"
+val ScalafmtVersion       = "2.3.0"
+val WartremoverVersion    = "2.4.3"
+// val TpolecatVersion       = "0.1.3"
+
+addSbtPlugin("com.eed3si9n"     % "sbt-assembly"        % AssemblyVersion)
+addSbtPlugin("com.typesafe.sbt" % "sbt-native-packager" % NativePackagerVersion)
+addSbtPlugin("io.spray"         % "sbt-revolver"        % RevolverVersion)
+addSbtPlugin("org.scalameta"    % "sbt-scalafmt"        % ScalafmtVersion)
+addSbtPlugin("org.wartremover"  % "sbt-wartremover"     % WartremoverVersion)
+//addSbtPlugin("io.github.davidgregory084" % "sbt-tpolecat"        % TpolecatVersion)
