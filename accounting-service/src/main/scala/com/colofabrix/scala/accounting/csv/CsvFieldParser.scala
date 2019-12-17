@@ -24,19 +24,26 @@ object CsvFieldParser {
   @implicitNotFound("Couldn't find CsvFieldParser for type CsvFieldParser[${A}]")
   def parse[A](extract: CsvRow => String)(implicit parser: CsvFieldParser[A]): CsvRowParser[A] =
     Kleisli { row =>
-      val extracted = Try(extract(row)).toEither.leftMap { ex =>
-        s"Exception on parsing CSV row $row: ${ex.toString}"
-      }.toAValidated
+      val extracted = Try(extract(row))
+        .toEither
+        .leftMap { ex =>
+          s"Exception on parsing CSV row $row: ${ex.toString}"
+        }
+        .toAValidated
       val parsed = parser.parseCell _
       extracted andThen parsed
     }
 
   /** Method to create the default parser for the given type */
   def apply[A](f: String => A): CsvFieldParser[A] = new CsvFieldParser[A] {
-    def parseCell(cell: String): AValidated[A] =
-      Try(f(cell)).toEither.leftMap { ex =>
-        s"Exception on parsing CSV cell '$cell': ${ex.toString}"
-      }.toAValidated
+    def parseCell(cell: String): AValidated[A] = {
+      Try(f(cell))
+        .toEither
+        .leftMap { ex =>
+          s"Exception on parsing CSV cell '$cell': ${ex.toString}"
+        }
+        .toAValidated
+    }
   }
 
   /** Parser for result type "String" */
@@ -60,15 +67,17 @@ object CsvFieldParser {
   }
 
   /** Parser for result type "LocalDate" */
-  implicit def localDateParser(dateFormat: String): CsvFieldParser[LocalDate] =
+  implicit def localDateParser(dateFormat: String): CsvFieldParser[LocalDate] = {
     CsvFieldParser[LocalDate] { cell =>
       LocalDate.parse(cell.trim, DateTimeFormatter.ofPattern(dateFormat))
     }
+  }
 
   /** Parser for result type "Option[A]" */
   @implicitNotFound("Couldn't find CsvFieldParser for type CsvFieldParser[${A}]")
-  implicit def optionParser[A](implicit aParser: CsvFieldParser[A]): CsvFieldParser[Option[A]] =
+  implicit def optionParser[A](implicit aParser: CsvFieldParser[A]): CsvFieldParser[Option[A]] = {
     CsvFieldParser[Option[A]](aParser.parseCell(_).toOption)
+  }
 
   /** Parser for result type "List[A]" */
   @implicitNotFound("Couldn't find CsvFieldParser for type CsvFieldParser[${A}]")

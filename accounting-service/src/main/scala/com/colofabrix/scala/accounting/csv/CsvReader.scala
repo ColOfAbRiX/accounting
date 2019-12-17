@@ -18,7 +18,6 @@ sealed trait CsvReaderType
 case object KantanCsvReaderType extends CsvReaderType
 
 object CsvReaderType {
-
   /** Factory method to create a new reader from CsvReaderType */
   def apply(readerType: CsvReaderType): CsvReader = readerType match {
     case KantanCsvReaderType => new KantanCsvReader()

@@ -45,7 +45,7 @@ wartremoverErrors ++= Warts.allBut(
   Wart.EitherProjectionPartial
 )
 
-// Formatting
+// Standardize formatting
 scalafmtOnCompile := true
 
 // Root project

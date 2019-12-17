@@ -16,16 +16,16 @@ object Halifax {
     * Halifax Csv File Worker
     */
   object HalifaxCsvFile extends CsvConverter[HalifaxTransaction] {
-
     /** Converts a Csv row into a BankTransaction */
-    protected def filterFile(file: CsvFile): AValidated[CsvFile] =
+    protected def filterFile(file: CsvFile): AValidated[CsvFile] = {
       file
         .drop(1)
         .filter(_.filter(x => x.trim.nonEmpty).nonEmpty)
         .aValid
+    }
 
     /** Converts a Csv row */
-    protected def convertRow(row: CsvRow): AValidated[HalifaxTransaction] =
+    protected def convertRow(row: CsvRow): AValidated[HalifaxTransaction] = {
       convert(row) {
         val date        = parse[LocalDate](r => r(0))("dd/MM/yyyy")
         val dateEntered = parse[LocalDate](r => r(1))("dd/MM/yyyy")
@@ -35,6 +35,7 @@ object Halifax {
 
         date :: dateEntered :: reference :: description :: amount :: HNil
       }
+    }
 
   }
 

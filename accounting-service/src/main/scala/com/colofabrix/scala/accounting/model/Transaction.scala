@@ -13,5 +13,5 @@ final case class Transaction(
     bank: String,
     category: String,
     subcategory: String,
-    notes: String
+    notes: String,
 )

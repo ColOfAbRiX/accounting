@@ -2,7 +2,7 @@ package com.colofabrix.scala.accounting
 
 import cats.Applicative
 import cats.implicits._
-import io.circe.{Encoder, Json}
+import io.circe.{ Encoder, Json }
 import org.http4s.EntityEncoder
 import org.http4s.circe._
 
@@ -14,7 +14,6 @@ object HelloWorld {
   implicit def apply[F[_]](implicit ev: HelloWorld[F]): HelloWorld[F] = ev
 
   final case class Name(name: String) extends AnyVal
-
   /**
     * More generally you will want to decouple your edge representations from
     * your internal data structures, however this shows how you can
@@ -24,7 +23,7 @@ object HelloWorld {
   object Greeting {
     implicit val greetingEncoder: Encoder[Greeting] = new Encoder[Greeting] {
       final def apply(a: Greeting): Json = Json.obj(
-        ("message", Json.fromString(a.greeting))
+        ("message", Json.fromString(a.greeting)),
       )
     }
     implicit def greetingEntityEncoder[F[_]: Applicative]: EntityEncoder[F, Greeting] =

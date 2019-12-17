@@ -15,16 +15,16 @@ object Barclays {
     * Barclays Csv File Worker
     */
   object BarclaysCsvFile extends CsvConverter[BarclaysTransaction] {
-
     /** Converts a Csv row into a BankTransaction */
-    protected def filterFile(file: CsvFile): AValidated[CsvFile] =
+    protected def filterFile(file: CsvFile): AValidated[CsvFile] = {
       file
         .drop(1)
         .filter(row => row.nonEmpty)
         .aValid
+    }
 
     /** Converts a Csv row into a BankTransaction */
-    protected def convertRow(row: CsvRow): AValidated[BarclaysTransaction] =
+    protected def convertRow(row: CsvRow): AValidated[BarclaysTransaction] = {
       convert(row) {
         val number      = parse[Option[Int]](r => r(0))
         val date        = parse[LocalDate](r => r(1))("dd/MM/yyyy")
@@ -35,6 +35,7 @@ object Barclays {
 
         number :: date :: account :: amount :: subcategory :: memo :: HNil
       }
+    }
   }
 
   implicit val barclaysCsvConverter: CsvConverter[BarclaysTransaction] = BarclaysCsvFile

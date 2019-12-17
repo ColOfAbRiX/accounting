@@ -6,7 +6,7 @@ import com.colofabrix.scala.accounting.banks.Barclays._
 import com.colofabrix.scala.accounting.banks.Amex._
 import com.colofabrix.scala.accounting.banks.Starling._
 import com.colofabrix.scala.accounting.utils.AValidation._
-import org.scalatest.{FlatSpec, Matchers}
+import org.scalatest.{ FlatSpec, Matchers }
 import com.colofabrix.scala.accounting.model._
 import cats.data.Validated.Invalid
 import cats.data.Validated.Valid

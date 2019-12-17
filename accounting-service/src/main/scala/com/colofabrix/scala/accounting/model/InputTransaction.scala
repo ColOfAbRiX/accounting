@@ -14,7 +14,7 @@ final case class BarclaysTransaction(
     account: String,
     amount: BigDecimal,
     subcategory: String,
-    memo: String
+    memo: String,
 ) extends InputTransaction
 
 /** Transaction on a American Express CSV file */
@@ -23,7 +23,7 @@ final case class AmexTransaction(
     reference: String,
     amount: BigDecimal,
     description: String,
-    extra: String
+    extra: String,
 ) extends InputTransaction
 
 /** Transaction on a Halifax CSV file */
@@ -32,7 +32,7 @@ final case class HalifaxTransaction(
     dateEntered: LocalDate,
     reference: String,
     description: String,
-    amount: BigDecimal
+    amount: BigDecimal,
 ) extends InputTransaction
 
 /** Transaction on a Starling CSV file */
@@ -42,5 +42,5 @@ final case class StarlingTransaction(
     reference: String,
     `type`: String,
     amount: BigDecimal,
-    balance: BigDecimal
+    balance: BigDecimal,
 ) extends InputTransaction
