@@ -1,21 +1,62 @@
 package com.colofabrix.scala.accounting.csv
 
 import java.time.LocalDate
-import com.colofabrix.scala.accounting.csv.CsvDefinitions.CsvRow
-import com.colofabrix.scala.accounting.model.{
-  AmexTransaction, BarclaysTransaction, HalifaxTransaction, StarlingTransaction,
-}
+import com.colofabrix.scala.accounting.etl.InputDefinitions._
+import com.colofabrix.scala.accounting.model._
 
 // Taken from real CSV files of banks (data anonymized)
 
 // format: off
+trait BarclaysTestData {
+
+  def date(year: Int, month: Int, day: Int): LocalDate = LocalDate.of(year, month, day)
+
+  // Barclay's
+
+  val csvData: List[RawRecord] = List(
+    List("Number", "Date", "Account", "Amount", "Subcategory", "Memo"),
+    List(" ", "08/11/2019", "20-32-06 13152170", "6.88", "DIRECTDEP", "DELLELLE           Food 31/10         BGC"),
+    List("	 ", "08/11/2019", "20-32-06 13152170", "-235.00", "FT", "ANDREW CUMMING         TUNNEL D4          FT"),
+    List("	 ", "08/11/2019", "20-32-06 13152170", "-23.63", "FT", "C DELLELLE    GROCERY            FT"),
+    List("	 ", "08/11/2019", "20-32-06 13152170", "-2.00", "PAYMENT", "CRV*BEST FOOD CENT    ON 07 NOV          BCC"),
+    List("	 ", "07/11/2019", "20-32-06 13152170", "-5.70", "PAYMENT", "CRV*EASY BIKE BAR    ON 06 NOV          BCC"),
+    List("	 ", "07/11/2019", "20-32-06 13152170", "-4.86", "PAYMENT", "CRV*BEST FOOD CENT    ON 06 NOV          BCC"),
+    List("	 ", "05/11/2019", "20-32-06 13152170", "-430.00", "PAYMENT", "HALIFAX CLARITY MA    5353130107545290   BBP"),
+    List("	 ", "05/11/2019", "20-32-06 13152170", "-4.95", "PAYMENT", "CRV*YOUWORK (1219)     ON 04 NOV          BCC"),
+    List("	 ", "04/11/2019", "20-32-06 13152170", "-100.00", "FT", "THOR A"),
+    List(),
+    List(),
+  )
+
+  val transactions: List[BarclaysTransaction] = List(
+    BarclaysTransaction(None, date(2019, 11, 8), "20-32-06 13152170", 6.88, "directdep", "dellelle food 31/10 bgc"),
+    BarclaysTransaction(None, date(2019, 11, 8), "20-32-06 13152170", -235.0, "ft", "andrew cumming tunnel d4 ft"),
+    BarclaysTransaction(None, date(2019, 11, 8), "20-32-06 13152170", -23.63, "ft", "c dellelle grocery ft"),
+    BarclaysTransaction(None, date(2019, 11, 8), "20-32-06 13152170", -2.0, "payment", "crv*best food cent on 07 nov bcc"),
+    BarclaysTransaction(None, date(2019, 11, 7), "20-32-06 13152170", -5.7, "payment", "crv*easy bike bar on 06 nov bcc"),
+    BarclaysTransaction(None, date(2019, 11, 7), "20-32-06 13152170", -4.86, "payment", "crv*best food cent on 06 nov bcc"),
+    BarclaysTransaction(None, date(2019, 11, 5), "20-32-06 13152170", -430.0, "payment", "halifax clarity ma 5353130107545290 bbp"),
+    BarclaysTransaction(None, date(2019, 11, 5), "20-32-06 13152170", -4.95, "payment", "crv*youwork (1219) on 04 nov bcc"),
+    BarclaysTransaction(None, date(2019, 11, 4), "20-32-06 13152170", -100.0, "ft", "thor a"),
+  )
+
+  val badData: List[RawRecord] = List(
+    List("header", "header", "header", "header", "header", "header"),
+    List("text", "text", "text", "text", "text", "text"),
+    List("", "", "", "", "", ""),
+    List(null, null, null, null, null, null),
+    List(),
+  )
+
+}
+
 object CsvData {
 
   def date(year: Int, month: Int, day: Int): LocalDate = LocalDate.of(year, month, day)
 
   // Barclay's
 
-  val barclaysCsv: List[CsvRow] = List(
+  val barclaysCsv: List[RawRecord] = List(
     List("Number", "Date", "Account", "Amount", "Subcategory", "Memo"),
     List(" ", "08/11/2019", "20-32-06 13152170", "6.88", "DIRECTDEP", "DELLELLE           Food 31/10         BGC"),
     List("	 ", "08/11/2019", "20-32-06 13152170", "-235.00", "FT", "ANDREW CUMMING         TUNNEL D4          FT"),
@@ -44,7 +85,7 @@ object CsvData {
 
   // Halifax
 
-  val halifaxCsv: List[CsvRow] = List(
+  val halifaxCsv: List[RawRecord] = List(
     List("Date", "Date entered", "Reference", "Description", "Amount"),
     List("07/11/2019", "07/11/2019", "99630930", "INTEREST ", "0.65"),
     List("04/11/2019", "05/11/2019", "68125600", "PAYMENT RECEIVED - THAN ", "-430.00"),
@@ -72,7 +113,7 @@ object CsvData {
 
   // Starling
 
-  val starlingCsv: List[CsvRow] = List(
+  val starlingCsv: List[RawRecord] = List(
     List("Date", "Counter Party", "Reference", "Type", "Amount (GBP)", "Balance (GBP)"),
     List("", "Opening Balance", "", "", "", "0.00"),
     List("01/03/2019", "COLUMN F", "TOP UP STARLING", "FASTER PAYMENT", "100.00", "100.00"),
@@ -89,7 +130,7 @@ object CsvData {
 
   // American Express
 
-  val amexCsv: List[CsvRow] = List(
+  val amexCsv: List[RawRecord] = List(
     List("21/10/2019", "Reference: AT192160041000011301953", " 1.50", "YGA TRAVEL CHARGE YGA.GOV.NL/CP", " Process Date 22/10/2019"),
     List("23/10/2019", "Reference: AT192170042000011328509", " 3.30", "MARKS & SPENCER SOUT", "RETAIL GOODS Process Date 24/10/2019  RETAIL GOODS"),
     List("24/10/2019", "Reference: AT192180040000011351877", " 8.10", "MARKS & SPENCER SOUT", "RETAIL GOODS Process Date 25/10/2019  RETAIL GOODS"),

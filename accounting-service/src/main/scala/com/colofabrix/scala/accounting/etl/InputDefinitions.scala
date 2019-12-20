@@ -2,7 +2,7 @@ package com.colofabrix.scala.accounting.etl
 
 import cats._
 
-object InputDefinitions {
+object definitions {
 
   /** A raw record that comes from the input */
   type RawRecord = List[String]

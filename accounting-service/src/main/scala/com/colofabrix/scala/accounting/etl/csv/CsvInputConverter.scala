@@ -6,7 +6,7 @@ import java.io.File
 import com.colofabrix.scala.accounting.etl._
 import com.colofabrix.scala.accounting.model._
 import com.colofabrix.scala.accounting.utils.AValidation._
-import com.colofabrix.scala.accounting.etl.InputDefinitions._
+import com.colofabrix.scala.accounting.etl.definitions._
 import shapeless._
 import cats.data.Validated.Invalid
 import cats.data.Validated.Valid
@@ -25,10 +25,10 @@ trait CsvProcessor[T <: InputTransaction] {
  * Converts a CSV input into transactions
  */
 class CsvInputConverter[T <: InputTransaction](reader: CsvReader)(implicit val converter: CsvProcessor[T])
-    extends InputConverter[File, T] {
+    extends InputConverter[T] {
 
-  def ingestInput(input: File): AValidated[List[T]] = {
-    reader.read(input) match {
+  def ingestInput: AValidated[List[T]] = {
+    reader.read match {
       case i @ Invalid(_)  => i
       case Valid(rawInput) => converter
         .filterFile(rawInput)

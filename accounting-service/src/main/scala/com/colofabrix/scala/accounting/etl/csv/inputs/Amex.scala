@@ -3,7 +3,7 @@ package com.colofabrix.scala.accounting.etl.csv.inputs
 import java.time.LocalDate
 import com.colofabrix.scala.accounting.etl.csv._
 import com.colofabrix.scala.accounting.etl.FieldConverter._
-import com.colofabrix.scala.accounting.etl.InputDefinitions._
+import com.colofabrix.scala.accounting.etl.definitions._
 import com.colofabrix.scala.accounting.model.AmexTransaction
 import com.colofabrix.scala.accounting.utils.AValidation._
 import shapeless._

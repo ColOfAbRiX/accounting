@@ -1,8 +1,8 @@
 package com.colofabrix.scala.accounting.etl
 
 import cats.implicits._
-import com.colofabrix.scala.accounting.etl.FieldConverter.FieldBuilder
-import com.colofabrix.scala.accounting.etl.InputDefinitions._
+import com.colofabrix.scala.accounting.etl.FieldConverter._
+import com.colofabrix.scala.accounting.etl.definitions._
 import com.colofabrix.scala.accounting.model.InputTransaction
 import com.colofabrix.scala.accounting.utils.AValidation._
 import shapeless.{ Generic, HList, HNil, Poly2 }
