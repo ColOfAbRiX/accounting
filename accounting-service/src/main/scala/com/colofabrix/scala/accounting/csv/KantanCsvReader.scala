@@ -6,8 +6,8 @@ import com.colofabrix.scala.accounting.csv.CsvDefinitions._
 import com.colofabrix.scala.accounting.utils.AValidation._
 
 /**
-  * Kantan CSV Reader
-  */
+ * Kantan CSV Reader
+ */
 class KantanCsvReader extends CsvReader {
   import kantan.csv._
   import kantan.csv.ops._

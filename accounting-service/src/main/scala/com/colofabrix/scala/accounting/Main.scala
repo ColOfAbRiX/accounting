@@ -1,11 +1,7 @@
 package com.colofabrix.scala.accounting
-
-import com.colofabrix.scala.accounting.banks.Starling.StarlingCsvFile
-import com.colofabrix.scala.accounting.banks.Halifax.HalifaxCsvFile
-import com.colofabrix.scala.accounting.banks.Barclays.BarclaysCsvFile
-import com.colofabrix.scala.accounting.banks.Amex.AmexCsvFile
-import com.colofabrix.scala.accounting.csv.CsvDefinitions._
-import com.colofabrix.scala.accounting.csv._
+import com.colofabrix.scala.accounting.model.BarclaysTransaction
+import cats.data.Validated.Invalid
+import cats.data.Validated.Valid
 
 // object Main extends IOApp {
 //   def run(args: List[String]) =
@@ -14,18 +10,20 @@ import com.colofabrix.scala.accounting.csv._
 
 object Main extends App {
 
-  val file   = new java.io.File("samples/sample_halifax.csv")
-  val reader = CsvReaderType(KantanCsvReaderType)
-  val result = reader.readFile(file)
+  import etl._
+  import csv._
+  import AllInputs._
 
-  // Print output
-  result.foreach { observable =>
-    val result = for {
-      transaction <- HalifaxCsvFile.convertFile(observable)
-    } yield {
-      transaction
-    }
+  val converter = new CsvInputConverter[BarclaysTransaction](new KantanCsvReader())
+  val result = converter.ingestInput(new java.io.File("samples/sample_barclays.csv"))
 
-    result.foreach(println)
+  result match {
+    case Invalid(e) =>
+      println("ERRORS")
+      e.iterator.foreach(println)
+    case Valid(transactions) =>
+      println("TRANSACTIONS")
+      transactions.foreach(println)
   }
+
 }

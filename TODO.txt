@@ -1,7 +1,6 @@
+Transform the
 Reintroduce streams with FS2
 Introduce cats-effects IO monad
 Manage validation results
 Load the default CsvReader as global singleton
 Make the choice of CsvReader configurable via properties
-Write the pipeline to input Csv files of different banks
-Write tests for all banks

@@ -12,8 +12,8 @@ import shapeless.syntax.std.tuple._
 object Barclays {
 
   /**
-    * Barclays Csv File Worker
-    */
+   * Barclays Csv File Worker
+   */
   object BarclaysCsvFile extends CsvConverter[BarclaysTransaction] {
     /** Converts a Csv row into a BankTransaction */
     protected def filterFile(file: CsvFile): AValidated[CsvFile] = {

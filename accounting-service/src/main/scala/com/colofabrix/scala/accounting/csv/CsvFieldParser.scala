@@ -10,8 +10,8 @@ import scala.util._
 import com.colofabrix.scala.accounting.utils.AValidation._
 
 /**
-  * Parser to transform Csv fields into JVM types
-  */
+ * Parser to transform Csv fields into JVM types
+ */
 trait CsvFieldParser[A] {
   def parseCell(cell: String): AValidated[A]
 }

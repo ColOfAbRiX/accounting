@@ -1,17 +1,17 @@
 package com.colofabrix.scala.accounting.etl
 
-import cats.data.Kleisli
-import cats.implicits._
 import java.time.format.DateTimeFormatter
 import java.time.LocalDate
 import scala.annotation.implicitNotFound
 import scala.util._
-import com.colofabrix.scala.accounting.utils.AValidation._
+import cats.data.Kleisli
+import cats.implicits._
 import com.colofabrix.scala.accounting.etl.InputDefinitions._
+import com.colofabrix.scala.accounting.utils.AValidation._
 
 /**
-  * Parser to transform record fields into JVM types
-  */
+ * Parser to transform record fields into JVM types
+ */
 trait FieldConverter[A] {
   def parseField(cell: String): AValidated[A]
 }

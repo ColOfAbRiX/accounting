@@ -5,12 +5,10 @@ import scala.util.matching.Regex
 import cats.data._
 import cats.implicits._
 import cats.kernel.Semigroup
-import scala.util.Success
-import scala.util.Failure
 
 /**
-  * Accounting Validation (AValidation) module
-  */
+ * Accounting Validation (AValidation) module
+ */
 object AValidation {
 
   /** The type used to validate Csv data */

@@ -7,5 +7,5 @@ import com.colofabrix.scala.accounting.utils.AValidation._
  * Converts an input into transactions
  */
 trait InputConverter[I, T <: InputTransaction] {
-  def ingestInput(input: I): AValidated[T]
+  def ingestInput(input: I): AValidated[List[T]]
 }

@@ -3,8 +3,8 @@ package com.colofabrix.scala.accounting.model
 import java.time.LocalDate
 
 /**
-  * Represents a transaction in the system
-  */
+ * Represents a transaction in the system
+ */
 final case class Transaction(
     date: LocalDate,
     amount: BigDecimal,

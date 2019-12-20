@@ -11,8 +11,8 @@ import cats.data.Validated.Invalid
 import cats.data.Validated.Valid
 
 /**
-  * Represents an object that can convert CSV files into type A
-  */
+ * Represents an object that can convert CSV files into type A
+ */
 trait CsvConverter[T] {
 
   /** Converts a CSV file into a stream of transactions T */

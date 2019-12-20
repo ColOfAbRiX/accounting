@@ -1,29 +1,39 @@
 package com.colofabrix.scala.accounting.etl.csv
 
+import cats._
+import cats.implicits._
 import java.io.File
 import com.colofabrix.scala.accounting.etl._
 import com.colofabrix.scala.accounting.model._
 import com.colofabrix.scala.accounting.utils.AValidation._
-import com.colofabrix.scala.accounting.etl.csv.CsvReader
-import com.colofabrix.scala.accounting.etl.RecordConverter._
-import kantan.csv.ops.csvRows
-import com.colofabrix.scala.accounting.etl.inputs.Barclays.BarclaysCsvFile
+import com.colofabrix.scala.accounting.etl.InputDefinitions._
 import shapeless._
-import shapeless.syntax.std.tuple._
+import cats.data.Validated.Invalid
+import cats.data.Validated.Valid
 
-class CsvInputConverter[T <: InputTransaction](
-    reader: CsvReader,
-    implicit val converter: RecordConverter[T],
-) extends InputConverter[File, T] {
+/**
+ * Processes a CSV file
+ */
+trait CsvProcessor[T <: InputTransaction] {
+  /** Converts a Csv row into a BankTransaction */
+  def filterFile(file: RawInput): RawInput
+  /** Converts a Csv row */
+  def convertRow(row: RawRecord): AValidated[T]
+}
 
-  def ingestInput(input: File): AValidated[T] = {
-    val validatedFile = reader.read(input)
-    validatedFile.traverse { csvRows =>
-      csvRows.map { row =>
-        converter.convert(row)(BarclaysCsvFile.parsers)
-      }
+/**
+ * Converts a CSV input into transactions
+ */
+class CsvInputConverter[T <: InputTransaction](reader: CsvReader)(implicit val converter: CsvProcessor[T])
+    extends InputConverter[File, T] {
+
+  def ingestInput(input: File): AValidated[List[T]] = {
+    reader.read(input) match {
+      case i @ Invalid(_)  => i
+      case Valid(rawInput) => converter
+        .filterFile(rawInput)
+        .map(converter.convertRow)
+        .sequence
     }
-    ???
   }
-
 }

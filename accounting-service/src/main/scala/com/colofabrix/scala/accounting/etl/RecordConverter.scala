@@ -1,18 +1,17 @@
 package com.colofabrix.scala.accounting.etl
 
-import cats.data.Kleisli
 import cats.implicits._
-import InputDefinitions._
-import FieldConverter.FieldBuilder
-import com.colofabrix.scala.accounting.utils.AValidation._
-import shapeless.ops.hlist.RightFolder
-import shapeless.{ Generic, HList, HNil, Poly2 }
-import shapeless.UnaryTCConstraint.*->*
+import com.colofabrix.scala.accounting.etl.FieldConverter.FieldBuilder
+import com.colofabrix.scala.accounting.etl.InputDefinitions._
 import com.colofabrix.scala.accounting.model.InputTransaction
+import com.colofabrix.scala.accounting.utils.AValidation._
+import shapeless.{ Generic, HList, HNil, Poly2 }
+import shapeless.ops.hlist.RightFolder
+import shapeless.UnaryTCConstraint.*->*
 
 /**
-  * Represents an object that can convert inputs into type T
-  */
+ * Represents an object that can convert inputs into type T
+ */
 trait RecordConverter[T <: InputTransaction] {
 
   // -- The following has been adapted from https://stackoverflow.com/a/25316124 -- //
@@ -22,9 +21,9 @@ trait RecordConverter[T <: InputTransaction] {
   // then we append it to the accumulator.
 
   // format: off
-  type Accumulator[A <: HList] = (RawRecord, AValidated[A])
+  private type Accumulator[A <: HList] = (RawRecord, AValidated[A])
 
-  object ApplyRecord extends Poly2 {
+  private object ApplyRecord extends Poly2 {
     implicit def folder[T, V <: HList] = at[FieldBuilder[T], Accumulator[V]] {
       case (rowParser, (row, accumulator)) =>
         val parsed = rowParser(row)

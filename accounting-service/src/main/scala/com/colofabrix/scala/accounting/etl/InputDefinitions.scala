@@ -1,8 +1,6 @@
 package com.colofabrix.scala.accounting.etl
 
-import cats.data.Kleisli
-import cats.implicits._
-import com.colofabrix.scala.accounting.utils.AValidation._
+import cats._
 
 object InputDefinitions {
 

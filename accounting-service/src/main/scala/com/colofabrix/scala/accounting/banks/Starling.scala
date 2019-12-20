@@ -12,8 +12,8 @@ import shapeless.syntax.std.tuple._
 object Starling {
 
   /**
-    * Starling Csv File Worker
-    */
+   * Starling Csv File Worker
+   */
   object StarlingCsvFile extends CsvConverter[StarlingTransaction] {
     /** Converts a Csv row into a BankTransaction */
     protected def filterFile(file: CsvFile): AValidated[CsvFile] = {

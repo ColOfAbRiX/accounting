@@ -3,8 +3,8 @@ package com.colofabrix.scala.accounting.model
 import java.time.LocalDate
 
 /**
-  * Transaction in a specific Bank's format
-  */
+ * Transaction in a specific Bank's format
+ */
 sealed trait InputTransaction
 
 /** Transaction on a Barclays CSV file */

@@ -13,8 +13,8 @@ import shapeless.syntax.std.tuple._
 object Halifax {
 
   /**
-    * Halifax Csv File Worker
-    */
+   * Halifax Csv File Worker
+   */
   object HalifaxCsvFile extends CsvConverter[HalifaxTransaction] {
     /** Converts a Csv row into a BankTransaction */
     protected def filterFile(file: CsvFile): AValidated[CsvFile] = {

@@ -5,15 +5,15 @@ import com.colofabrix.scala.accounting.csv.CsvDefinitions.CsvFile
 import com.colofabrix.scala.accounting.utils.AValidation.AValidated
 
 /**
-  * Interface for a generic CSV reader that reads raw data
-  */
+ * Interface for a generic CSV reader that reads raw data
+ */
 trait CsvReader {
   def readFile(file: File): AValidated[CsvFile]
 }
 
 /**
-  * Type of CSV readers
-  */
+ * Type of CSV readers
+ */
 sealed trait CsvReaderType
 case object KantanCsvReaderType extends CsvReaderType
 
