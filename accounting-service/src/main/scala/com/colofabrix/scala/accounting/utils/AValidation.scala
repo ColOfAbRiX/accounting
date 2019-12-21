@@ -29,9 +29,9 @@ object validation {
     @annotation.tailrec
     def tailRecM[A, B](init: A)(fn: A => AValidated[Either[A, B]]): AValidated[B] =
       fn(init) match {
-        case i @ Invalid(e) => i
+        case i @ Invalid(e)  => i
         case Valid(Right(b)) => Valid(b)
-        case Valid(Left(a)) => tailRecM(a)(fn)
+        case Valid(Left(a))  => tailRecM(a)(fn)
       }
   }
 

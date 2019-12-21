@@ -25,16 +25,17 @@ trait CsvProcessor[T <: InputTransaction] {
 /**
  * Converts a CSV input into transactions
  */
-class CsvInputConverter[T <: InputTransaction](reader: CsvReader)(converter: CsvProcessor[T]) extends InputConverter[T] {
+class CsvInputConverter[T <: InputTransaction](reader: CsvReader)(implicit processor: CsvProcessor[T])
+    extends InputConverter[T] {
 
   /** Processes the entire content provided by the Input Reader */
   def ingestInput: AValidated[List[T]] = {
     reader.read match {
       case i @ Invalid(_) => i
       case Valid(rawInput) =>
-        converter
+        processor
           .filterFile(rawInput)
-          .map(converter.convertRow)
+          .map(processor.convertRow)
           .sequence
     }
   }

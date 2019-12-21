@@ -8,24 +8,7 @@ import csv._
 import csv.AllInputs._
 import cats.data.Validated.Invalid
 
-/*
-Data in this file is taken from real CSV files of banks and data has been anonymized
-*/
-
-trait InputTestData[T <: InputTransaction] {
-
-  def date(year: Int, month: Int, day: Int): LocalDate = LocalDate.of(year, month, day)
-
-  // def converter(data: RawInput): InputConverter[T] = {
-  //   new CsvInputConverter[T](new DummyCsvReader(data))
-  // }
-
-  def sampleCorrectCsvData: List[RawRecord]
-  def convertedCorrectData: List[T]
-  def sampleBadCsvData: List[RawRecord]
-  def convertedBadData: List[Invalid[String]]
-
-}
+/* Data in this file is taken from real CSV files of banks and data has been anonymized */
 
 // format: off
 trait BarclaysTestData extends InputTestData[BarclaysTransaction] {
@@ -60,11 +43,11 @@ trait BarclaysTestData extends InputTestData[BarclaysTransaction] {
   )
 
   val sampleBadCsvData: List[RawRecord] = List(
-    List("header", "header", "header", "header", "header", "header"), // Normal header
-    List("text", "text", "text", "text", "text", "text"),             // Wrong data type
-    List("", "", "", "", "", ""),                                     // Empty strings
-    List(null, null, null, null, null, null),                         // Null strings
-    List(),                                                           // Missing fields
+    List.fill(6)("header"), // Normal header
+    List.fill(6)("text"),   // Wrong data type
+    List.fill(6)(""),       // Empty strings
+    List.fill(6)(null),     // Null strings
+    List.empty,             // Missing fields
   )
 
   val convertedBadData: List[Invalid[String]] = List.empty
@@ -100,11 +83,11 @@ trait HalifaxTestData extends InputTestData[HalifaxTransaction] {
   )
 
   val sampleBadCsvData: List[RawRecord] = List(
-    List("header", "header", "header", "header", "header"), // Normal header
-    List("text", "text", "text", "text", "text"),           // Wrong data type
-    List("", "", "", "", ""),                               // Empty strings
-    List(null, null, null, null, null),                     // Null strings
-    List(),                                                 // Missing fields
+    List.fill(5)("header"), // Normal header
+    List.fill(5)("text"),   // Wrong data type
+    List.fill(5)(""),       // Empty strings
+    List.fill(5)(null),     // Null strings
+    List.empty,             // Missing fields
   )
 
   val convertedBadData: List[Invalid[String]] = List.empty
@@ -129,11 +112,11 @@ trait StarlingTestData extends InputTestData[StarlingTransaction] {
   )
 
   val sampleBadCsvData: List[RawRecord] = List(
-    List("header", "header", "header", "header", "header", "header"), // Normal header
-    List("text", "text", "text", "text", "text", "text"),             // Wrong data type
-    List("", "", "", "", "", ""),                                     // Empty strings
-    List(null, null, null, null, null, null),                         // Null strings
-    List(),                                                           // Missing fields
+    List.fill(6)("header"), // Normal header
+    List.fill(6)("text"),   // Wrong data type
+    List.fill(6)(""),       // Empty strings
+    List.fill(6)(null),     // Null strings
+    List.empty,             // Missing fields
   )
 
   val convertedBadData: List[Invalid[String]] = List.empty
@@ -170,11 +153,11 @@ trait AmexTestData extends InputTestData[AmexTransaction] {
   )
 
   val sampleBadCsvData: List[RawRecord] = List(
-    List("header", "header", "header", "header", "header"), // Normal header
-    List("text", "text", "text", "text", "text"),           // Wrong data type
-    List("", "", "", "", ""),                               // Empty strings
-    List(null, null, null, null, null),                     // Null strings
-    List(),                                                 // Missing fields
+    List.fill(5)("header"), // Normal header
+    List.fill(5)("text"),   // Wrong data type
+    List.fill(5)(""),       // Empty strings
+    List.fill(5)(null),     // Null strings
+    List.empty,             // Missing fields
   )
 
   val convertedBadData: List[Invalid[String]] = List.empty
