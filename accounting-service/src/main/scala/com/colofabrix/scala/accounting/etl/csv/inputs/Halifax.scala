@@ -5,7 +5,7 @@ import com.colofabrix.scala.accounting.etl.csv._
 import com.colofabrix.scala.accounting.etl.FieldConverter._
 import com.colofabrix.scala.accounting.etl.definitions._
 import com.colofabrix.scala.accounting.model.HalifaxTransaction
-import com.colofabrix.scala.accounting.utils.AValidation._
+import com.colofabrix.scala.accounting.utils.validation._
 import shapeless._
 import com.colofabrix.scala.accounting.etl.RecordConverter
 

@@ -16,8 +16,8 @@ object Main extends App {
   import AllInputs._
 
   val csvReader = new KantanCsvReader(new java.io.File("samples/sample_barclays.csv"))
-  val converter = new CsvInputConverter[BarclaysTransaction](csvReader)
-  val result = converter.ingestInput
+  val converter = new CsvInputConverter[BarclaysTransaction](csvReader)(barclaysCsvProc)
+  val result    = converter.ingestInput
 
   result match {
     case Invalid(e) =>

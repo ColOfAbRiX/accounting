@@ -7,7 +7,7 @@ import scala.util._
 import cats.data.Kleisli
 import cats.implicits._
 import com.colofabrix.scala.accounting.etl.definitions._
-import com.colofabrix.scala.accounting.utils.AValidation._
+import com.colofabrix.scala.accounting.utils.validation._
 
 /**
  * Parser to transform record fields into JVM types

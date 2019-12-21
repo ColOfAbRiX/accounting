@@ -1,5 +1,7 @@
--J-Xmx512M
 -J-Xss256M
+-J-Xmx512M
+-J-XX:MaxHeapSize=512M
+-J-XX:MaxPermSize=64M
 -J-XX:+UseConcMarkSweepGC
 -J-XX:+CMSClassUnloadingEnabled
 -Duser.timezone=UTC

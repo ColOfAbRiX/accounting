@@ -1,62 +1,38 @@
-package com.colofabrix.scala.accounting.csv
+package com.colofabrix.scala.accounting.etl
 
 import java.time.LocalDate
-import com.colofabrix.scala.accounting.etl.InputDefinitions._
+import com.colofabrix.scala.accounting.utils.validation._
 import com.colofabrix.scala.accounting.model._
+import definitions._
+import csv._
+import csv.AllInputs._
+import cats.data.Validated.Invalid
 
-// Taken from real CSV files of banks (data anonymized)
+/*
+Data in this file is taken from real CSV files of banks and data has been anonymized
+*/
 
-// format: off
-trait BarclaysTestData {
+trait InputTestData[T <: InputTransaction] {
 
   def date(year: Int, month: Int, day: Int): LocalDate = LocalDate.of(year, month, day)
 
-  // Barclay's
+  // def converter(data: RawInput): InputConverter[T] = {
+  //   new CsvInputConverter[T](new DummyCsvReader(data))
+  // }
 
-  val csvData: List[RawRecord] = List(
-    List("Number", "Date", "Account", "Amount", "Subcategory", "Memo"),
-    List(" ", "08/11/2019", "20-32-06 13152170", "6.88", "DIRECTDEP", "DELLELLE           Food 31/10         BGC"),
-    List("	 ", "08/11/2019", "20-32-06 13152170", "-235.00", "FT", "ANDREW CUMMING         TUNNEL D4          FT"),
-    List("	 ", "08/11/2019", "20-32-06 13152170", "-23.63", "FT", "C DELLELLE    GROCERY            FT"),
-    List("	 ", "08/11/2019", "20-32-06 13152170", "-2.00", "PAYMENT", "CRV*BEST FOOD CENT    ON 07 NOV          BCC"),
-    List("	 ", "07/11/2019", "20-32-06 13152170", "-5.70", "PAYMENT", "CRV*EASY BIKE BAR    ON 06 NOV          BCC"),
-    List("	 ", "07/11/2019", "20-32-06 13152170", "-4.86", "PAYMENT", "CRV*BEST FOOD CENT    ON 06 NOV          BCC"),
-    List("	 ", "05/11/2019", "20-32-06 13152170", "-430.00", "PAYMENT", "HALIFAX CLARITY MA    5353130107545290   BBP"),
-    List("	 ", "05/11/2019", "20-32-06 13152170", "-4.95", "PAYMENT", "CRV*YOUWORK (1219)     ON 04 NOV          BCC"),
-    List("	 ", "04/11/2019", "20-32-06 13152170", "-100.00", "FT", "THOR A"),
-    List(),
-    List(),
-  )
-
-  val transactions: List[BarclaysTransaction] = List(
-    BarclaysTransaction(None, date(2019, 11, 8), "20-32-06 13152170", 6.88, "directdep", "dellelle food 31/10 bgc"),
-    BarclaysTransaction(None, date(2019, 11, 8), "20-32-06 13152170", -235.0, "ft", "andrew cumming tunnel d4 ft"),
-    BarclaysTransaction(None, date(2019, 11, 8), "20-32-06 13152170", -23.63, "ft", "c dellelle grocery ft"),
-    BarclaysTransaction(None, date(2019, 11, 8), "20-32-06 13152170", -2.0, "payment", "crv*best food cent on 07 nov bcc"),
-    BarclaysTransaction(None, date(2019, 11, 7), "20-32-06 13152170", -5.7, "payment", "crv*easy bike bar on 06 nov bcc"),
-    BarclaysTransaction(None, date(2019, 11, 7), "20-32-06 13152170", -4.86, "payment", "crv*best food cent on 06 nov bcc"),
-    BarclaysTransaction(None, date(2019, 11, 5), "20-32-06 13152170", -430.0, "payment", "halifax clarity ma 5353130107545290 bbp"),
-    BarclaysTransaction(None, date(2019, 11, 5), "20-32-06 13152170", -4.95, "payment", "crv*youwork (1219) on 04 nov bcc"),
-    BarclaysTransaction(None, date(2019, 11, 4), "20-32-06 13152170", -100.0, "ft", "thor a"),
-  )
-
-  val badData: List[RawRecord] = List(
-    List("header", "header", "header", "header", "header", "header"),
-    List("text", "text", "text", "text", "text", "text"),
-    List("", "", "", "", "", ""),
-    List(null, null, null, null, null, null),
-    List(),
-  )
+  def sampleCorrectCsvData: List[RawRecord]
+  def convertedCorrectData: List[T]
+  def sampleBadCsvData: List[RawRecord]
+  def convertedBadData: List[Invalid[String]]
 
 }
 
-object CsvData {
-
-  def date(year: Int, month: Int, day: Int): LocalDate = LocalDate.of(year, month, day)
+// format: off
+trait BarclaysTestData extends InputTestData[BarclaysTransaction] {
 
   // Barclay's
 
-  val barclaysCsv: List[RawRecord] = List(
+  val sampleCorrectCsvData: List[RawRecord] = List(
     List("Number", "Date", "Account", "Amount", "Subcategory", "Memo"),
     List(" ", "08/11/2019", "20-32-06 13152170", "6.88", "DIRECTDEP", "DELLELLE           Food 31/10         BGC"),
     List("	 ", "08/11/2019", "20-32-06 13152170", "-235.00", "FT", "ANDREW CUMMING         TUNNEL D4          FT"),
@@ -71,7 +47,7 @@ object CsvData {
     List(),
   )
 
-  val barclaysTransactions: List[BarclaysTransaction] = List(
+  val convertedCorrectData: List[BarclaysTransaction] = List(
     BarclaysTransaction(None, date(2019, 11, 8), "20-32-06 13152170", 6.88, "directdep", "dellelle food 31/10 bgc"),
     BarclaysTransaction(None, date(2019, 11, 8), "20-32-06 13152170", -235.0, "ft", "andrew cumming tunnel d4 ft"),
     BarclaysTransaction(None, date(2019, 11, 8), "20-32-06 13152170", -23.63, "ft", "c dellelle grocery ft"),
@@ -83,9 +59,21 @@ object CsvData {
     BarclaysTransaction(None, date(2019, 11, 4), "20-32-06 13152170", -100.0, "ft", "thor a"),
   )
 
-  // Halifax
+  val sampleBadCsvData: List[RawRecord] = List(
+    List("header", "header", "header", "header", "header", "header"), // Normal header
+    List("text", "text", "text", "text", "text", "text"),             // Wrong data type
+    List("", "", "", "", "", ""),                                     // Empty strings
+    List(null, null, null, null, null, null),                         // Null strings
+    List(),                                                           // Missing fields
+  )
 
-  val halifaxCsv: List[RawRecord] = List(
+  val convertedBadData: List[Invalid[String]] = List.empty
+
+}
+
+trait HalifaxTestData extends InputTestData[HalifaxTransaction] {
+
+  val sampleCorrectCsvData: List[RawRecord] = List(
     List("Date", "Date entered", "Reference", "Description", "Amount"),
     List("07/11/2019", "07/11/2019", "99630930", "INTEREST ", "0.65"),
     List("04/11/2019", "05/11/2019", "68125600", "PAYMENT RECEIVED - THAN ", "-430.00"),
@@ -99,7 +87,7 @@ object CsvData {
     List(),
   )
 
-  val halifaxTransactions: List[HalifaxTransaction] = List(
+  val convertedCorrectData: List[HalifaxTransaction] = List(
     HalifaxTransaction(date(2019, 11,  7), date(2019, 11,  7), "99630930", "interest", -0.65),
     HalifaxTransaction(date(2019, 11,  4), date(2019, 11,  5), "68125600", "payment received - than", 430.0),
     HalifaxTransaction(date(2019, 11,  1), date(2019, 11,  1), "99691550", "direct debit payment -", 26.32),
@@ -111,9 +99,21 @@ object CsvData {
     HalifaxTransaction(date(2019, 10, 19), date(2019, 10, 21), "10224975", "iper conad", -31.17),
   )
 
-  // Starling
+  val sampleBadCsvData: List[RawRecord] = List(
+    List("header", "header", "header", "header", "header"), // Normal header
+    List("text", "text", "text", "text", "text"),           // Wrong data type
+    List("", "", "", "", ""),                               // Empty strings
+    List(null, null, null, null, null),                     // Null strings
+    List(),                                                 // Missing fields
+  )
 
-  val starlingCsv: List[RawRecord] = List(
+  val convertedBadData: List[Invalid[String]] = List.empty
+
+}
+
+trait StarlingTestData extends InputTestData[StarlingTransaction] {
+
+  val sampleCorrectCsvData: List[RawRecord] = List(
     List("Date", "Counter Party", "Reference", "Type", "Amount (GBP)", "Balance (GBP)"),
     List("", "Opening Balance", "", "", "", "0.00"),
     List("01/03/2019", "COLUMN F", "TOP UP STARLING", "FASTER PAYMENT", "100.00", "100.00"),
@@ -122,15 +122,27 @@ object CsvData {
     List(),
   )
 
-  val starlingTransactions: List[StarlingTransaction] = List(
+  val convertedCorrectData: List[StarlingTransaction] = List(
     StarlingTransaction(date(2019, 3, 1), "column f", "top up starling", "faster payment", 100.0, 100.0),
     StarlingTransaction(date(2019, 3, 4), "butler brewery c chelmsford", "iz *butler brewery c chelmsford gbr", "contactless", -8.0, 92.0),
     StarlingTransaction(date(2019, 3, 4), "sainsbury's", "sainsburys sacat 0768 chelmsford gbr", "contactless", -3.7, 88.3),
   )
 
-  // American Express
+  val sampleBadCsvData: List[RawRecord] = List(
+    List("header", "header", "header", "header", "header", "header"), // Normal header
+    List("text", "text", "text", "text", "text", "text"),             // Wrong data type
+    List("", "", "", "", "", ""),                                     // Empty strings
+    List(null, null, null, null, null, null),                         // Null strings
+    List(),                                                           // Missing fields
+  )
 
-  val amexCsv: List[RawRecord] = List(
+  val convertedBadData: List[Invalid[String]] = List.empty
+
+}
+
+trait AmexTestData extends InputTestData[AmexTransaction] {
+
+  val sampleCorrectCsvData: List[RawRecord] = List(
     List("21/10/2019", "Reference: AT192160041000011301953", " 1.50", "YGA TRAVEL CHARGE YGA.GOV.NL/CP", " Process Date 22/10/2019"),
     List("23/10/2019", "Reference: AT192170042000011328509", " 3.30", "MARKS & SPENCER SOUT", "RETAIL GOODS Process Date 24/10/2019  RETAIL GOODS"),
     List("24/10/2019", "Reference: AT192180040000011351877", " 8.10", "MARKS & SPENCER SOUT", "RETAIL GOODS Process Date 25/10/2019  RETAIL GOODS"),
@@ -144,7 +156,7 @@ object CsvData {
     List(),
   )
 
-  val amexTransactions: List[AmexTransaction] = List(
+  val convertedCorrectData: List[AmexTransaction] = List(
     AmexTransaction(date(2019, 10, 21), "reference: at192160041000011301953", -1.5, "yga travel charge yga.gov.nl/cp", "process date 22/10/2019"),
     AmexTransaction(date(2019, 10, 23), "reference: at192170042000011328509", -3.3, "marks & spencer sout", "retail goods process date 24/10/2019 retail goods"),
     AmexTransaction(date(2019, 10, 24), "reference: at192180040000011351877", -8.1, "marks & spencer sout", "retail goods process date 25/10/2019 retail goods"),
@@ -156,6 +168,16 @@ object CsvData {
     AmexTransaction(date(2019, 10, 27), "reference: at193110050000011250107", -2.4, "yga travel charge yga.gov.nl/cp", "process date 27/10/2019"),
     AmexTransaction(date(2019, 10, 27), "reference: at193110060000011238382", -7.75,"the lord morris", "process date 27/10/2019"),
   )
+
+  val sampleBadCsvData: List[RawRecord] = List(
+    List("header", "header", "header", "header", "header"), // Normal header
+    List("text", "text", "text", "text", "text"),           // Wrong data type
+    List("", "", "", "", ""),                               // Empty strings
+    List(null, null, null, null, null),                     // Null strings
+    List(),                                                 // Missing fields
+  )
+
+  val convertedBadData: List[Invalid[String]] = List.empty
 
 }
 // format: on

@@ -5,14 +5,35 @@ import scala.util.matching.Regex
 import cats.data._
 import cats.implicits._
 import cats.kernel.Semigroup
+import cats.Monad
+import cats.data.Validated.Invalid
+import cats.data.Validated.Valid
 
 /**
  * Accounting Validation (AValidation) module
  */
-object AValidation {
+object validation {
 
   /** The type used to validate Csv data */
   type AValidated[+A] = ValidatedNec[String, A]
+
+  /** Monad instance for AValidagted */
+  implicit val aValidatedM = new Monad[AValidated] {
+    def flatMap[A, B](fa: AValidated[A])(f: A => AValidated[B]): AValidated[B] = fa match {
+      case i @ Invalid(e) => i
+      case Valid(a)       => f(a)
+    }
+
+    def pure[A](a: A): AValidated[A] = a.aValid
+
+    @annotation.tailrec
+    def tailRecM[A, B](init: A)(fn: A => AValidated[Either[A, B]]): AValidated[B] =
+      fn(init) match {
+        case i @ Invalid(e) => i
+        case Valid(Right(b)) => Valid(b)
+        case Valid(Left(a)) => tailRecM(a)(fn)
+      }
+  }
 
   //  ENRICHMENT CLASSES  //
 
@@ -30,6 +51,7 @@ object AValidation {
   implicit class AnyOps[A <: Any](private val anyObject: A) extends AnyVal {
     /** Mark the value as valid */
     def aValid: AValidated[A] = anyObject.validNec[String]
+
     /** Mark the value as invalid */
     def aInvalid(msg: String): AValidated[A] = msg.invalidNec[A]
   }

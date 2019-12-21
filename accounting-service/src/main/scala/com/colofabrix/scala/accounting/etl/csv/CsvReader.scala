@@ -3,7 +3,7 @@ package com.colofabrix.scala.accounting.etl.csv
 import java.io.File
 import scala.util._
 import com.colofabrix.scala.accounting.etl.definitions._
-import com.colofabrix.scala.accounting.utils.AValidation._
+import com.colofabrix.scala.accounting.utils.validation._
 
 /**
  * Interface for a generic CSV reader that reads raw data

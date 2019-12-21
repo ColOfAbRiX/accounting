@@ -5,7 +5,7 @@ import com.colofabrix.scala.accounting.etl.csv._
 import com.colofabrix.scala.accounting.etl.FieldConverter._
 import com.colofabrix.scala.accounting.etl.definitions._
 import com.colofabrix.scala.accounting.model.BarclaysTransaction
-import com.colofabrix.scala.accounting.utils.AValidation._
+import com.colofabrix.scala.accounting.utils.validation._
 import shapeless._
 import com.colofabrix.scala.accounting.etl.RecordConverter
 
@@ -19,7 +19,7 @@ class BarclaysCsvProcessor extends CsvProcessor[BarclaysTransaction] with Record
     file
       .drop(1)
       .filter(
-        _.filter(_.nonEmpty).nonEmpty
+        _.filter(_.nonEmpty).nonEmpty,
       )
   }
 

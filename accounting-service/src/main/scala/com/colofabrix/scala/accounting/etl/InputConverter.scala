@@ -1,7 +1,7 @@
 package com.colofabrix.scala.accounting.etl
 
 import com.colofabrix.scala.accounting.model.InputTransaction
-import com.colofabrix.scala.accounting.utils.AValidation._
+import com.colofabrix.scala.accounting.utils.validation._
 
 /**
  * Converts an input into transactions
