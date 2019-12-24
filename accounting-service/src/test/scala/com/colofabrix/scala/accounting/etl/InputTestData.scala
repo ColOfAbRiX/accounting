@@ -6,7 +6,7 @@ import com.colofabrix.scala.accounting.model._
 import definitions._
 import csv._
 import csv.AllInputs._
-import cats.data.Validated.Invalid
+import cats.data.Validated.{Valid, Invalid}
 
 /* Data in this file is taken from real CSV files of banks and data has been anonymized */
 
@@ -47,10 +47,18 @@ trait BarclaysTestData extends InputTestData[BarclaysTransaction] {
     List.fill(6)("text"),   // Wrong data type
     List.fill(6)(""),       // Empty strings
     List.fill(6)(null),     // Null strings
-    List.empty,             // Missing fields
+    List.empty,             // Empty row
+    List("1", "", "20-32-06 13152170", "-100.00", "FT", "THOR A"),   // One empty field
+    List("1", null, "20-32-06 13152170", "-100.00", "FT", "THOR A"), // One null field
+    List("1", "04/11/2019", "20-32-06 13152170", "-100.00", "FT"),   // Missing fields
   )
 
-  val convertedBadData: List[Invalid[String]] = List.empty
+  val convertedBadData: List[String] = List(
+    "Exception on converting field 'text': java.lang.NumberFormatException",
+    "Exception on converting field '': java.time.format.DateTimeParseException: Text '' could not be parsed at index 0",
+    "Exception on converting field 'null': java.lang.NullPointerException",
+    "Exception on converting record List(1, 04/11/2019, 20-32-06 13152170, -100.00, FT): java.lang.IndexOutOfBoundsException: 5",
+  )
 
 }
 
@@ -88,9 +96,17 @@ trait HalifaxTestData extends InputTestData[HalifaxTransaction] {
     List.fill(5)(""),       // Empty strings
     List.fill(5)(null),     // Null strings
     List.empty,             // Missing fields
+    List("19/10/2019", "", "10224975", "IPER CONAD", "31.17"),   // One empty field
+    List("19/10/2019", null, "10224975", "IPER CONAD", "31.17"), // One null field
+    List("19/10/2019", "21/10/2019", "10224975", "IPER CONAD"),  // Missing fields
   )
 
-  val convertedBadData: List[Invalid[String]] = List.empty
+  val convertedBadData: List[String] = List(
+    "Exception on converting field 'text': java.lang.NumberFormatException",
+    "Exception on converting field '': java.time.format.DateTimeParseException: Text '' could not be parsed at index 0",
+    "Exception on converting field 'null': java.lang.NullPointerException",
+    "Exception on converting record List(19/10/2019, 21/10/2019, 10224975, IPER CONAD): java.lang.IndexOutOfBoundsException: 4",
+  )
 
 }
 
@@ -117,9 +133,16 @@ trait StarlingTestData extends InputTestData[StarlingTransaction] {
     List.fill(6)(""),       // Empty strings
     List.fill(6)(null),     // Null strings
     List.empty,             // Missing fields
+    List("04/03/2019", "", "SAINSBURYS SACAT", "CONTACTLESS", "-3.70", "88.30"),    // One empty field
+    List("04/03/2019", null, "SAINSBURYS SACAT", "CONTACTLESS", "-3.70", "88.30"),  // One null field
+    List("04/03/2019", "Sainsbury's", "SAINSBURYS SACAT", "CONTACTLESS", "-3.70"),  // Missing fields
   )
 
-  val convertedBadData: List[Invalid[String]] = List.empty
+  val convertedBadData: List[String] = List(
+    "Exception on converting field 'text': java.lang.NumberFormatException",
+    "Exception on converting field 'null': java.lang.NullPointerException",
+    "Exception on converting record List(04/03/2019, Sainsbury's, SAINSBURYS SACAT, CONTACTLESS, -3.70): java.lang.IndexOutOfBoundsException: 5",
+  )
 
 }
 
@@ -158,9 +181,17 @@ trait AmexTestData extends InputTestData[AmexTransaction] {
     List.fill(5)(""),       // Empty strings
     List.fill(5)(null),     // Null strings
     List.empty,             // Missing fields
+    List("27/10/2019", "", " 7.75", "THE LORD", " Process 27/10/2019"),   // One empty field
+    List("27/10/2019", null, " 7.75", "THE LORD", " Process 27/10/2019"), // One null field
+    List("27/10/2019", "Reference", " 7.75", "THE LORD"),                 // Missing fields
   )
 
-  val convertedBadData: List[Invalid[String]] = List.empty
+  val convertedBadData: List[String] = List(
+    "Exception on converting field 'header': java.lang.NumberFormatException",
+    "Exception on converting field 'text': java.lang.NumberFormatException",
+    "Exception on converting field 'null': java.lang.NullPointerException",
+    "Exception on converting record List(27/10/2019, Reference,  7.75, THE LORD): java.lang.IndexOutOfBoundsException: 4",
+  )
 
 }
 // format: on

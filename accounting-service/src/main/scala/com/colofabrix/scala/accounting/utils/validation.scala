@@ -15,7 +15,7 @@ import cats.data.Validated.Valid
 object validation {
 
   /** The type used to validate Csv data */
-  type AValidated[+A] = ValidatedNec[String, A]
+  type AValidated[+A] = Validated[NonEmptyChain[String], A]
 
   /** Custom monad instance for AValidated */
   implicit val aValidatedM = new Monad[AValidated] {

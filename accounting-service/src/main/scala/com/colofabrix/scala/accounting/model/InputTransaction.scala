@@ -5,7 +5,7 @@ import java.time.LocalDate
 /**
  * Transaction in a specific Bank's format
  */
-sealed trait InputTransaction
+trait InputTransaction
 
 /** Transaction on a Barclays CSV file */
 final case class BarclaysTransaction(

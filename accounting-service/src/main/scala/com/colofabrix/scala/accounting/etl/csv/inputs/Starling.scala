@@ -16,8 +16,14 @@ class StarlingCsvProcessor extends CsvProcessor[StarlingTransaction] with Record
 
   /** Converts a Csv row into a BankTransaction */
   def filterFile(file: RawInput): RawInput = {
-    dropEmpty(dropHeader(file))
-      .filter(_(1).toLowerCase != "opening balance")
+    // FIXME: make this function return a validated result
+    val tmp = dropEmpty(dropHeader(file))
+    tmp.filter { record =>
+      if( record.length >= 1 && record(1) != null )
+        record(1).toLowerCase != "opening balance"
+      else
+        true
+    }
   }
 
   /** Converts a Csv row into a BankTransaction */

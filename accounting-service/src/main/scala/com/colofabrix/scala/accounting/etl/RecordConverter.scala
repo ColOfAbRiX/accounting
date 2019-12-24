@@ -16,8 +16,8 @@ trait RecordConverter[T <: InputTransaction] {
 
   // -- The following has been adapted from https://stackoverflow.com/a/25316124 -- //
 
-  // The "trick" here is to pass the row as the initial value of the fold and carry it along
-  // during the computation. Inside the computation we apply a parser using row as parameter and
+  // The "trick" here is to pass the record as the initial value of the fold and carry it along
+  // during the computation. Inside the computation we apply a parser using record as parameter and
   // then we append it to the accumulator.
 
   // format: off
@@ -25,10 +25,10 @@ trait RecordConverter[T <: InputTransaction] {
 
   private object ApplyRecord extends Poly2 {
     implicit def folder[T, V <: HList] = at[FieldBuilder[T], Accumulator[V]] {
-      case (rowParser, (row, accumulator)) =>
-        val parsed = rowParser(row)
+      case (recordParser, (record, accumulator)) =>
+        val parsed = recordParser(record)
         val next = (accumulator, parsed).mapN((v, t) => t :: v)
-        (row, next)
+        (record, next)
     }
   }
 
@@ -37,15 +37,16 @@ trait RecordConverter[T <: InputTransaction] {
   def convert[
     HParsers <: HList : *->*[FieldBuilder]#λ,
     HParsed <: HList](
-      row: RawRecord)(
+      record: RawRecord)(
       parsers: HParsers)(
         implicit
         folder: RightFolder.Aux[HParsers, Accumulator[HNil], ApplyRecord.type, Accumulator[HParsed]],
         gen: Generic.Aux[T, HParsed],
   ): AValidated[T] = {
-    parsers
-      .foldRight((row, (HNil: HNil).aValid))(ApplyRecord)._2
+    val tmp = parsers
+      .foldRight((record, (HNil: HNil).aValid))(ApplyRecord)._2
       .map(gen.from)
+    tmp
   }
   // format: on
 
