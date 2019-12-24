@@ -15,7 +15,7 @@ trait CsvReader {
 /**
  * Kantan CSV Reader
  */
-class KantanCsvReader(file: File) extends CsvReader {
+class FileCsvReader(file: File) extends CsvReader {
   import kantan.csv._
   import kantan.csv.ops._
 
@@ -31,16 +31,3 @@ class KantanCsvReader(file: File) extends CsvReader {
 class DummyCsvReader(input: RawInput) extends CsvReader {
   def read: AValidated[RawInput] = input.aValid
 }
-
-// /**
-//  * Type of CSV readers
-//  */
-// sealed trait CsvReaderType
-// final case object KantanCsvReaderType extends CsvReaderType
-
-// object CsvReaderType {
-//   /** Factory method to create a new reader from CsvReaderType */
-//   def apply(readerType: CsvReaderType): CsvReader = readerType match {
-//     case KantanCsvReaderType => new KantanCsvReader()
-//   }
-// }

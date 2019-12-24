@@ -16,12 +16,8 @@ class StarlingCsvProcessor extends CsvProcessor[StarlingTransaction] with Record
 
   /** Converts a Csv row into a BankTransaction */
   def filterFile(file: RawInput): RawInput = {
-    file
-      .drop(1)
-      .filter { row =>
-        row.filter(x => x.trim.nonEmpty).nonEmpty &&
-        row(1).toLowerCase != "opening balance"
-      }
+    dropEmpty(dropHeader(file))
+      .filter(_(1).toLowerCase != "opening balance")
   }
 
   /** Converts a Csv row into a BankTransaction */

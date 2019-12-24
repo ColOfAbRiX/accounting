@@ -15,8 +15,8 @@ object Main extends App {
   import csv._
   import AllInputs._
 
-  val csvReader = new KantanCsvReader(new java.io.File("samples/sample_barclays.csv"))
-  val converter = new CsvInputConverter[BarclaysTransaction](csvReader)(barclaysCsvProc)
+  val csvReader = new FileCsvReader(new java.io.File("samples/sample_barclays.csv"))
+  val converter = new CsvInputConverter[BarclaysTransaction](csvReader, barclaysCsvProc)
   val result    = converter.ingestInput
 
   result match {

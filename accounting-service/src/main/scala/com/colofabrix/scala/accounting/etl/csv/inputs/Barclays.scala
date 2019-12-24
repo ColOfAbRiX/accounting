@@ -15,13 +15,7 @@ import com.colofabrix.scala.accounting.etl.RecordConverter
 class BarclaysCsvProcessor extends CsvProcessor[BarclaysTransaction] with RecordConverter[BarclaysTransaction] {
 
   /** Converts a Csv row into a BankTransaction */
-  def filterFile(file: RawInput): RawInput = {
-    file
-      .drop(1)
-      .filter(
-        _.filter(_.nonEmpty).nonEmpty,
-      )
-  }
+  def filterFile(file: RawInput): RawInput = dropEmpty(dropHeader(file))
 
   /** Converts a Csv row into a BankTransaction */
   def convertRow(row: RawRecord): AValidated[BarclaysTransaction] = {

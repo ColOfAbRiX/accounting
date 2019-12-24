@@ -17,7 +17,7 @@ object validation {
   /** The type used to validate Csv data */
   type AValidated[+A] = ValidatedNec[String, A]
 
-  /** Monad instance for AValidagted */
+  /** Custom monad instance for AValidated */
   implicit val aValidatedM = new Monad[AValidated] {
     def flatMap[A, B](fa: AValidated[A])(f: A => AValidated[B]): AValidated[B] = fa match {
       case i @ Invalid(e) => i

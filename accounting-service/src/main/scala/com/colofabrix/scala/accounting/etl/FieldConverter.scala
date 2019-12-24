@@ -12,8 +12,8 @@ import com.colofabrix.scala.accounting.utils.validation._
 /**
  * Parser to transform record fields into JVM types
  */
-trait FieldConverter[A] {
-  def parseField(cell: String): AValidated[A]
+trait FieldConverter[+A] {
+  def parseField(field: String): AValidated[A]
 }
 
 object FieldConverter {
@@ -24,11 +24,11 @@ object FieldConverter {
   /** Type-safe method to parse a value given a function to extract what to parse from a RawRecord */
   @implicitNotFound("Couldn't find FieldConverter for type FieldConverter[${A}]")
   def parse[A](extract: RawRecord => String)(implicit parser: FieldConverter[A]): FieldBuilder[A] =
-    Kleisli { row =>
-      val extracted = Try(extract(row))
+    Kleisli { record =>
+      val extracted = Try(extract(record))
         .toEither
         .leftMap { ex =>
-          s"Exception on parsing CSV row $row: ${ex.toString}"
+          s"Exception on converting record $record: ${ex.toString}"
         }
         .toAValidated
       val parsed = parser.parseField _
@@ -37,11 +37,11 @@ object FieldConverter {
 
   /** Method to create the default parser for the given type */
   def apply[A](f: String => A): FieldConverter[A] = new FieldConverter[A] {
-    def parseField(cell: String): AValidated[A] = {
-      Try(f(cell))
+    def parseField(field: String): AValidated[A] = {
+      Try(f(field))
         .toEither
         .leftMap { ex =>
-          s"Exception on parsing CSV cell '$cell': ${ex.toString}"
+          s"Exception on converting field '$field': ${ex.toString}"
         }
         .toAValidated
     }

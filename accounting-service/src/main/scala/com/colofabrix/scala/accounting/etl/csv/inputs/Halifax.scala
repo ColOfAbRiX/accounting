@@ -15,11 +15,7 @@ import com.colofabrix.scala.accounting.etl.RecordConverter
 class HalifaxCsvProcessor extends CsvProcessor[HalifaxTransaction] with RecordConverter[HalifaxTransaction] {
 
   /** Converts a Csv row into a BankTransaction */
-  def filterFile(file: RawInput): RawInput = {
-    file
-      .drop(1)
-      .filter(_.filter(x => x.trim.nonEmpty).nonEmpty)
-  }
+  def filterFile(file: RawInput): RawInput = dropEmpty(dropHeader(file))
 
   /** Converts a Csv row */
   def convertRow(row: RawRecord): AValidated[HalifaxTransaction] = {

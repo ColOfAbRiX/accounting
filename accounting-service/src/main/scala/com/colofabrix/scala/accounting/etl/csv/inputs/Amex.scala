@@ -15,12 +15,7 @@ import com.colofabrix.scala.accounting.etl.RecordConverter
 class AmexCsvProcessor extends CsvProcessor[AmexTransaction] with RecordConverter[AmexTransaction] {
 
   /** Converts a Csv row into a BankTransaction */
-  def filterFile(file: RawInput): RawInput = {
-    file
-      .filter(
-        _.filter(_.nonEmpty).nonEmpty,
-      )
-  }
+  def filterFile(file: RawInput): RawInput = dropEmpty(file)
 
   /** Converts a Csv row into a BankTransaction */
   def convertRow(row: RawRecord): AValidated[AmexTransaction] = {
