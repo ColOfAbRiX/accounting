@@ -3,13 +3,10 @@ package com.colofabrix.scala.accounting.etl
 import java.time.format.DateTimeFormatter
 import java.time.LocalDate
 import scala.annotation.implicitNotFound
-import scala.util._
 import cats.data.Kleisli
 import cats.implicits._
 import com.colofabrix.scala.accounting.etl.definitions._
 import com.colofabrix.scala.accounting.utils.validation._
-import cats.Functor
-import cats.Traverse
 
 /**
  * Parser to transform record fields into JVM types

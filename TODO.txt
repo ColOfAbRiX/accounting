@@ -1,4 +1,3 @@
-Transform the
 Reintroduce streams with FS2
 Introduce cats-effects IO monad
 Manage validation results

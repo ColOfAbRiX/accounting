@@ -5,7 +5,7 @@ import com.colofabrix.scala.accounting.etl.FieldConverter._
 import com.colofabrix.scala.accounting.etl.definitions._
 import com.colofabrix.scala.accounting.model.InputTransaction
 import com.colofabrix.scala.accounting.utils.validation._
-import shapeless.{ Generic, HList, HNil, Poly2 }
+import shapeless.{Generic, HList, HNil, Poly2}
 import shapeless.ops.hlist.RightFolder
 import shapeless.UnaryTCConstraint.*->*
 
@@ -43,10 +43,9 @@ trait RecordConverter[T <: InputTransaction] {
         folder: RightFolder.Aux[HParsers, Accumulator[HNil], ApplyRecord.type, Accumulator[HParsed]],
         gen: Generic.Aux[T, HParsed],
   ): AValidated[T] = {
-    val tmp = parsers
+    parsers
       .foldRight((record, (HNil: HNil).aValid))(ApplyRecord)._2
       .map(gen.from)
-    tmp
   }
   // format: on
 

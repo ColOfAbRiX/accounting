@@ -2,7 +2,7 @@ package com.colofabrix.scala.accounting
 
 import cats.Applicative
 import cats.implicits._
-import io.circe.{ Encoder, Json }
+import io.circe._
 import org.http4s.EntityEncoder
 import org.http4s.circe._
 

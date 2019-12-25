@@ -1,18 +1,13 @@
 package com.colofabrix.scala.accounting.etl.csv
 
-import cats._
 import cats.implicits._
-import java.io.File
 import com.colofabrix.scala.accounting.etl._
 import com.colofabrix.scala.accounting.etl.definitions._
 import com.colofabrix.scala.accounting.model._
 import com.colofabrix.scala.accounting.utils.validation._
-import cats.data.Validated.Valid
-import cats.data.Validated.Invalid
-import cats.data.Nested
 
 /**
- * Processes a CSV file like filtering bad rows and converting them to case classes
+ * Processes a CSV file like filtering bad records and converting them to case classes
  */
 trait CsvProcessor[+T <: InputTransaction] {
   /** Filter a file to adapt it for processing */
@@ -47,7 +42,7 @@ class CsvInputConverter[+T <: InputTransaction](reader: CsvReader, processor: Cs
   def ingestInput: AValidated[List[T]] = {
     reader.read.flatMapV {
       processor.filterFile(_).flatMapV {
-        _.traverse(record => processor.convertRecord(record))
+        _.traverse(processor.convertRecord)
       }
     }
   }

@@ -1,7 +1,5 @@
 package com.colofabrix.scala.accounting.etl
 
-import cats._
-
 object definitions {
 
   /** A raw record that comes from the input */

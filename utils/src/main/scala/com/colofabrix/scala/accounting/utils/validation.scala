@@ -3,12 +3,9 @@ package com.colofabrix.scala.accounting.utils
 import scala.util.Try
 import scala.util.matching.Regex
 import cats.data._
+import cats.data.Validated.{Invalid, Valid}
 import cats.implicits._
 import cats.kernel.Semigroup
-import cats.Monad
-import cats.data.Validated.Invalid
-import cats.data.Validated.Valid
-import cats.kernel.Monoid
 
 /**
  * Accounting Validation (AValidation) module

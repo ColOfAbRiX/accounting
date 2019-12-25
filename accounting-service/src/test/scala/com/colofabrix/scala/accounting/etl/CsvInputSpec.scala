@@ -1,8 +1,8 @@
 package com.colofabrix.scala.accounting.etl
 
-import com.colofabrix.scala.accounting.model._
 import com.colofabrix.scala.accounting.etl.csv.AllInputs._
 import com.colofabrix.scala.accounting.etl.csv.CsvProcessor
+import com.colofabrix.scala.accounting.model._
 
 class BarclaysInputConversion extends InputConversionSpec[BarclaysTransaction] with BarclaysTestData {
   implicit val csvProcessor: CsvProcessor[BarclaysTransaction] = barclaysCsvProc

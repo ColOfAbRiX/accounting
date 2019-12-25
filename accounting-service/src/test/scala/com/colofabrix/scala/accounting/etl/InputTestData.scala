@@ -1,19 +1,12 @@
 package com.colofabrix.scala.accounting.etl
 
-import java.time.LocalDate
-import com.colofabrix.scala.accounting.utils.validation._
+import com.colofabrix.scala.accounting.etl.definitions._
 import com.colofabrix.scala.accounting.model._
-import definitions._
-import csv._
-import csv.AllInputs._
-import cats.data.Validated.{Valid, Invalid}
-
-/* Data in this file is taken from real CSV files of banks and data has been anonymized */
 
 // format: off
-trait BarclaysTestData extends InputTestData[BarclaysTransaction] {
 
-  // Barclay's
+//  Barclays
+trait BarclaysTestData extends InputTestData[BarclaysTransaction] {
 
   val sampleCorrectCsvData: List[RawRecord] = List(
     List("Number", "Date", "Account", "Amount", "Subcategory", "Memo"),
@@ -43,11 +36,11 @@ trait BarclaysTestData extends InputTestData[BarclaysTransaction] {
   )
 
   val sampleBadCsvData: List[RawRecord] = List(
-    List.fill(6)("header"), // Normal header
-    List.fill(6)("text"),   // Wrong data type
-    List.fill(6)(""),       // Empty strings
-    List.fill(6)(null),     // Null strings
-    List.empty,             // Empty row
+    List.fill(6)("header"),                                          // Normal header
+    List.fill(6)("text"),                                            // Wrong data type
+    List.fill(6)(""),                                                // Empty strings
+    List.fill(6)(null),                                              // Null strings
+    List.empty,                                                      // Empty row
     List("1", "", "20-32-06 13152170", "-100.00", "FT", "THOR A"),   // One empty field
     List("1", null, "20-32-06 13152170", "-100.00", "FT", "THOR A"), // One null field
     List("1", "04/11/2019", "20-32-06 13152170", "-100.00", "FT"),   // Missing fields
@@ -63,6 +56,8 @@ trait BarclaysTestData extends InputTestData[BarclaysTransaction] {
 
 }
 
+
+//  Halifax
 trait HalifaxTestData extends InputTestData[HalifaxTransaction] {
 
   val sampleCorrectCsvData: List[RawRecord] = List(
@@ -92,11 +87,11 @@ trait HalifaxTestData extends InputTestData[HalifaxTransaction] {
   )
 
   val sampleBadCsvData: List[RawRecord] = List(
-    List.fill(5)("header"), // Normal header
-    List.fill(5)("text"),   // Wrong data type
-    List.fill(5)(""),       // Empty strings
-    List.fill(5)(null),     // Null strings
-    List.empty,             // Missing fields
+    List.fill(5)("header"),                                      // Normal header
+    List.fill(5)("text"),                                        // Wrong data type
+    List.fill(5)(""),                                            // Empty strings
+    List.fill(5)(null),                                          // Null strings
+    List.empty,                                                  // Missing fields
     List("19/10/2019", "", "10224975", "IPER CONAD", "31.17"),   // One empty field
     List("19/10/2019", null, "10224975", "IPER CONAD", "31.17"), // One null field
     List("19/10/2019", "21/10/2019", "10224975", "IPER CONAD"),  // Missing fields
@@ -113,6 +108,8 @@ trait HalifaxTestData extends InputTestData[HalifaxTransaction] {
 
 }
 
+
+//  Starling
 trait StarlingTestData extends InputTestData[StarlingTransaction] {
 
   val sampleCorrectCsvData: List[RawRecord] = List(
@@ -131,11 +128,11 @@ trait StarlingTestData extends InputTestData[StarlingTransaction] {
   )
 
   val sampleBadCsvData: List[RawRecord] = List(
-    List.fill(6)("header"), // Normal header
-    List.fill(6)("text"),   // Wrong data type
-    List.fill(6)(""),       // Empty strings
-    List.fill(6)(null),     // Null strings
-    List.empty,             // Missing fields
+    List.fill(6)("header"),                                                         // Normal header
+    List.fill(6)("text"),                                                           // Wrong data type
+    List.fill(6)(""),                                                               // Empty strings
+    List.fill(6)(null),                                                             // Null strings
+    List.empty,                                                                     // Missing fields
     List("04/03/2019", "", "SAINSBURYS SACAT", "CONTACTLESS", "-3.70", "88.30"),    // One empty field
     List("04/03/2019", null, "SAINSBURYS SACAT", "CONTACTLESS", "-3.70", "88.30"),  // One null field
     List("04/03/2019", "Sainsbury's", "SAINSBURYS SACAT", "CONTACTLESS", "-3.70"),  // Missing fields
@@ -150,6 +147,8 @@ trait StarlingTestData extends InputTestData[StarlingTransaction] {
 
 }
 
+
+//  Amex
 trait AmexTestData extends InputTestData[AmexTransaction] {
 
   val sampleCorrectCsvData: List[RawRecord] = List(
@@ -180,11 +179,11 @@ trait AmexTestData extends InputTestData[AmexTransaction] {
   )
 
   val sampleBadCsvData: List[RawRecord] = List(
-    List.fill(5)("header"), // Normal header
-    List.fill(5)("text"),   // Wrong data type
-    List.fill(5)(""),       // Empty strings
-    List.fill(5)(null),     // Null strings
-    List.empty,             // Missing fields
+    List.fill(5)("header"),                                               // Normal header
+    List.fill(5)("text"),                                                 // Wrong data type
+    List.fill(5)(""),                                                     // Empty strings
+    List.fill(5)(null),                                                   // Null strings
+    List.empty,                                                           // Missing fields
     List("27/10/2019", "", " 7.75", "THE LORD", " Process 27/10/2019"),   // One empty field
     List("27/10/2019", null, " 7.75", "THE LORD", " Process 27/10/2019"), // One null field
     List("27/10/2019", "Reference", " 7.75", "THE LORD"),                 // Missing fields
@@ -200,4 +199,5 @@ trait AmexTestData extends InputTestData[AmexTransaction] {
   )
 
 }
+
 // format: on
