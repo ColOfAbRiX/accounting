@@ -14,12 +14,12 @@ import com.colofabrix.scala.accounting.etl.RecordConverter
  */
 class BarclaysCsvProcessor extends CsvProcessor[BarclaysTransaction] with RecordConverter[BarclaysTransaction] {
 
-  /** Converts a Csv row into a BankTransaction */
-  def filterFile(file: RawInput): RawInput = dropEmpty(dropHeader(file))
+  def filterFile(file: RawInput): AValidated[RawInput] = TryV {
+    dropEmpty(dropHeader(file))
+  }
 
-  /** Converts a Csv row into a BankTransaction */
-  def convertRow(row: RawRecord): AValidated[BarclaysTransaction] = {
-    convert(row) {
+  def convertRecord(record: RawRecord): AValidated[BarclaysTransaction] = {
+    convert(record) {
       val number      = parse[Option[Int]](r => r(0))
       val date        = parse[LocalDate](r => r(1))("dd/MM/yyyy")
       val account     = parse[String](r => r(2))

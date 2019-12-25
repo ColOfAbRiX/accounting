@@ -8,6 +8,7 @@ import cats.kernel.Semigroup
 import cats.Monad
 import cats.data.Validated.Invalid
 import cats.data.Validated.Valid
+import cats.kernel.Monoid
 
 /**
  * Accounting Validation (AValidation) module
@@ -17,25 +18,17 @@ object validation {
   /** The type used to validate Csv data */
   type AValidated[+A] = Validated[NonEmptyChain[String], A]
 
-  /** Custom monad instance for AValidated */
-  implicit val aValidatedM = new Monad[AValidated] {
-    def flatMap[A, B](fa: AValidated[A])(f: A => AValidated[B]): AValidated[B] = fa match {
-      case i @ Invalid(e) => i
-      case Valid(a)       => f(a)
-    }
+  //  ENRICHMENT CLASSES  //
 
-    def pure[A](a: A): AValidated[A] = a.aValid
-
-    @annotation.tailrec
-    def tailRecM[A, B](init: A)(fn: A => AValidated[Either[A, B]]): AValidated[B] =
-      fn(init) match {
-        case i @ Invalid(e)  => i
-        case Valid(Right(b)) => Valid(b)
-        case Valid(Left(a))  => tailRecM(a)(fn)
-      }
+  /** Try to AValidated */
+  object TryV {
+    def apply[A](f: => A): AValidated[A] = Try(f).toAValidated
   }
 
-  //  ENRICHMENT CLASSES  //
+  /** Try to Either */
+  object TryE {
+    def apply[A](f: => A): Either[Throwable, A] = Try(f).toEither
+  }
 
   /** Enrichment for scala.util.Try */
   implicit class TryOps[A](private val tryObject: Try[A]) extends AnyVal {
@@ -44,6 +37,14 @@ object validation {
         .toEither
         .leftMap(_.toString)
         .toValidatedNec
+    }
+  }
+
+  /** Enrichment for AValidated */
+  implicit class AValidatedOps[A](private val avObject: AValidated[A]) extends AnyVal {
+    def flatMapV[B](f: A => AValidated[B]): AValidated[B] = avObject match {
+      case i @ Invalid(_) => i
+      case Valid(a)       => f(a)
     }
   }
 

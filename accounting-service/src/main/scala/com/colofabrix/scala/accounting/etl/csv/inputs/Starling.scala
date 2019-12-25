@@ -14,21 +14,15 @@ import com.colofabrix.scala.accounting.etl.RecordConverter
  */
 class StarlingCsvProcessor extends CsvProcessor[StarlingTransaction] with RecordConverter[StarlingTransaction] {
 
-  /** Converts a Csv row into a BankTransaction */
-  def filterFile(file: RawInput): RawInput = {
-    // FIXME: make this function return a validated result
-    val tmp = dropEmpty(dropHeader(file))
-    tmp.filter { record =>
-      if( record.length >= 1 && record(1) != null )
-        record(1).toLowerCase != "opening balance"
-      else
-        true
-    }
+  def filterFile(file: RawInput): AValidated[RawInput] = TryV {
+    dropEmpty(dropHeader(file))
+      .filter { record =>
+        record.length >= 1 && record(1) != null && record(1).toLowerCase != "opening balance"
+      }
   }
 
-  /** Converts a Csv row into a BankTransaction */
-  def convertRow(row: RawRecord): AValidated[StarlingTransaction] = {
-    convert(row) {
+  def convertRecord(record: RawRecord): AValidated[StarlingTransaction] = {
+    convert(record) {
       val date         = parse[LocalDate](r => r(0))("dd/MM/yyyy")
       val counterParty = parse[String](r => r(1))
       val reference    = parse[String](r => r(2))

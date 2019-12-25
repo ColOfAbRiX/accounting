@@ -43,14 +43,16 @@ trait InputConversionSpec[T <: InputTransaction] extends FlatSpec with Matchers 
 
   private def printV[T](input: AValidated[List[T]]): Unit = {
     import cats.data.Validated.{Valid, Invalid}
+    println("--------")
     input match {
       case Valid(a) =>
-        println(s"VALID: $input")
+        println(s"VALID")
         a.foreach(println)
       case Invalid(e) =>
-        println(s"INVALID: $input")
+        println(s"INVALID")
         e.iterator.foreach(println)
       }
+    println("--------")
   }
 
   private def compare[A, B](expected: List[A], computed: List[A]) = {
@@ -89,6 +91,6 @@ trait InputConversionSpec[T <: InputTransaction] extends FlatSpec with Matchers 
       .get
       .toList
     computed should contain theSameElementsAs (this.convertedBadData)
-}
+  }
 
 }

@@ -55,6 +55,7 @@ trait BarclaysTestData extends InputTestData[BarclaysTransaction] {
 
   val convertedBadData: List[String] = List(
     "Exception on converting field 'text': java.lang.NumberFormatException",
+    "Exception on converting field 'text': java.time.format.DateTimeParseException: Text 'text' could not be parsed at index 0",
     "Exception on converting field '': java.time.format.DateTimeParseException: Text '' could not be parsed at index 0",
     "Exception on converting field 'null': java.lang.NullPointerException",
     "Exception on converting record List(1, 04/11/2019, 20-32-06 13152170, -100.00, FT): java.lang.IndexOutOfBoundsException: 5",
@@ -103,6 +104,8 @@ trait HalifaxTestData extends InputTestData[HalifaxTransaction] {
 
   val convertedBadData: List[String] = List(
     "Exception on converting field 'text': java.lang.NumberFormatException",
+    "Exception on converting field 'text': java.time.format.DateTimeParseException: Text 'text' could not be parsed at index 0",
+    "Exception on converting field 'text': java.time.format.DateTimeParseException: Text 'text' could not be parsed at index 0",
     "Exception on converting field '': java.time.format.DateTimeParseException: Text '' could not be parsed at index 0",
     "Exception on converting field 'null': java.lang.NullPointerException",
     "Exception on converting record List(19/10/2019, 21/10/2019, 10224975, IPER CONAD): java.lang.IndexOutOfBoundsException: 4",
@@ -140,7 +143,8 @@ trait StarlingTestData extends InputTestData[StarlingTransaction] {
 
   val convertedBadData: List[String] = List(
     "Exception on converting field 'text': java.lang.NumberFormatException",
-    "Exception on converting field 'null': java.lang.NullPointerException",
+    "Exception on converting field 'text': java.lang.NumberFormatException",
+    "Exception on converting field 'text': java.time.format.DateTimeParseException: Text 'text' could not be parsed at index 0",
     "Exception on converting record List(04/03/2019, Sainsbury's, SAINSBURYS SACAT, CONTACTLESS, -3.70): java.lang.IndexOutOfBoundsException: 5",
   )
 
@@ -188,7 +192,9 @@ trait AmexTestData extends InputTestData[AmexTransaction] {
 
   val convertedBadData: List[String] = List(
     "Exception on converting field 'header': java.lang.NumberFormatException",
+    "Exception on converting field 'header': java.time.format.DateTimeParseException: Text 'header' could not be parsed at index 0",
     "Exception on converting field 'text': java.lang.NumberFormatException",
+    "Exception on converting field 'text': java.time.format.DateTimeParseException: Text 'text' could not be parsed at index 0",
     "Exception on converting field 'null': java.lang.NullPointerException",
     "Exception on converting record List(27/10/2019, Reference,  7.75, THE LORD): java.lang.IndexOutOfBoundsException: 4",
   )

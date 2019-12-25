@@ -19,10 +19,9 @@ class FileCsvReader(file: File) extends CsvReader {
   import kantan.csv._
   import kantan.csv.ops._
 
-  def read: AValidated[RawInput] =
-    Try {
-      file.asUnsafeCsvReader[List[String]](rfc).toList
-    }.toAValidated
+  def read: AValidated[RawInput] = TryV {
+    file.asUnsafeCsvReader[List[String]](rfc).toList
+  }
 }
 
 /**

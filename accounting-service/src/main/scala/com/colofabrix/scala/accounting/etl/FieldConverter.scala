@@ -8,6 +8,8 @@ import cats.data.Kleisli
 import cats.implicits._
 import com.colofabrix.scala.accounting.etl.definitions._
 import com.colofabrix.scala.accounting.utils.validation._
+import cats.Functor
+import cats.Traverse
 
 /**
  * Parser to transform record fields into JVM types
@@ -25,12 +27,9 @@ object FieldConverter {
   @implicitNotFound("Couldn't find FieldConverter for type FieldConverter[${A}]")
   def parse[A](extract: RawRecord => String)(implicit parser: FieldConverter[A]): FieldBuilder[A] =
     Kleisli { record =>
-      val extracted = Try(extract(record))
-        .toEither
-        .leftMap { ex =>
-          s"Exception on converting record $record: ${ex.toString}"
-        }
-        .toAValidated
+      val extracted = TryE(extract(record)).leftMap { ex =>
+        s"Exception on converting record $record: ${ex.toString}"
+      }.toAValidated
       val parsed = parser.parseField _
       extracted andThen parsed
     }
@@ -38,12 +37,9 @@ object FieldConverter {
   /** Method to create the default parser for the given type */
   def apply[A](f: String => A): FieldConverter[A] = new FieldConverter[A] {
     def parseField(field: String): AValidated[A] = {
-      Try(f(field))
-        .toEither
-        .leftMap { ex =>
-          s"Exception on converting field '$field': ${ex.toString}"
-        }
-        .toAValidated
+      TryE(f(field)).leftMap { ex =>
+        s"Exception on converting field '$field': ${ex.toString}"
+      }.toAValidated
     }
   }
 
