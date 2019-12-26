@@ -2,6 +2,8 @@
 val ScalaVersion      = "2.13.0"
 val AccountingVersion = "0.1.0-SNAPSHOT"
 
+//  - - - - - - - - - - - - - - - - - //
+
 // Versions
 val CatsScalaTestVersion = "3.0.4"
 val CatsVersion          = "2.0.0"
@@ -24,8 +26,11 @@ val WartRemoverVersion      = "2.4.3"
 val KindProjectorVersion    = "0.10.3"
 val BetterMonadicForVersion = "0.3.0"
 
+//  - - - - - - - - - - - - - - - - - //
+
 // Libraries
 val CatsCoreDep          = "org.typelevel"    %% "cats-core"           % CatsVersion
+val CatsEffectsDep       = "org.typelevel"    %% "cats-effects"        % CatsVersion
 val CatsScalaTestDep     = "com.ironcorelabs" %% "cats-scalatest"      % CatsScalaTestVersion % "test"
 val CirceGenericDep      = "io.circe"         %% "circe-generic"       % CirceVersion
 val FS2CoreDep           = "co.fs2"           %% "fs2-core"            % FS2Version
@@ -38,16 +43,20 @@ val KantanCsvDep         = "com.nrinaudo"     %% "kantan.csv"          % KantanC
 val LogbackClassicDep    = "ch.qos.logback"   % "logback-classic"      % LogbackVersion
 val ScalatestDep         = "org.scalatest"    %% "scalatest"           % ScalatestVersion % "test"
 val ShapelessDep         = "com.chuusai"      %% "shapeless"           % ShapelessVersion
-// val AirframeDep          = "org.wvlet.airframe"         %% "airframe"            % AirframeVersion,
-// val CatsEffectsDep       = "org.typelevel"              %% "cats-effects"        % CatsVersion,
-// val DoobieCoreDep        = "org.tpolecat"               %% "doobie-core"         % DoobieVersion % "test",
-// val MonocleCoreDep       = "com.github.julien-truffaut" %% "monocle-core"        % MonocleVersion % "test",
-// val MonocleLawDep        = "com.github.julien-truffaut" %% "monocle-law"         % MonocleVersion
-// val MonocleMacroDep      = "com.github.julien-truffaut" %% "monocle-macro"       % MonocleVersion,
-// val PureconfigDep        = "com.github.pureconfig"      %% "pureconfig"          % PureconfigVersion,
-// val ScalacheckDep        = "org.scalacheck"             %% "scalacheck"          % ScalacheckVersion,
-// val TapirCoreDep         = "com.softwaremill.tapir"     %% "tapir-core"          % TapirVersion,
-// val TapirHttp4sServerDep = "com.softwaremill.tapir"     %% "tapir-http4s-server" % TapirVersion,
+// val AirframeDep          = "org.wvlet.airframe"         %% "airframe"            % AirframeVersion
+// val DoobieCoreDep        = "org.tpolecat"               %% "doobie-core"         % DoobieVersion % "test"
+// val MonocleCoreDep       = "com.github.julien-truffaut" %% "monocle-core"        % MonocleVersion % "test"
+// val MonocleLawDep        = "com.github.julien-truffaut" %% "monocle-law"         % MonocleVersio
+// val MonocleMacroDep      = "com.github.julien-truffaut" %% "monocle-macro"       % MonocleVersion
+// val PureconfigDep        = "com.github.pureconfig"      %% "pureconfig"          % PureconfigVersion
+// val ScalacheckDep        = "org.scalacheck"             %% "scalacheck"          % ScalacheckVersion
+// val TapirCoreDep         = "com.softwaremill.tapir"     %% "tapir-core"          % TapirVersion
+// val TapirHttp4sServerDep = "com.softwaremill.tapir"     %% "tapir-http4s-server" % TapirVersion
+
+// Compiler plugins
+val BetterMonadicForPlugin = compilerPlugin("com.olegpy"      %% "better-monadic-for" % BetterMonadicForVersion)
+val KindProjectorPlugin    = compilerPlugin("org.typelevel"   %% "kind-projector"     % KindProjectorVersion)
+val WartremoverPlugin      = compilerPlugin("org.wartremover" %% "wartremover"        % WartRemoverVersion cross CrossVersion.full)
 
 //  - - - - - - - - - - - - - - - - - //
 
@@ -61,12 +70,6 @@ scalacOptions ++= Seq(
   "-feature",
   "-Xfatal-warnings",
 )
-
-addCompilerPlugin("com.olegpy"      %% "better-monadic-for" % BetterMonadicForVersion)
-addCompilerPlugin("org.typelevel"   %% "kind-projector"     % KindProjectorVersion)
-addCompilerPlugin("org.wartremover" %% "wartremover"        % WartRemoverVersion cross CrossVersion.full)
-
-//  - - - - - - - - - - - - - - - - - //
 
 // Wartremover
 wartremoverExcluded += baseDirectory.value / "src" / "test" / "scala"
@@ -90,9 +93,29 @@ lazy val accountingRoot: Project = project
     name := "accounting-root",
     version := AccountingVersion,
     scalaVersion := ScalaVersion,
+    libraryDependencies ++= Seq(
+      BetterMonadicForPlugin,
+      KindProjectorPlugin,
+      WartremoverPlugin,
+    ),
   )
   .aggregate(
     accountingService
+  )
+
+// Utils project
+lazy val utils = project
+  .in(file("utils"))
+  .settings(
+    organization := "com.colofabrix.scala.accounting",
+    name := "utils",
+    version := AccountingVersion,
+    scalaVersion := ScalaVersion,
+    libraryDependencies ++= Seq(
+      CatsCoreDep,
+      CatsScalaTestDep,
+      ScalatestDep,
+    ),
   )
 
 // Service project
@@ -108,6 +131,7 @@ lazy val accountingService = project
     scalaVersion := ScalaVersion,
     libraryDependencies ++= Seq(
       CatsCoreDep,
+      CatsEffectsDep,
       CatsScalaTestDep,
       CirceGenericDep,
       FS2CoreDep,
@@ -120,18 +144,5 @@ lazy val accountingService = project
       LogbackClassicDep,
       ScalatestDep,
       ShapelessDep,
-    ),
-  )
-
-// Utils project
-lazy val utils = project
-  .in(file("utils"))
-  .settings(
-    organization := "com.colofabrix.scala.accounting",
-    name := "utils",
-    version := AccountingVersion,
-    scalaVersion := ScalaVersion,
-    libraryDependencies ++= Seq(
-      CatsCoreDep
     ),
   )

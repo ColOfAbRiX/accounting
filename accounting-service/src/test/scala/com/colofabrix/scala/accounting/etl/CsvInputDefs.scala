@@ -7,6 +7,7 @@ import com.colofabrix.scala.accounting.etl.csv._
 import com.colofabrix.scala.accounting.etl.definitions._
 import com.colofabrix.scala.accounting.model._
 import com.colofabrix.scala.accounting.utils.validation._
+import com.colofabrix.scala.accounting.utils.DebugHelpers
 import org.scalatest._
 
 /**
@@ -37,31 +38,35 @@ trait InputTestData[T <: InputTransaction] {
 /**
  * Defines the tests for all input conversions
  */
-trait InputConversionSpec[T <: InputTransaction] extends FlatSpec with Matchers with ValidatedMatchers {
-  this: InputTestData[T] =>
+// trait InputConversionSpec[T <: InputTransaction]
+//     extends FlatSpec
+//     with Matchers
+//     with ValidatedMatchers
+//     with DebugHelpers {
+//   this: InputTestData[T] =>
 
-  s"A VALID input data for ${name}" should "be converted into a valid result" in {
-    val computedV = converter(this.sampleCorrectCsvData).ingestInput
-    computedV shouldBe valid
-  }
+//   s"A VALID input data for ${name}" should "be converted into a valid result" in {
+//     val computedV = converter(this.sampleCorrectCsvData).ingestInput
+//     computedV shouldBe valid
+//   }
 
-  s"A VALID input data for ${name}" should s"be converted into a sequence of ${name}Transaction" in {
-    val computedV = converter(this.sampleCorrectCsvData).ingestInput
-    val expectedV = this.convertedCorrectData.aValid
-    (computedV, expectedV).mapN { (computed, expected) =>
-      computed should contain theSameElementsInOrderAs (expected)
-    }
-  }
+//   s"A VALID input data for ${name}" should s"be converted into a sequence of ${name}Transaction" in {
+//     val computedV = converter(this.sampleCorrectCsvData).ingestInput
+//     val expectedV = this.convertedCorrectData.aValid
+//     (computedV, expectedV).mapN { (computed, expected) =>
+//       computed should contain theSameElementsInOrderAs (expected)
+//     }
+//   }
 
-  s"An INVALID input data for ${name}" should "be converted into an invalid result" in {
-    val computedV = converter(this.sampleBadCsvData).ingestInput
-    computedV shouldBe invalid
-  }
+//   s"An INVALID input data for ${name}" should "be converted into an invalid result" in {
+//     val computedV = converter(this.sampleBadCsvData).ingestInput
+//     computedV shouldBe invalid
+//   }
 
-  s"An INVALID input data for ${name}" should "report correct conversion errors" in {
-    val computedV = converter(this.sampleBadCsvData).ingestInput
-    val computed = computedV.toEither.left.get.toList
-    computed should contain theSameElementsAs (this.convertedBadData)
-  }
+//   s"An INVALID input data for ${name}" should "report correct conversion errors" in {
+//     val computedV = converter(this.sampleBadCsvData).ingestInput
+//     val computed  = computedV.toEither.left.get.toList
+//     computed should contain theSameElementsAs (this.convertedBadData)
+//   }
 
-}
+// }

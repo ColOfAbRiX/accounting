@@ -39,12 +39,14 @@ class CsvInputConverter[+T <: InputTransaction](reader: CsvReader, processor: Cs
     extends InputConverter[T] {
 
   /** Processes the entire content provided by the Input Reader */
-  def ingestInput: AValidated[List[T]] = {
-    reader.read.flatMapV {
-      processor.filterFile(_).flatMapV {
-        _.traverse(processor.convertRecord)
+  def ingestInput: BankInputsV[T] = {
+    val result = reader.read.flatMapV {
+      processor.filterFile(_).map { file =>
+        file.map(processor.convertRecord)
       }
     }
+
+    fs2.Stream.empty
   }
 
 }
