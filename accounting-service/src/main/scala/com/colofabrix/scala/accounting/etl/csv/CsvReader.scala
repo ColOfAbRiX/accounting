@@ -1,35 +1,52 @@
 package com.colofabrix.scala.accounting.etl.csv
 
 import java.io.File
+import cats.implicits._
 import com.colofabrix.scala.accounting.etl.definitions._
 import com.colofabrix.scala.accounting.utils.validation._
 import cats.effect.IO
+import cats.effect.Resource
 
 /**
  * Interface for a generic CSV reader that reads raw data
  */
 trait CsvReader {
-  def read: IO[AValidated[RawInput]]
+  def read: VStream[IO, RawRecord]
+}
+
+/**
+ * CSV Reader from Iterable
+ */
+class IterableCsvReader(input: Iterable[RawRecord]) extends CsvReader {
+  def read: VStream[IO, RawRecord] = {
+    fs2.Stream.unfold(input.iterator)(i => if (i.hasNext) Some((i.next.aValid, i)) else None)
+  }
 }
 
 /**
  * CSV Reader
  */
-class CsvFileReader(file: File) extends CsvReader {
+class FileCsvReader(file: File) extends CsvReader {
   import kantan.csv._
   import kantan.csv.ops._
 
-  def read: IO[AValidated[RawInput]] = TryV {
-    val iterator = file.asUnsafeCsvReader[List[String]](rfc)
-    fs2.Stream.unfold(iterator) { i =>
-      if (i.hasNext) Some((i.next, i)) else None
+  private type KantanReader = kantan.csv.CsvReader[ReadResult[List[String]]]
+
+  private def unfoldCsv(iterator: KantanReader): Option[(AValidated[RawRecord], KantanReader)] = {
+    def onError(e: ReadError) = Some(e.toString.aInvalid, iterator)
+    def onValid(v: RawRecord) = Some(v.aValid, iterator)
+    if (iterator.hasNext) iterator.next.fold(onError, onValid) else None
+  }
+
+  def read: VStream[IO, RawRecord] = {
+    val openReader                   = IO(file.asCsvReader[List[String]](rfc))
+    def closeReader(r: KantanReader) = IO(r.close())
+    val reader                       = Resource.make(openReader)(closeReader)
+    for {
+      iterator <- fs2.Stream.resource(reader)
+      result   <- fs2.Stream.unfold(iterator)(unfoldCsv)
+    } yield {
+      result
     }
   }
-}
-
-/**
- * Dummy CSV Reader
- */
-class DummyCsvReader(input: RawInput) extends CsvReader {
-  def read: IO[AValidated[RawInput]] = IO.pure(input.aValid)
 }

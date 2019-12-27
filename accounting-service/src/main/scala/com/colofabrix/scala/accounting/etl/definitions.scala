@@ -13,12 +13,7 @@ object definitions {
   /** An input as collection of RawRecords */
   type RawInput = fs2.Stream[Pure, RawRecord]
 
-  /** A bank input as collection of transactions */
-  type BankInputs[+T <: InputTransaction] = fs2.Stream[Pure, T]
-
-  /** A bank input as collection of validated data */
-  type BankInputsV[+T <: InputTransaction] = fs2.Stream[Pure, AValidated[T]]
-
-  type StreamIO[A] = IO[fs2.Stream[Pure, AValidated[A]]]
+  /** Validated Stream */
+  type VStream[+F[_], +A] = fs2.Stream[F, AValidated[A]]
 
 }

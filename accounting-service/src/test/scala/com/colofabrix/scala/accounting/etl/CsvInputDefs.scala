@@ -17,7 +17,7 @@ trait InputTestData[T <: InputTransaction] {
   def date(year: Int, month: Int, day: Int): LocalDate = LocalDate.of(year, month, day)
 
   def converter(data: RawInput)(implicit processor: CsvProcessor[T]): InputConverter[T] = {
-    new CsvInputConverter[T](new DummyCsvReader(data), processor)
+    new CsvInputConverter[T](new IterableCsvReader(data.toList), processor)
   }
 
   def name: String = this.getClass.getSimpleName.replaceAll("""InputConversion.*$""", "")

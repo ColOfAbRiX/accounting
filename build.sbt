@@ -30,7 +30,7 @@ val BetterMonadicForVersion = "0.3.0"
 
 // Libraries
 val CatsCoreDep          = "org.typelevel"    %% "cats-core"           % CatsVersion
-val CatsEffectsDep       = "org.typelevel"    %% "cats-effects"        % CatsVersion
+val CatsEffectsDep       = "org.typelevel"    %% "cats-effect"         % CatsVersion
 val CatsScalaTestDep     = "com.ironcorelabs" %% "cats-scalatest"      % CatsScalaTestVersion % "test"
 val CirceGenericDep      = "io.circe"         %% "circe-generic"       % CirceVersion
 val FS2CoreDep           = "co.fs2"           %% "fs2-core"            % FS2Version

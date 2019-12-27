@@ -5,6 +5,7 @@ import com.colofabrix.scala.accounting.etl._
 import com.colofabrix.scala.accounting.etl.definitions._
 import com.colofabrix.scala.accounting.model._
 import com.colofabrix.scala.accounting.utils.validation._
+import cats.effect.IO
 
 /**
  * Processes a CSV file like filtering bad records and converting them to case classes
@@ -39,14 +40,15 @@ class CsvInputConverter[+T <: InputTransaction](reader: CsvReader, processor: Cs
     extends InputConverter[T] {
 
   /** Processes the entire content provided by the Input Reader */
-  def ingestInput: BankInputsV[T] = {
-    val result = reader.read.flatMapV {
-      processor.filterFile(_).map { file =>
-        file.map(processor.convertRecord)
-      }
-    }
+  def ingestInput: VStream[IO, T] = ???
+  // def ingestInput: BankInputsV[T] = {
+  //   val result = reader.read.flatMapV {
+  //     processor.filterFile(_).map { file =>
+  //       file.map(processor.convertRecord)
+  //     }
+  //   }
 
-    fs2.Stream.empty
-  }
+  //   fs2.Stream.empty
+  // }
 
 }

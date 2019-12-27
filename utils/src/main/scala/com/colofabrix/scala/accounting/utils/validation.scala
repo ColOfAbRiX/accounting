@@ -3,7 +3,7 @@ package com.colofabrix.scala.accounting.utils
 import scala.util.Try
 import scala.util.matching.Regex
 import cats.data._
-import cats.data.Validated.{Invalid, Valid}
+import cats.data.Validated.{ Invalid, Valid }
 import cats.implicits._
 import cats.kernel.Semigroup
 
@@ -77,11 +77,10 @@ object validation {
 
   //  COMBINATORS  //
 
+  type Vtor[A] = ((=> String, A) => AValidated[A])
+
   /** Build a validation function as concatenation of the provided functions */
-  def validateAll[A](validators: ((=> String, A) => AValidated[A])*)(name: => String, value: A)(
-      implicit
-      aSemi: Semigroup[A],
-  ): AValidated[A] = {
+  def validateAll[A](validators: Vtor[A]*)(name: => String, value: A)(implicit aSemi: Semigroup[A]): AValidated[A] = {
     validators.foldLeft(value.aValid)(_ combine _(name, value))
   }
 
