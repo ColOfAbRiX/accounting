@@ -3,6 +3,7 @@ package com.colofabrix.scala.accounting
 import cats.data.Validated.{ Invalid, Valid }
 import com.colofabrix.scala.accounting.model.BarclaysTransaction
 import cats.effect._
+import java.util.concurrent.ThreadPoolExecutor
 
 // object Main extends IOApp {
 //   def run(args: List[String]) =
@@ -20,23 +21,17 @@ object Main extends IOApp {
     import AllInputs._
 
     val csvReader = new FileCsvReader(new java.io.File("samples/sample_barclays.csv"))
-    val stream = csvReader.read.map { x => println(x); x }
-
-    stream.compile.toVector.unsafeRunSync()
-
-    // val converter = new CsvInputConverter[BarclaysTransaction](csvReader, barclaysCsvProc)
-    // val result    = converter.ingestInput
-
-    // result match {
-    //   case Invalid(e) =>
-    //     println("ERRORS")
-    //     e.iterator.foreach(println)
-    //   case Valid(transactions) =>
-    //     println("TRANSACTIONS")
-    //     transactions.foreach(println)
-    // }
+    val result = implicitly[CsvProcessor[BarclaysTransaction]].process[IO](csvReader.read)
+    result.map { x => println(x); x }.compile.toVector.unsafeRunSync()
 
     ExitCode.Success
   }
+
+}
+
+object ExecutorsBuilder {
+
+  // https://blog.jessitron.com/2014/01/29/choosing-an-executorservice/
+  val coresCount = Runtime.getRuntime().availableProcessors()
 
 }

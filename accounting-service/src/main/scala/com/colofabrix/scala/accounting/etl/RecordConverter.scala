@@ -34,7 +34,7 @@ trait RecordConverter[T <: InputTransaction] {
 
   // UnaryTCConstraint taken from here: https://mpilquist.github.io/blog/2013/06/09/scodec-part-3/
 
-  def convert[
+  protected def convertRecord[
     HParsers <: HList : *->*[FieldBuilder]#λ,
     HParsed <: HList](
       record: RawRecord)(

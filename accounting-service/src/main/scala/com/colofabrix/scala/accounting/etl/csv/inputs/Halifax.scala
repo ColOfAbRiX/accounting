@@ -14,18 +14,17 @@ import shapeless._
  */
 class HalifaxCsvProcessor extends CsvProcessor[HalifaxTransaction] with RecordConverter[HalifaxTransaction] {
 
-  def filterFile(file: RawInput): AValidated[RawInput] = TryV {
-    dropEmpty(dropHeader(file))
+  protected def filter[F[_]](input: VRawInput[F]): VRawInput[F] = {
+    dropEmpty(dropHeader(input))
   }
 
-  def convertRecord(record: RawRecord): AValidated[HalifaxTransaction] = {
-    convert(record) {
+  protected def convert(record: RawRecord): AValidated[HalifaxTransaction] = {
+    convertRecord(record) {
       val date        = parse[LocalDate](r => r(0))("dd/MM/yyyy")
       val dateEntered = parse[LocalDate](r => r(1))("dd/MM/yyyy")
       val reference   = parse[String](r => r(2))
       val description = parse[String](r => r(3))
       val amount      = parse[BigDecimal](r => r(4)).map(amount => -1.0 * amount)
-
       date :: dateEntered :: reference :: description :: amount :: HNil
     }
   }

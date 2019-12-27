@@ -15,6 +15,12 @@ object validation {
   /** The type used to validate Csv data */
   type AValidated[+A] = Validated[NonEmptyChain[String], A]
 
+  /** Validated Stream */
+  type VStream[+F[_], +A] = fs2.Stream[F, AValidated[A]]
+
+  /** Validated Pipe */
+  type VPipe[F[_], -I, +O] = fs2.Pipe[F, AValidated[I], AValidated[O]]
+
   //  ENRICHMENT CLASSES  //
 
   /** Try to AValidated */

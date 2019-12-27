@@ -11,9 +11,9 @@ object definitions {
   type RawRecord = List[String]
 
   /** An input as collection of RawRecords */
-  type RawInput = fs2.Stream[Pure, RawRecord]
+  type RawInput[F[_]] = fs2.Stream[F, RawRecord]
 
-  /** Validated Stream */
-  type VStream[+F[_], +A] = fs2.Stream[F, AValidated[A]]
+  /** An input as collection of RawRecords */
+  type VRawInput[F[_]] = fs2.Stream[F, AValidated[RawRecord]]
 
 }

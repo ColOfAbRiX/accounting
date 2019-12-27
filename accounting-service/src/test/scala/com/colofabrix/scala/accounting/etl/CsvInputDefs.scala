@@ -15,15 +15,8 @@ import org.scalatest._
  */
 trait InputTestData[T <: InputTransaction] {
   def date(year: Int, month: Int, day: Int): LocalDate = LocalDate.of(year, month, day)
-
-  def converter(data: RawInput)(implicit processor: CsvProcessor[T]): InputConverter[T] = {
-    new CsvInputConverter[T](new IterableCsvReader(data.toList), processor)
-  }
-
   def name: String = this.getClass.getSimpleName.replaceAll("""InputConversion.*$""", "")
 
-  /** Needed to provide the processor to convert the data */
-  implicit val csvProcessor: CsvProcessor[T]
   /** Test dataset of correct CSV data */
   def sampleCorrectCsvData: List[RawRecord]
   /** Expected result for conversion of sampleCorrectCsvData */
@@ -32,41 +25,44 @@ trait InputTestData[T <: InputTransaction] {
   def sampleBadCsvData: List[RawRecord]
   /** Expected result for conversion of sampleBadCsvData */
   def convertedBadData: List[String]
-
 }
 
 /**
  * Defines the tests for all input conversions
- */
-// trait InputConversionSpec[T <: InputTransaction]
-//     extends FlatSpec
-//     with Matchers
-//     with ValidatedMatchers
-//     with DebugHelpers {
-//   this: InputTestData[T] =>
+   */
+trait InputConversionSpec[T <: InputTransaction]
+    extends FlatSpec
+    with Matchers
+    with ValidatedMatchers
+    with DebugHelpers {
+  this: InputTestData[T] =>
 
-//   s"A VALID input data for ${name}" should "be converted into a valid result" in {
-//     val computedV = converter(this.sampleCorrectCsvData).ingestInput
-//     computedV shouldBe valid
-//   }
+  /** Needed to provide the processor to convert the data */
+  implicit val csvProcessor: CsvProcessor[T]
 
-//   s"A VALID input data for ${name}" should s"be converted into a sequence of ${name}Transaction" in {
-//     val computedV = converter(this.sampleCorrectCsvData).ingestInput
-//     val expectedV = this.convertedCorrectData.aValid
-//     (computedV, expectedV).mapN { (computed, expected) =>
-//       computed should contain theSameElementsInOrderAs (expected)
-//     }
-//   }
+  s"A VALID input data for ${name}" should "be converted into a valid result" in {
+    val reader = new IterableCsvReader(this.sampleCorrectCsvData)
+    val computedV = reader.read.through(csvProcessor.process[fs2.Pure])
+    computedV.map(x => x shouldBe valid)
+  }
 
-//   s"An INVALID input data for ${name}" should "be converted into an invalid result" in {
-//     val computedV = converter(this.sampleBadCsvData).ingestInput
-//     computedV shouldBe invalid
-//   }
+  // s"A VALID input data for ${name}" should s"be converted into a sequence of ${name}Transaction" in {
+  //   val computedV = converter(this.sampleCorrectCsvData).ingestInput
+  //   val expectedV = this.convertedCorrectData.aValid
+  //   (computedV, expectedV).mapN { (computed, expected) =>
+  //     computed should contain theSameElementsInOrderAs (expected)
+  //   }
+  // }
 
-//   s"An INVALID input data for ${name}" should "report correct conversion errors" in {
-//     val computedV = converter(this.sampleBadCsvData).ingestInput
-//     val computed  = computedV.toEither.left.get.toList
-//     computed should contain theSameElementsAs (this.convertedBadData)
-//   }
+  // s"An INVALID input data for ${name}" should "be converted into an invalid result" in {
+  //   val computedV = converter(this.sampleBadCsvData).ingestInput
+  //   computedV shouldBe invalid
+  // }
 
-// }
+  // s"An INVALID input data for ${name}" should "report correct conversion errors" in {
+  //   val computedV = converter(this.sampleBadCsvData).ingestInput
+  //   val computed  = computedV.toEither.left.get.toList
+  //   computed should contain theSameElementsAs (this.convertedBadData)
+  // }
+
+}

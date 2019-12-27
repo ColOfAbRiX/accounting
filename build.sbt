@@ -114,6 +114,7 @@ lazy val utils = project
     libraryDependencies ++= Seq(
       CatsCoreDep,
       CatsScalaTestDep,
+      FS2CoreDep,
       ScalatestDep,
     ),
   )
