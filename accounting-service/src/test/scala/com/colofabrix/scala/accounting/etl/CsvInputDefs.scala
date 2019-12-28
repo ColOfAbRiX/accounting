@@ -9,6 +9,7 @@ import com.colofabrix.scala.accounting.model._
 import com.colofabrix.scala.accounting.utils.validation._
 import com.colofabrix.scala.accounting.utils.DebugHelpers
 import org.scalatest._
+import cats.effect._
 
 /**
  * Defines a mixin to provide test data
@@ -16,6 +17,7 @@ import org.scalatest._
 trait InputTestData[T <: InputTransaction] {
   def date(year: Int, month: Int, day: Int): LocalDate = LocalDate.of(year, month, day)
   def name: String = this.getClass.getSimpleName.replaceAll("""InputConversion.*$""", "")
+  def read(data: List[RawRecord]): VRawInput[IO] = new IterableCsvReader(this.sampleCorrectCsvData).read
 
   /** Test dataset of correct CSV data */
   def sampleCorrectCsvData: List[RawRecord]
@@ -41,23 +43,28 @@ trait InputConversionSpec[T <: InputTransaction]
   implicit val csvProcessor: CsvProcessor[T]
 
   s"A VALID input data for ${name}" should "be converted into a valid result" in {
-    val reader = new IterableCsvReader(this.sampleCorrectCsvData)
-    val computedV = reader.read.through(csvProcessor.process[fs2.Pure])
-    computedV.map(x => x shouldBe valid)
+    val result = read(this.sampleCorrectCsvData).through(csvProcessor.process)
+    withValidatedIoStream(result) { computed =>
+      computed.foreach(_ shouldBe valid)
+    }
   }
 
   // s"A VALID input data for ${name}" should s"be converted into a sequence of ${name}Transaction" in {
-  //   val computedV = converter(this.sampleCorrectCsvData).ingestInput
+  //   val result = read(this.sampleCorrectCsvData).through(csvProcessor.process)
   //   val expectedV = this.convertedCorrectData.aValid
-  //   (computedV, expectedV).mapN { (computed, expected) =>
-  //     computed should contain theSameElementsInOrderAs (expected)
+  //   withValidatedIoStream(result) { computedV =>
+  //     (computedV, expectedV).mapN { (computed, expected) =>
+  //       computed should contain theSameElementsInOrderAs (expected)
+  //     }
   //   }
   // }
 
-  // s"An INVALID input data for ${name}" should "be converted into an invalid result" in {
-  //   val computedV = converter(this.sampleBadCsvData).ingestInput
-  //   computedV shouldBe invalid
-  // }
+  s"An INVALID input data for ${name}" should "be converted into an invalid result" in {
+    val result = read(this.sampleBadCsvData).through(csvProcessor.process)
+    withValidatedIoStream(result) { computed =>
+      computed.foreach(_ shouldBe invalid)
+    }
+  }
 
   // s"An INVALID input data for ${name}" should "report correct conversion errors" in {
   //   val computedV = converter(this.sampleBadCsvData).ingestInput

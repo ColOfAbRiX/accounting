@@ -14,8 +14,8 @@ import shapeless._
  */
 class StarlingCsvProcessor extends CsvProcessor[StarlingTransaction] with RecordConverter[StarlingTransaction] {
 
-  protected def filter[F[_]](input: VRawInput[F]): VRawInput[F] = {
-    val dropInitial = dropAnyMatch[F] {_.trim.toLowerCase != "opening balance" }(_)
+  protected def filter(input: VRawInput[fs2.Pure]): VRawInput[fs2.Pure] = {
+    val dropInitial = dropAnyMatch(_.trim.toLowerCase != "opening balance")(_)
     dropInitial(dropEmpty(dropHeader(input)))
   }
 

@@ -1,11 +1,10 @@
 package com.colofabrix.scala.accounting.etl.csv
 
-import java.io.File
+import cats.effect._
 import cats.implicits._
 import com.colofabrix.scala.accounting.etl.definitions._
 import com.colofabrix.scala.accounting.utils.validation._
-import cats.effect.IO
-import cats.effect.Resource
+import java.io.File
 
 /**
  * Interface for a generic CSV reader that reads raw data

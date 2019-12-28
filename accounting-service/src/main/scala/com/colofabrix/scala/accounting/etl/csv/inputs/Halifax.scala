@@ -14,7 +14,7 @@ import shapeless._
  */
 class HalifaxCsvProcessor extends CsvProcessor[HalifaxTransaction] with RecordConverter[HalifaxTransaction] {
 
-  protected def filter[F[_]](input: VRawInput[F]): VRawInput[F] = {
+  protected def filter(input: VRawInput[fs2.Pure]): VRawInput[fs2.Pure] = {
     dropEmpty(dropHeader(input))
   }
 

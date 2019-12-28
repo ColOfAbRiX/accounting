@@ -18,25 +18,25 @@ trait CsvProcessor[+T <: InputTransaction] {
   protected def convert(record: RawRecord): AValidated[T]
 
   /** Filter an input to adapt it for processing, like removing head, empty rows and so on */
-  protected def filter[F[_]](input: VRawInput[F]): VRawInput[F]
+  protected def filter(input: VRawInput[fs2.Pure]): VRawInput[fs2.Pure]
 
   /** Processes the input data by filtering and converting the stream */
-  def process[F[_]]: VPipe[F, RawRecord, T] = { record =>
+  def process: VPipe[fs2.Pure, RawRecord, T] = { record =>
     filter(record).map(_.flatMapV(convert))
   }
 
   //  UTILITIES
 
   /** Drops the header of the input */
-  def dropHeader[F[_]](input: VRawInput[F]): VRawInput[F] = input.drop(1)
+  def dropHeader(input: VRawInput[fs2.Pure]): VRawInput[fs2.Pure] = input.drop(1)
 
   /** Drop a row if a match is found anywhere */
-  def dropAnyMatch[F[_]](p: String => Boolean)(input: VRawInput[F]): VRawInput[F] = {
+  def dropAnyMatch(p: String => Boolean)(input: VRawInput[fs2.Pure]): VRawInput[fs2.Pure] = {
     input.filter(vRecord => vRecord.fold(_ => true, _.exists(p)))
   }
 
   /** Drops the empty records */
-  def dropEmpty[F[_]](input: VRawInput[F]): VRawInput[F] = {
+  def dropEmpty(input: VRawInput[fs2.Pure]): VRawInput[fs2.Pure] = {
     def check(nullable: String): Boolean = Option(nullable).map(_.trim.nonEmpty).getOrElse(false)
     input.filter { vRecord =>
       vRecord.fold(_ => true, _.filter(check).nonEmpty)

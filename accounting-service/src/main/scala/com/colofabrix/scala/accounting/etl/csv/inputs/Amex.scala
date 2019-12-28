@@ -14,7 +14,7 @@ import shapeless._
  */
 class AmexCsvProcessor extends CsvProcessor[AmexTransaction] with RecordConverter[AmexTransaction] {
 
-  protected def filter[F[_]](input: VRawInput[F]): VRawInput[F] = {
+  protected def filter(input: VRawInput[fs2.Pure]): VRawInput[fs2.Pure] = {
     dropEmpty(input)
   }
 
