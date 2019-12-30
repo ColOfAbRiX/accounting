@@ -15,7 +15,7 @@ import shapeless._
 class BarclaysCsvProcessor extends CsvProcessor[BarclaysTransaction] with RecordConverter[BarclaysTransaction] {
 
   protected def filter(input: VRawInput[fs2.Pure]): VRawInput[fs2.Pure] = {
-    dropEmpty(dropHeader(input))
+    dropEmptyRows(dropHeader(input))
   }
 
   protected def convert(record: RawRecord): AValidated[BarclaysTransaction] = {

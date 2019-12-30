@@ -15,7 +15,7 @@ import shapeless._
 class HalifaxCsvProcessor extends CsvProcessor[HalifaxTransaction] with RecordConverter[HalifaxTransaction] {
 
   protected def filter(input: VRawInput[fs2.Pure]): VRawInput[fs2.Pure] = {
-    dropEmpty(dropHeader(input))
+    dropEmptyRows(dropHeader(input))
   }
 
   protected def convert(record: RawRecord): AValidated[HalifaxTransaction] = {

@@ -25,26 +25,35 @@ trait CsvProcessor[+T <: InputTransaction] {
     filter(record).map(_.flatMapV(convert))
   }
 
-  //  UTILITIES
+  //  UTILITY FUNCTIONS
+
+  def filterValid(f: RawRecord => Boolean)(input: VRawInput[fs2.Pure]): VRawInput[fs2.Pure] = {
+    input.filter(vRecord => vRecord.fold(_ => true, f))
+  }
 
   /** Drops the header of the input */
   def dropHeader(input: VRawInput[fs2.Pure]): VRawInput[fs2.Pure] = input.drop(1)
 
   /** Drops records that don't respect a length */
   def dropLength(length: Int)(input: VRawInput[fs2.Pure]): VRawInput[fs2.Pure] = {
-    input.filter(vRecord => vRecord.fold(_ => true, _.length != length))
+    filterValid(_.length != length)(input)
   }
 
   /** Drop a row if a match is found anywhere */
   def dropAnyMatch(p: String => Boolean)(input: VRawInput[fs2.Pure]): VRawInput[fs2.Pure] = {
-    input.filter(vRecord => vRecord.fold(_ => true, _.exists(p)))
+    filterValid(_.exists(p))(input)
   }
 
-  /** Drops the empty records */
-  def dropEmpty(input: VRawInput[fs2.Pure]): VRawInput[fs2.Pure] = {
-    def check(nullable: String): Boolean = Option(nullable).map(_.trim.nonEmpty).getOrElse(false)
-    input.filter { vRecord =>
-      vRecord.fold(_ => true, _.filter(check).nonEmpty)
+  /** Drops records that are all empty or all null */
+  def dropEmptyRows(input: VRawInput[fs2.Pure]): VRawInput[fs2.Pure] = {
+    def check(field: String): Boolean = Option(field).map(_.trim.nonEmpty).getOrElse(false)
+    filterValid(_.filter(check).nonEmpty)(input)
+  }
+
+  /** Converts null fields into empty strings */
+  def fixNulls(input: VRawInput[fs2.Pure]): VRawInput[fs2.Pure] = {
+    input.map { vRecord =>
+      vRecord.map(_.map(Option(_).getOrElse("")))
     }
   }
 }

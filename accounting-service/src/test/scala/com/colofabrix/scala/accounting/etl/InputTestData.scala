@@ -27,7 +27,7 @@ trait BarclaysTestData extends InputTestData[BarclaysTransaction] {
     List(),
   )
 
-  val convertedCorrectData: List[Valid[BarclaysTransaction]] = List(
+  val convertedCorrectData: List[BarclaysTransaction] = List(
     BarclaysTransaction(None, date(2019, 11, 8), "20-32-06 13152170", 6.88, "directdep", "dellelle food 31/10 bgc"),
     BarclaysTransaction(None, date(2019, 11, 8), "20-32-06 13152170", -235.0, "ft", "andrew cumming tunnel d4 ft"),
     BarclaysTransaction(None, date(2019, 11, 8), "20-32-06 13152170", -23.63, "ft", "c dellelle grocery ft"),
@@ -37,26 +37,37 @@ trait BarclaysTestData extends InputTestData[BarclaysTransaction] {
     BarclaysTransaction(None, date(2019, 11, 5), "20-32-06 13152170", -430.0, "payment", "halifax clarity ma 5353130107545290 bbp"),
     BarclaysTransaction(None, date(2019, 11, 5), "20-32-06 13152170", -4.95, "payment", "crv*youwork (1219) on 04 nov bcc"),
     BarclaysTransaction(None, date(2019, 11, 4), "20-32-06 13152170", -100.0, "ft", "thor a"),
-  ).map(Valid.apply)
+  )
 
   val sampleBadCsvData: List[RawRecord] = List(
-    List.fill(6)("header"),                                          // Normal header
-    List.fill(6)("text"),                                            // Wrong data type
-    List.fill(6)(""),                                                // Empty strings
-    List.fill(6)(null),                                              // Null strings
-    List.empty,                                                      // Empty row
-    List("1", "", "20-32-06 13152170", "-100.00", "FT", "THOR A"),   // One empty field
-    List("1", null, "20-32-06 13152170", "-100.00", "FT", "THOR A"), // One null field
-    List("1", "04/11/2019", "20-32-06 13152170", "-100.00", "FT"),   // Missing fields
+    List.fill(6)("header"),
+    List.fill(6)("text"),
+    List("1", "", "20-32-06 13152170", "-100.00", "FT", "THOR A"),
+    List("1", null, "20-32-06 13152170", "-100.00", "FT", "THOR A"),
+    List("1", "04/11/2019", "20-32-06 13152170", "-100.00", "FT"),
   )
+
 
   val convertedBadData: List[Invalid[NonEmptyChain[String]]] = List(
     Invalid(NonEmptyChain(
       "Exception on converting field 'text': java.lang.NumberFormatException",
       "Exception on converting field 'text': java.time.format.DateTimeParseException: Text 'text' could not be parsed at index 0")),
-    Invalid(NonEmptyChain("Exception on converting field '': java.time.format.DateTimeParseException: Text '' could not be parsed at index 0")),
-    Invalid(NonEmptyChain("Exception on converting field 'null': java.lang.NullPointerException")),
-    Invalid(NonEmptyChain("Exception on converting record List(1, 04/11/2019, 20-32-06 13152170, -100.00, FT): java.lang.IndexOutOfBoundsException: 5")),
+    Invalid(NonEmptyChain(
+      "Exception on converting field '': java.time.format.DateTimeParseException: Text '' could not be parsed at index 0"
+    )),
+    Invalid(NonEmptyChain(
+      "Exception on converting field 'null': java.lang.NullPointerException"
+    )),
+    Invalid(NonEmptyChain(
+      "Exception on converting record List(1, 04/11/2019, 20-32-06 13152170, -100.00, FT): java.lang.IndexOutOfBoundsException: 5"
+    )),
+  )
+
+  val sampleDroppedCsvData: List[RawRecord] = List(
+    List.fill(6)("header"),
+    List.fill(6)(""),
+    List.fill(6)(null),
+    List.empty,
   )
 
 }
@@ -79,7 +90,7 @@ trait HalifaxTestData extends InputTestData[HalifaxTransaction] {
     List(),
   )
 
-  val convertedCorrectData: List[Valid[HalifaxTransaction]] = List(
+  val convertedCorrectData: List[HalifaxTransaction] = List(
     HalifaxTransaction(date(2019, 11,  7), date(2019, 11,  7), "99630930", "interest", -0.65),
     HalifaxTransaction(date(2019, 11,  4), date(2019, 11,  5), "68125600", "payment received - than", 430.0),
     HalifaxTransaction(date(2019, 11,  1), date(2019, 11,  1), "99691550", "direct debit payment -", 26.32),
@@ -89,28 +100,38 @@ trait HalifaxTestData extends InputTestData[HalifaxTransaction] {
     HalifaxTransaction(date(2019, 10, 19), date(2019, 10, 22), "10209091", "booklet librerie", -12.12),
     HalifaxTransaction(date(2019, 10, 19), date(2019, 10, 22), "10209050", "parking gest", -2.60),
     HalifaxTransaction(date(2019, 10, 19), date(2019, 10, 21), "10224975", "iper conad", -31.17),
-  ).map(Valid.apply)
+  )
 
   val sampleBadCsvData: List[RawRecord] = List(
-    List.fill(5)("header"),                                      // Normal header
-    List.fill(5)("text"),                                        // Wrong data type
-    List.fill(5)(""),                                            // Empty strings
-    List.fill(5)(null),                                          // Null strings
-    List.empty,                                                  // Missing fields
-    List("19/10/2019", "", "10224975", "IPER CONAD", "31.17"),   // One empty field
-    List("19/10/2019", null, "10224975", "IPER CONAD", "31.17"), // One null field
-    List("19/10/2019", "21/10/2019", "10224975", "IPER CONAD"),  // Missing fields
+    List.fill(5)("header"),
+    List.fill(5)("text"),
+    List("19/10/2019", "", "10224975", "IPER CONAD", "31.17"),
+    List("19/10/2019", null, "10224975", "IPER CONAD", "31.17"),
+    List("19/10/2019", "21/10/2019", "10224975", "IPER CONAD"),
   )
 
   val convertedBadData: List[Invalid[NonEmptyChain[String]]] = List(
     Invalid(NonEmptyChain(
       "Exception on converting field 'text': java.lang.NumberFormatException",
       "Exception on converting field 'text': java.time.format.DateTimeParseException: Text 'text' could not be parsed at index 0",
-      "Exception on converting field 'text': java.time.format.DateTimeParseException: Text 'text' could not be parsed at index 0",
+      "Exception on converting field 'text': java.time.format.DateTimeParseException: Text 'text' could not be parsed at index 0"
     )),
-    Invalid(NonEmptyChain("Exception on converting field '': java.time.format.DateTimeParseException: Text '' could not be parsed at index 0")),
-    Invalid(NonEmptyChain("Exception on converting field 'null': java.lang.NullPointerException")),
-    Invalid(NonEmptyChain("Exception on converting record List(19/10/2019, 21/10/2019, 10224975, IPER CONAD): java.lang.IndexOutOfBoundsException: 4")),
+    Invalid(NonEmptyChain(
+      "Exception on converting field '': java.time.format.DateTimeParseException: Text '' could not be parsed at index 0"
+    )),
+    Invalid(NonEmptyChain(
+      "Exception on converting field 'null': java.lang.NullPointerException"
+    )),
+    Invalid(NonEmptyChain(
+      "Exception on converting record List(19/10/2019, 21/10/2019, 10224975, IPER CONAD): java.lang.IndexOutOfBoundsException: 4"
+    )),
+  )
+
+  val sampleDroppedCsvData: List[RawRecord] = List(
+    List.fill(6)("header"),
+    List.fill(6)(""),
+    List.fill(6)(null),
+    List.empty,
   )
 
 }
@@ -128,35 +149,30 @@ trait StarlingTestData extends InputTestData[StarlingTransaction] {
     List(),
   )
 
-  val convertedCorrectData: List[Valid[StarlingTransaction]] = List(
+  val convertedCorrectData: List[StarlingTransaction] = List(
     StarlingTransaction(date(2019, 3, 1), "column f", "top up starling", "faster payment", 100.0, 100.0),
     StarlingTransaction(date(2019, 3, 4), "butler brewery c chelmsford", "iz *butler brewery c chelmsford gbr", "contactless", -8.0, 92.0),
     StarlingTransaction(date(2019, 3, 4), "sainsbury's", "sainsburys sacat 0768 chelmsford gbr", "contactless", -3.7, 88.3),
-  ).map(Valid.apply)
+  )
 
   val sampleBadCsvData: List[RawRecord] = List(
-    List.fill(6)("header"),                                                         // Normal header
-    List.fill(6)("text"),                                                           // Wrong data type
-    List.fill(6)(""),                                                               // Empty strings
-    List.fill(6)(null),                                                             // Null strings
-    List.empty,                                                                     // Missing fields
-    List("", "Sainsbury's", "SAINSBURYS SACAT", "CONTACTLESS", "-3.70", "88.30"),   // One empty field
-    List(null, "Sainsbury's", "SAINSBURYS SACAT", "CONTACTLESS", "-3.70", "88.30"), // One null field
-    List("04/03/2019", "Sainsbury's", "SAINSBURYS SACAT", "CONTACTLESS", "-3.70"),  // Missing fields
+    List.fill(6)("header"),
+    List.fill(6)("text"),
+    List("", "Sainsbury's", "SAINSBURYS SACAT", "CONTACTLESS", "-3.70", "88.30"),
+    List(null, "Sainsbury's", "SAINSBURYS SACAT", "CONTACTLESS", "-3.70", "88.30"),
+    List("04/03/2019", "Sainsbury's", "SAINSBURYS SACAT", "CONTACTLESS", "-3.70"),
   )
 
   val convertedBadData: List[Invalid[NonEmptyChain[String]]] = List(
-    Invalid(NonEmptyChain(
-      "Exception on converting field 'header': java.lang.NumberFormatException",
-      "Exception on converting field 'header': java.time.format.DateTimeParseException: Text 'header' could not be parsed at index 0",
-    )),
-    Invalid(NonEmptyChain(
-      "Exception on converting field 'text': java.lang.NumberFormatException",
-      "Exception on converting field 'text': java.time.format.DateTimeParseException: Text 'text' could not be parsed at index 0",
-    )),
-    Invalid(NonEmptyChain("Exception on converting field '': java.lang.NumberFormatException")),
     Invalid(NonEmptyChain("Exception on converting field 'null': java.lang.NullPointerException")),
-    Invalid(NonEmptyChain("Exception on converting record List(27/10/2019, Reference,  7.75, THE LORD): java.lang.IndexOutOfBoundsException: 4")),
+  )
+
+  val sampleDroppedCsvData: List[RawRecord] = List(
+    List.fill(6)("header"),
+    List.fill(6)("opening balance"),
+    List.fill(6)(""),
+    List.fill(6)(null),
+    List.empty,
   )
 
 }
@@ -179,7 +195,7 @@ trait AmexTestData extends InputTestData[AmexTransaction] {
     List(),
   )
 
-  val convertedCorrectData: List[Valid[AmexTransaction]] = List(
+  val convertedCorrectData: List[AmexTransaction] = List(
     AmexTransaction(date(2019, 10, 21), "reference: at192160041000011301953", -1.5, "yga travel charge yga.gov.nl/cp", "process date 22/10/2019"),
     AmexTransaction(date(2019, 10, 23), "reference: at192170042000011328509", -3.3, "marks & spencer sout", "retail goods process date 24/10/2019 retail goods"),
     AmexTransaction(date(2019, 10, 24), "reference: at192180040000011351877", -8.1, "marks & spencer sout", "retail goods process date 25/10/2019 retail goods"),
@@ -190,31 +206,35 @@ trait AmexTestData extends InputTestData[AmexTransaction] {
     AmexTransaction(date(2019, 10, 26), "reference: at193110050000011236226", -35.23, "trainline.com", "process date 27/10/2019"),
     AmexTransaction(date(2019, 10, 27), "reference: at193110050000011250107", -2.4, "yga travel charge yga.gov.nl/cp", "process date 27/10/2019"),
     AmexTransaction(date(2019, 10, 27), "reference: at193110060000011238382", -7.75,"the lord morris", "process date 27/10/2019"),
-  ).map(Valid.apply)
+  )
 
   val sampleBadCsvData: List[RawRecord] = List(
-    List.fill(5)("header"),                                                   // Normal header
-    List.fill(5)("text"),                                                     // Wrong data type
-    List.fill(5)(""),                                                         // Empty strings
-    List.fill(5)(null),                                                       // Null strings
-    List.empty,                                                               // Missing fields
-    List("27/10/2019", "Reference", "", "THE LORD", " Process 27/10/2019"),   // One empty field
-    List("27/10/2019", "Reference", null, "THE LORD", " Process 27/10/2019"), // One null field
-    List("27/10/2019", "Reference", " 7.75", "THE LORD"),                     // Missing fields
+    List.fill(5)("text"),
+    List("27/10/2019", "Reference", "", "THE LORD", " Process 27/10/2019"),
+    List("27/10/2019", "Reference", null, "THE LORD", " Process 27/10/2019"),
+    List("27/10/2019", "Reference", " 7.75", "THE LORD"),
   )
 
   val convertedBadData: List[Invalid[NonEmptyChain[String]]] = List(
     Invalid(NonEmptyChain(
-      "Exception on converting field 'header': java.lang.NumberFormatException",
-      "Exception on converting field 'header': java.time.format.DateTimeParseException: Text 'header' could not be parsed at index 0",
+      "Exception on converting field 'text': java.lang.NumberFormatException",
+      "Exception on converting field 'text': java.time.format.DateTimeParseException: Text 'text' could not be parsed at index 0"
     )),
     Invalid(NonEmptyChain(
-      "Exception on converting field 'text': java.lang.NumberFormatException",
-      "Exception on converting field 'text': java.time.format.DateTimeParseException: Text 'text' could not be parsed at index 0",
+      "Exception on converting field '': java.lang.NumberFormatException"
     )),
-    Invalid(NonEmptyChain("Exception on converting field '': java.lang.NumberFormatException")),
-    Invalid(NonEmptyChain("Exception on converting field 'null': java.lang.NullPointerException")),
-    Invalid(NonEmptyChain("Exception on converting record List(27/10/2019, Reference,  7.75, THE LORD): java.lang.IndexOutOfBoundsException: 4")),
+    Invalid(NonEmptyChain(
+      "Exception on converting field 'null': java.lang.NullPointerException"
+    )),
+    Invalid(NonEmptyChain(
+      "Exception on converting record List(27/10/2019, Reference,  7.75, THE LORD): java.lang.IndexOutOfBoundsException: 4"
+    )),
+  )
+
+  val sampleDroppedCsvData: List[RawRecord] = List(
+    List.fill(6)(""),
+    List.fill(6)(null),
+    List.empty,
   )
 
 }
