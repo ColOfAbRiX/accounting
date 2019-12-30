@@ -140,20 +140,23 @@ trait StarlingTestData extends InputTestData[StarlingTransaction] {
     List.fill(6)(""),                                                               // Empty strings
     List.fill(6)(null),                                                             // Null strings
     List.empty,                                                                     // Missing fields
-    List("04/03/2019", "", "SAINSBURYS SACAT", "CONTACTLESS", "-3.70", "88.30"),    // One empty field
-    List("04/03/2019", null, "SAINSBURYS SACAT", "CONTACTLESS", "-3.70", "88.30"),  // One null field
+    List("", "Sainsbury's", "SAINSBURYS SACAT", "CONTACTLESS", "-3.70", "88.30"),   // One empty field
+    List(null, "Sainsbury's", "SAINSBURYS SACAT", "CONTACTLESS", "-3.70", "88.30"), // One null field
     List("04/03/2019", "Sainsbury's", "SAINSBURYS SACAT", "CONTACTLESS", "-3.70"),  // Missing fields
   )
 
   val convertedBadData: List[Invalid[NonEmptyChain[String]]] = List(
     Invalid(NonEmptyChain(
-      "Exception on converting field 'text': java.lang.NumberFormatException",
+      "Exception on converting field 'header': java.lang.NumberFormatException",
+      "Exception on converting field 'header': java.time.format.DateTimeParseException: Text 'header' could not be parsed at index 0"
+    )),
+    Invalid(NonEmptyChain(
       "Exception on converting field 'text': java.lang.NumberFormatException",
       "Exception on converting field 'text': java.time.format.DateTimeParseException: Text 'text' could not be parsed at index 0"
     )),
-    // Valid("StarlingTransaction(2019-03-04,,sainsburys sacat,contactless,-3.70,88.30")),
+    Invalid(NonEmptyChain("Exception on converting field '': java.lang.NumberFormatException")),
     Invalid(NonEmptyChain("Exception on converting field 'null': java.lang.NullPointerException")),
-    Invalid(NonEmptyChain("Exception on converting record List(04/03/2019, Sainsbury's, SAINSBURYS SACAT, CONTACTLESS, -3.70): java.lang.IndexOutOfBoundsException: 5")),
+    Invalid(NonEmptyChain("Exception on converting record List(27/10/2019, Reference,  7.75, THE LORD): java.lang.IndexOutOfBoundsException: 4")),
   )
 
 }
@@ -190,24 +193,26 @@ trait AmexTestData extends InputTestData[AmexTransaction] {
   ).map(Valid.apply)
 
   val sampleBadCsvData: List[RawRecord] = List(
-    List.fill(5)("header"),                                               // Normal header
-    List.fill(5)("text"),                                                 // Wrong data type
-    List.fill(5)(""),                                                     // Empty strings
-    List.fill(5)(null),                                                   // Null strings
-    List.empty,                                                           // Missing fields
-    List("27/10/2019", "", " 7.75", "THE LORD", " Process 27/10/2019"),   // One empty field
-    List("27/10/2019", null, " 7.75", "THE LORD", " Process 27/10/2019"), // One null field
-    List("27/10/2019", "Reference", " 7.75", "THE LORD"),                 // Missing fields
+    List.fill(5)("header"),                                                   // Normal header
+    List.fill(5)("text"),                                                     // Wrong data type
+    List.fill(5)(""),                                                         // Empty strings
+    List.fill(5)(null),                                                       // Null strings
+    List.empty,                                                               // Missing fields
+    List("27/10/2019", "Reference", "", "THE LORD", " Process 27/10/2019"),   // One empty field
+    List("27/10/2019", "Reference", null, "THE LORD", " Process 27/10/2019"), // One null field
+    List("27/10/2019", "Reference", " 7.75", "THE LORD"),                     // Missing fields
   )
 
   val convertedBadData: List[Invalid[NonEmptyChain[String]]] = List(
     Invalid(NonEmptyChain(
       "Exception on converting field 'header': java.lang.NumberFormatException",
-      "Exception on converting field 'header': java.time.format.DateTimeParseException: Text 'header' could not be parsed at index 0")),
+      "Exception on converting field 'header': java.time.format.DateTimeParseException: Text 'header' could not be parsed at index 0"
+    )),
     Invalid(NonEmptyChain(
       "Exception on converting field 'text': java.lang.NumberFormatException",
-      "Exception on converting field 'text': java.time.format.DateTimeParseException: Text 'text' could not be parsed at index 0")),
-    // Valid(AmexTransaction(2019-10-27,,-7.750,the lord,process 27/10/2019))
+      "Exception on converting field 'text': java.time.format.DateTimeParseException: Text 'text' could not be parsed at index 0"
+    )),
+    Invalid(NonEmptyChain("Exception on converting field '': java.lang.NumberFormatException")),
     Invalid(NonEmptyChain("Exception on converting field 'null': java.lang.NullPointerException")),
     Invalid(NonEmptyChain("Exception on converting record List(27/10/2019, Reference,  7.75, THE LORD): java.lang.IndexOutOfBoundsException: 4")),
   )

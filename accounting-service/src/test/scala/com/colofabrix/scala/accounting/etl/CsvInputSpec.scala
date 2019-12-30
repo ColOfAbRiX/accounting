@@ -16,6 +16,6 @@ import com.colofabrix.scala.accounting.model._
 //   implicit val csvProcessor: CsvProcessor[StarlingTransaction] = starlingCsvProc
 // }
 
-class AmexInputConversion     extends InputConversionSpec[AmexTransaction] with AmexTestData {
-  implicit val csvProcessor: CsvProcessor[AmexTransaction] = amexCsvProc
-}
+// class AmexInputConversion     extends InputConversionSpec[AmexTransaction] with AmexTestData {
+//   implicit val csvProcessor: CsvProcessor[AmexTransaction] = amexCsvProc
+// }
