@@ -27,15 +27,15 @@ object ExecutionContexts {
   val global = ExecutionContext.global
   /** CPU-bound pool */
   val computePool = ExecutionContext.fromExecutor(
-    Executors.newFixedThreadPool(coresCount, threadFactory("compute"))
+    Executors.newFixedThreadPool(coresCount, threadFactory("compute")),
   )
   /** Blocking IO pool */
   val ioPool = ExecutionContext.fromExecutor(
-    Executors.newCachedThreadPool(threadFactory("io"))
+    Executors.newCachedThreadPool(threadFactory("io")),
   )
   /** Non-blocking IO polling pool */
   val eventsPool = ExecutionContext.fromExecutor(
-    Executors.newFixedThreadPool(1, threadFactory("event", Thread.MAX_PRIORITY))
+    Executors.newFixedThreadPool(1, threadFactory("event", Thread.MAX_PRIORITY)),
   )
 
 }

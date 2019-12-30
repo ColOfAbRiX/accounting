@@ -17,8 +17,11 @@ object Main extends IOApp {
     import AllInputs._
 
     val csvReader = new FileCsvReader(new java.io.File("samples/sample_barclays.csv"))
-    val result = implicitly[CsvProcessor[BarclaysTransaction]].process(csvReader.read)
-    result.map { x => println(x); x }.compile.toVector.unsafeRunSync()
+    val result    = implicitly[CsvProcessor[BarclaysTransaction]].process(csvReader.read)
+    result
+      .map { x =>
+        println(x); x
+      }.compile.toVector.unsafeRunSync()
 
     ExitCode.Success
   }

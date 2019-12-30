@@ -18,7 +18,7 @@ class BarclaysCsvProcessor extends CsvProcessor[BarclaysTransaction] with Record
     dropEmpty(dropHeader(input))
   }
 
-  protected  def convert(record: RawRecord): AValidated[BarclaysTransaction] = {
+  protected def convert(record: RawRecord): AValidated[BarclaysTransaction] = {
     convertRecord(record) {
       val number      = parse[Option[Int]](r => r(0))
       val date        = parse[LocalDate](r => r(1))("dd/MM/yyyy")

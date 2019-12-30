@@ -148,11 +148,11 @@ trait StarlingTestData extends InputTestData[StarlingTransaction] {
   val convertedBadData: List[Invalid[NonEmptyChain[String]]] = List(
     Invalid(NonEmptyChain(
       "Exception on converting field 'header': java.lang.NumberFormatException",
-      "Exception on converting field 'header': java.time.format.DateTimeParseException: Text 'header' could not be parsed at index 0"
+      "Exception on converting field 'header': java.time.format.DateTimeParseException: Text 'header' could not be parsed at index 0",
     )),
     Invalid(NonEmptyChain(
       "Exception on converting field 'text': java.lang.NumberFormatException",
-      "Exception on converting field 'text': java.time.format.DateTimeParseException: Text 'text' could not be parsed at index 0"
+      "Exception on converting field 'text': java.time.format.DateTimeParseException: Text 'text' could not be parsed at index 0",
     )),
     Invalid(NonEmptyChain("Exception on converting field '': java.lang.NumberFormatException")),
     Invalid(NonEmptyChain("Exception on converting field 'null': java.lang.NullPointerException")),
@@ -206,11 +206,11 @@ trait AmexTestData extends InputTestData[AmexTransaction] {
   val convertedBadData: List[Invalid[NonEmptyChain[String]]] = List(
     Invalid(NonEmptyChain(
       "Exception on converting field 'header': java.lang.NumberFormatException",
-      "Exception on converting field 'header': java.time.format.DateTimeParseException: Text 'header' could not be parsed at index 0"
+      "Exception on converting field 'header': java.time.format.DateTimeParseException: Text 'header' could not be parsed at index 0",
     )),
     Invalid(NonEmptyChain(
       "Exception on converting field 'text': java.lang.NumberFormatException",
-      "Exception on converting field 'text': java.time.format.DateTimeParseException: Text 'text' could not be parsed at index 0"
+      "Exception on converting field 'text': java.time.format.DateTimeParseException: Text 'text' could not be parsed at index 0",
     )),
     Invalid(NonEmptyChain("Exception on converting field '': java.lang.NumberFormatException")),
     Invalid(NonEmptyChain("Exception on converting field 'null': java.lang.NullPointerException")),
