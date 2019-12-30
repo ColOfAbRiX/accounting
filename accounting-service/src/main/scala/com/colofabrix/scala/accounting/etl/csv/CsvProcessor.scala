@@ -30,6 +30,11 @@ trait CsvProcessor[+T <: InputTransaction] {
   /** Drops the header of the input */
   def dropHeader(input: VRawInput[fs2.Pure]): VRawInput[fs2.Pure] = input.drop(1)
 
+  /** Drops records that don't respect a length */
+  def dropLength(length: Int)(input: VRawInput[fs2.Pure]): VRawInput[fs2.Pure] = {
+    input.filter(vRecord => vRecord.fold(_ => true, _.length != length))
+  }
+
   /** Drop a row if a match is found anywhere */
   def dropAnyMatch(p: String => Boolean)(input: VRawInput[fs2.Pure]): VRawInput[fs2.Pure] = {
     input.filter(vRecord => vRecord.fold(_ => true, _.exists(p)))

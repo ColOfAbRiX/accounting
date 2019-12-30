@@ -83,7 +83,7 @@ object validation {
 
   //  COMBINATORS  //
 
-  type Vtor[A] = ((=> String, A) => AValidated[A])
+  private type Vtor[A] = ((=> String, A) => AValidated[A])
 
   /** Build a validation function as concatenation of the provided functions */
   def validateAll[A](validators: Vtor[A]*)(name: => String, value: A)(implicit aSemi: Semigroup[A]): AValidated[A] = {
