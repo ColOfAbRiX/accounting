@@ -16,7 +16,7 @@ import shapeless._
 class StarlingCsvProcessor extends CsvProcessor[StarlingTransaction] with RecordConverter[StarlingTransaction] {
 
   protected def filter: RawInputFilter = {
-    dropHeader andThen dropEmptyRows andThen dropAnyMatch(_.contains("opening balance"))
+    dropHeader andThen dropEmptyRows andThen dropAnyMatch(_.toLowerCase.contains("opening balance"))
   }
 
   protected def convert(record: RawRecord): AValidated[StarlingTransaction] = {
