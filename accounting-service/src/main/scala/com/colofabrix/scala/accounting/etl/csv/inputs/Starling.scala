@@ -5,9 +5,9 @@ import com.colofabrix.scala.accounting.etl.csv._
 import com.colofabrix.scala.accounting.etl.FieldConverter._
 import com.colofabrix.scala.accounting.etl.definitions._
 import com.colofabrix.scala.accounting.etl.RecordConverter
+import com.colofabrix.scala.accounting.etl.csv.CsvProcessorUtils._
 import com.colofabrix.scala.accounting.model.StarlingTransaction
 import com.colofabrix.scala.accounting.utils.validation._
-import CsvProcessorUtils._
 import shapeless._
 
 /**

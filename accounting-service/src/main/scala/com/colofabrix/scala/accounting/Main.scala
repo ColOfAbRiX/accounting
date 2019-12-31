@@ -1,8 +1,7 @@
 package com.colofabrix.scala.accounting
 
-import cats.data.Validated.{ Invalid, Valid }
-import com.colofabrix.scala.accounting.model.BarclaysTransaction
 import cats.effect._
+import com.colofabrix.scala.accounting.model.BarclaysTransaction
 
 // object Main extends IOApp {
 //   def run(args: List[String]) =

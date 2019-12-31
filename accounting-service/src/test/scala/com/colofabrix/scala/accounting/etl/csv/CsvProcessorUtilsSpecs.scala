@@ -28,10 +28,10 @@ class CsvProcessorSpecs extends FlatSpec with Matchers with DebugHelpers {
   }
 
   "dropLength" should "remove rows of specific length" in {
-    val testData = List.tabulate(4)(i => List.fill(i)("sample"))
-    val expected = List(List.fill(2)("sample").aValid)
+    val testData       = List.tabulate(4)(i => List.fill(i)("sample"))
+    val expected       = List(List.fill(2)("sample").aValid)
     val dropLengthNot2 = dropLength(_ != 2)
-    val computed = rawInput(testData).through(dropLengthNot2).toList
+    val computed       = rawInput(testData).through(dropLengthNot2).toList
     computed should contain theSameElementsAs (expected)
   }
 

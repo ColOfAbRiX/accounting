@@ -1,5 +1,3 @@
-Reintroduce streams with FS2
-Introduce cats-effects IO monad
 Manage validation results
 Load the default CsvReader as global singleton
 Make the choice of CsvReader configurable via properties

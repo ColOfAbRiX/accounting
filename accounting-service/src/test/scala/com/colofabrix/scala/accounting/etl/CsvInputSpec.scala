@@ -11,7 +11,7 @@ class BarclaysInputConversionSpec extends InputConversionSpec[BarclaysTransactio
     val result = read(this.sampleCorrectCsvData).through(csvProcessor.process)
     withValidatedIoStream(result) { computed =>
       // The correction value is based on the expected sample input data
-      computed.length should equal (this.sampleCorrectCsvData.length - 3)
+      computed.length should equal(this.sampleCorrectCsvData.length - 3)
     }
   }
 }
@@ -23,7 +23,7 @@ class HalifaxInputConversionSpec extends InputConversionSpec[HalifaxTransaction]
     val result = read(this.sampleCorrectCsvData).through(csvProcessor.process)
     withValidatedIoStream(result) { computed =>
       // The correction value is based on the expected sample input data
-      computed.length should equal (this.sampleCorrectCsvData.length - 2)
+      computed.length should equal(this.sampleCorrectCsvData.length - 2)
     }
   }
 }
@@ -35,7 +35,7 @@ class AmexInputConversionSpec extends InputConversionSpec[AmexTransaction] with 
     val result = read(this.sampleCorrectCsvData).through(csvProcessor.process)
     withValidatedIoStream(result) { computed =>
       // The correction value is based on the expected sample input data
-      computed.length should equal (this.sampleCorrectCsvData.length - 1)
+      computed.length should equal(this.sampleCorrectCsvData.length - 1)
     }
   }
 }
@@ -47,7 +47,7 @@ class StarlingInputConversionSpec extends InputConversionSpec[StarlingTransactio
     val result = read(this.sampleCorrectCsvData).through(csvProcessor.process)
     withValidatedIoStream(result) { computed =>
       // The correction value is based on the expected sample input data
-      computed.length should equal (this.sampleCorrectCsvData.length - 3)
+      computed.length should equal(this.sampleCorrectCsvData.length - 3)
     }
   }
 }

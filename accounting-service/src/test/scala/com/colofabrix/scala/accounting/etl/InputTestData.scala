@@ -53,13 +53,13 @@ trait BarclaysTestData extends InputTestData[BarclaysTransaction] {
       "Exception on converting field 'text': java.lang.NumberFormatException",
       "Exception on converting field 'text': java.time.format.DateTimeParseException: Text 'text' could not be parsed at index 0")),
     Invalid(NonEmptyChain(
-      "Exception on converting field '': java.time.format.DateTimeParseException: Text '' could not be parsed at index 0"
+      "Exception on converting field '': java.time.format.DateTimeParseException: Text '' could not be parsed at index 0",
     )),
     Invalid(NonEmptyChain(
-      "Exception on converting field 'null': java.lang.NullPointerException"
+      "Exception on converting field 'null': java.lang.NullPointerException",
     )),
     Invalid(NonEmptyChain(
-      "Exception on converting record List(1, 04/11/2019, 20-32-06 13152170, -100.00, FT): java.lang.IndexOutOfBoundsException: 5"
+      "Exception on converting record List(1, 04/11/2019, 20-32-06 13152170, -100.00, FT): java.lang.IndexOutOfBoundsException: 5",
     )),
   )
 
@@ -114,16 +114,16 @@ trait HalifaxTestData extends InputTestData[HalifaxTransaction] {
     Invalid(NonEmptyChain(
       "Exception on converting field 'text': java.lang.NumberFormatException",
       "Exception on converting field 'text': java.time.format.DateTimeParseException: Text 'text' could not be parsed at index 0",
-      "Exception on converting field 'text': java.time.format.DateTimeParseException: Text 'text' could not be parsed at index 0"
+      "Exception on converting field 'text': java.time.format.DateTimeParseException: Text 'text' could not be parsed at index 0",
     )),
     Invalid(NonEmptyChain(
-      "Exception on converting field '': java.time.format.DateTimeParseException: Text '' could not be parsed at index 0"
+      "Exception on converting field '': java.time.format.DateTimeParseException: Text '' could not be parsed at index 0",
     )),
     Invalid(NonEmptyChain(
-      "Exception on converting field 'null': java.lang.NullPointerException"
+      "Exception on converting field 'null': java.lang.NullPointerException",
     )),
     Invalid(NonEmptyChain(
-      "Exception on converting record List(19/10/2019, 21/10/2019, 10224975, IPER CONAD): java.lang.IndexOutOfBoundsException: 4"
+      "Exception on converting record List(19/10/2019, 21/10/2019, 10224975, IPER CONAD): java.lang.IndexOutOfBoundsException: 4",
     )),
   )
 
@@ -167,16 +167,16 @@ trait StarlingTestData extends InputTestData[StarlingTransaction] {
     Invalid(NonEmptyChain(
       "Exception on converting field 'text': java.lang.NumberFormatException",
       "Exception on converting field 'text': java.lang.NumberFormatException",
-      "Exception on converting field 'text': java.time.format.DateTimeParseException: Text 'text' could not be parsed at index 0"
+      "Exception on converting field 'text': java.time.format.DateTimeParseException: Text 'text' could not be parsed at index 0",
     )),
     Invalid(NonEmptyChain(
-      "Exception on converting field '': java.time.format.DateTimeParseException: Text '' could not be parsed at index 0"
+      "Exception on converting field '': java.time.format.DateTimeParseException: Text '' could not be parsed at index 0",
     )),
     Invalid(NonEmptyChain(
-      "Exception on converting field 'null': java.lang.NullPointerException"
+      "Exception on converting field 'null': java.lang.NullPointerException",
     )),
     Invalid(NonEmptyChain(
-      "Exception on converting record List(04/03/2019, Sainsbury's, SAINSBURYS SACAT, CONTACTLESS, -3.70): java.lang.IndexOutOfBoundsException: 5"
+      "Exception on converting record List(04/03/2019, Sainsbury's, SAINSBURYS SACAT, CONTACTLESS, -3.70): java.lang.IndexOutOfBoundsException: 5",
     )),
   )
 
@@ -231,16 +231,16 @@ trait AmexTestData extends InputTestData[AmexTransaction] {
   val convertedBadData: List[Invalid[NonEmptyChain[String]]] = List(
     Invalid(NonEmptyChain(
       "Exception on converting field 'text': java.lang.NumberFormatException",
-      "Exception on converting field 'text': java.time.format.DateTimeParseException: Text 'text' could not be parsed at index 0"
+      "Exception on converting field 'text': java.time.format.DateTimeParseException: Text 'text' could not be parsed at index 0",
     )),
     Invalid(NonEmptyChain(
-      "Exception on converting field '': java.lang.NumberFormatException"
+      "Exception on converting field '': java.lang.NumberFormatException",
     )),
     Invalid(NonEmptyChain(
-      "Exception on converting field 'null': java.lang.NullPointerException"
+      "Exception on converting field 'null': java.lang.NullPointerException",
     )),
     Invalid(NonEmptyChain(
-      "Exception on converting record List(27/10/2019, Reference,  7.75, THE LORD): java.lang.IndexOutOfBoundsException: 4"
+      "Exception on converting record List(27/10/2019, Reference,  7.75, THE LORD): java.lang.IndexOutOfBoundsException: 4",
     )),
   )
 

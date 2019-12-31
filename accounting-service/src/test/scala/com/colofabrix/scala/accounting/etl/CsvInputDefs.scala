@@ -53,7 +53,7 @@ trait InputConversionSpec[T <: InputTransaction]
   }
 
   s"A valid input data for ${name}" should s"be converted into a sequence of ${name}Transaction" in {
-    val result = read(this.sampleCorrectCsvData).through(csvProcessor.process)
+    val result    = read(this.sampleCorrectCsvData).through(csvProcessor.process)
     val expectedV = this.convertedCorrectData.aValid
     withValidatedIoStream(result) { computedV =>
       (computedV.sequence, expectedV).mapN { (computed, expected) =>

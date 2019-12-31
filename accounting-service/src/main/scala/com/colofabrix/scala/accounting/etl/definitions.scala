@@ -1,9 +1,6 @@
 package com.colofabrix.scala.accounting.etl
 
-import fs2.Pure
-import com.colofabrix.scala.accounting.model._
 import com.colofabrix.scala.accounting.utils.validation._
-import cats.effect.IO
 
 object definitions {
 

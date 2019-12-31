@@ -1,12 +1,10 @@
 package com.colofabrix.scala.accounting.utils
 
-import cats.Show
-import cats.data.Validated.Invalid
-import cats.data.Validated.Valid
+import cats.{ Show, _ }
+import cats.data.Validated.{ Invalid, Valid }
 import cats.effect._
-import cats._
 import cats.implicits._
-import validation._
+import com.colofabrix.scala.accounting.utils.validation._
 
 /**
  * Helpers to print debugging values
@@ -21,12 +19,13 @@ trait DebugHelpers {
     def show(t: Iterable[A]): String = t.map(aShow.show).mkString("", "\n", "\n")
   }
 
-  implicit def showAValidatedA[A](implicit aShow: Show[A], listStrShow: Show[Iterable[String]]) = new Show[AValidated[A]] {
-    def show(t: AValidated[A]): String = t match {
-      case Valid(a)   => s"VALID\n${aShow.show(a)}\n"
-      case Invalid(e) => s"INVALID\n${listStrShow.show(e.toNonEmptyList.toList)}\n"
+  implicit def showAValidatedA[A](implicit aShow: Show[A], listStrShow: Show[Iterable[String]]) =
+    new Show[AValidated[A]] {
+      def show(t: AValidated[A]): String = t match {
+        case Valid(a)   => s"VALID\n${aShow.show(a)}\n"
+        case Invalid(e) => s"INVALID\n${listStrShow.show(e.toNonEmptyList.toList)}\n"
+      }
     }
-  }
 
   /** Prints an iterable value */
   def printI[A](input: Iterable[A])(implicit show: Show[Iterable[A]]): Unit = println(show.show(input))
@@ -34,11 +33,12 @@ trait DebugHelpers {
   def printV[A](input: AValidated[A])(implicit show: Show[AValidated[A]]): Unit = println(show.show(input))
   /** Prints two iterables to compare */
   def printC[A](computed: Iterable[A], expected: Iterable[A]): Unit = {
-    computed.zip(expected).foreach { case (exp, comp) =>
-      println(s"Expected: $exp")
-      println(s"Computed: $comp")
-      if (exp != comp) println("DIFFERENT")
-      println("")
+    computed.zip(expected).foreach {
+      case (exp, comp) =>
+        println(s"Expected: $exp")
+        println(s"Computed: $comp")
+        if (exp != comp) println("DIFFERENT")
+        println("")
     }
   }
 

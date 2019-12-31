@@ -81,7 +81,7 @@ wartremoverErrors ++= Warts.allBut(
 )
 
 // Standardize formatting
-scalafmtOnCompile := true
+scalafmtOnCompile in ThisBuild := true
 
 //  - - - - - - - - - - - - - - - - - //
 

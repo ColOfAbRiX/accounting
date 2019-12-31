@@ -1,16 +1,9 @@
 package com.colofabrix.scala.accounting.etl.csv
 
-import cats.implicits._
-import com.colofabrix.scala.accounting.etl._
+import cats.data._
 import com.colofabrix.scala.accounting.etl.definitions._
 import com.colofabrix.scala.accounting.model._
 import com.colofabrix.scala.accounting.utils.validation._
-import cats.effect.IO
-import fs2.Pipe
-import cats.data.Validated.Invalid
-import cats.data.Validated.Valid
-import cats.data._
-import shapeless.record
 
 /**
  * Processes a CSV file like filtering bad records and converting them to case classes
@@ -24,12 +17,7 @@ trait CsvProcessor[+T <: InputTransaction] {
 
   /** Processes the input data by filtering and converting the stream */
   def process: VPipe[fs2.Pure, RawRecord, T] = { record =>
-    filter(
-      record.map{r => /*println(s"Original: $r"); */r}
-    ).map { r =>
-      // println(s"Record: $r")
-      r.flatMapV(convert)
-    }
+    filter(record).map(_.flatMapV(convert))
   }
 }
 

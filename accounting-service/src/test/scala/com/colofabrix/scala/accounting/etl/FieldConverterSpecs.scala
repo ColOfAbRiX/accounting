@@ -189,7 +189,8 @@ class FieldConverterSpecs extends WordSpec with Matchers with ValidatedMatchers 
     "providing an a badly formatted String" should {
       "complain with a NumberFormatException" in {
         val computed = parser.run(List("ab12cd"))
-        val expected = """Exception on converting field 'ab12cd': java.time.format.DateTimeParseException: Text 'ab12cd' could not be parsed at index 0""".aInvalid
+        val expected =
+          """Exception on converting field 'ab12cd': java.time.format.DateTimeParseException: Text 'ab12cd' could not be parsed at index 0""".aInvalid
         println(expected)
         computed should equal(expected)
       }
@@ -198,7 +199,8 @@ class FieldConverterSpecs extends WordSpec with Matchers with ValidatedMatchers 
     "providing an empty String" should {
       "complain with a NumberFormatException" in {
         val computed = parser.run(List(""))
-        val expected = "Exception on converting field '': java.time.format.DateTimeParseException: Text '' could not be parsed at index 0".aInvalid
+        val expected =
+          "Exception on converting field '': java.time.format.DateTimeParseException: Text '' could not be parsed at index 0".aInvalid
         computed should equal(expected)
       }
     }
