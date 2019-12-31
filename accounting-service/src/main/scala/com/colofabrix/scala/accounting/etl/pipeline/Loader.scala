@@ -1,4 +1,4 @@
-package com.colofabrix.scala.accounting.etl
+package com.colofabrix.scala.accounting.etl.pipeline
 
 import cats.effect._
 import com.colofabrix.scala.accounting.model._
@@ -6,7 +6,7 @@ import com.colofabrix.scala.accounting.utils.validation._
 import com.colofabrix.scala.accounting.etl.definitions._
 import com.colofabrix.scala.accounting.etl._
 import com.colofabrix.scala.accounting.etl.csv._
-import com.colofabrix.scala.accounting.etl.csv.inputs._
+import com.colofabrix.scala.accounting.etl.inputs._
 import java.io.File
 
 /**

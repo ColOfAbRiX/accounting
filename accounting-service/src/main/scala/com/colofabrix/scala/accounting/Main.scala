@@ -3,6 +3,7 @@ package com.colofabrix.scala.accounting
 import cats.effect._
 import com.colofabrix.scala.accounting.model._
 import etl._
+import etl.pipeline._
 import csv._
 
 // object Main extends IOApp {

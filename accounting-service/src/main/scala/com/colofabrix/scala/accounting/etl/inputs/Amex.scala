@@ -1,4 +1,4 @@
-package com.colofabrix.scala.accounting.etl.csv.inputs
+package com.colofabrix.scala.accounting.etl.inputs
 
 import java.time.LocalDate
 import com.colofabrix.scala.accounting.etl.csv._
@@ -9,11 +9,15 @@ import com.colofabrix.scala.accounting.etl.csv.CsvProcessorUtils._
 import com.colofabrix.scala.accounting.model.AmexTransaction
 import com.colofabrix.scala.accounting.utils.validation._
 import shapeless._
+import com.colofabrix.scala.accounting.model.Transaction
 
 /**
  * Amex CSV file processor
  */
-class AmexCsvProcessor extends CsvProcessor[AmexTransaction] with RecordConverter[AmexTransaction] {
+class AmexCsvProcessor
+    extends CsvProcessor[AmexTransaction]
+    with RecordConverter[AmexTransaction]
+    with Transformer[AmexTransaction] {
 
   protected def filter: RawInputFilter = dropEmptyRows
 
@@ -26,6 +30,10 @@ class AmexCsvProcessor extends CsvProcessor[AmexTransaction] with RecordConverte
       val extra       = parse[String](r => r(4))
       date :: reference :: amount :: description :: extra :: HNil
     }
+  }
+
+  def transform(input: AmexTransaction): Transaction = {
+    Transaction(input.date, input.amount, input.description, "Amex", "", "", "")
   }
 
 }

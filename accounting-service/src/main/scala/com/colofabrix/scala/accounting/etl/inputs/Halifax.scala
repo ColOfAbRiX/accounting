@@ -1,4 +1,4 @@
-package com.colofabrix.scala.accounting.etl.csv.inputs
+package com.colofabrix.scala.accounting.etl.inputs
 
 import java.time.LocalDate
 import com.colofabrix.scala.accounting.etl.csv._
@@ -9,11 +9,15 @@ import com.colofabrix.scala.accounting.etl.csv.CsvProcessorUtils._
 import com.colofabrix.scala.accounting.model.HalifaxTransaction
 import com.colofabrix.scala.accounting.utils.validation._
 import shapeless._
+import com.colofabrix.scala.accounting.model.Transaction
 
 /**
  * Halifax CSV file processor
  */
-class HalifaxCsvProcessor extends CsvProcessor[HalifaxTransaction] with RecordConverter[HalifaxTransaction] {
+class HalifaxCsvProcessor
+    extends CsvProcessor[HalifaxTransaction]
+    with RecordConverter[HalifaxTransaction]
+    with Transformer[HalifaxTransaction] {
 
   protected def filter: RawInputFilter = dropHeader andThen dropEmptyRows
 
@@ -26,6 +30,10 @@ class HalifaxCsvProcessor extends CsvProcessor[HalifaxTransaction] with RecordCo
       val amount      = parse[BigDecimal](r => r(4)).map(amount => -1.0 * amount)
       date :: dateEntered :: reference :: description :: amount :: HNil
     }
+  }
+
+  def transform(input: HalifaxTransaction): Transaction = {
+    Transaction(input.date, input.amount, input.description, "Halifax", "", "", "")
   }
 
 }
