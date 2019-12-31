@@ -1,6 +1,7 @@
 package com.colofabrix.scala.accounting.etl
 
 import com.colofabrix.scala.accounting.utils.validation._
+import cats.effect.IO
 
 object definitions {
 

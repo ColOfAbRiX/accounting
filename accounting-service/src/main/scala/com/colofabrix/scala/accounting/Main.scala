@@ -1,7 +1,9 @@
 package com.colofabrix.scala.accounting
 
 import cats.effect._
-import com.colofabrix.scala.accounting.model.BarclaysTransaction
+import com.colofabrix.scala.accounting.model._
+import etl._
+import csv._
 
 // object Main extends IOApp {
 //   def run(args: List[String]) =
@@ -11,16 +13,16 @@ import com.colofabrix.scala.accounting.model.BarclaysTransaction
 object Main extends IOApp {
 
   def run(args: List[String]): IO[ExitCode] = IO.pure {
-    import etl._
-    import csv._
-    import AllInputs._
+    val barclays = Loader.fromCsvPath[BarclaysTransaction]("samples/sample_barclays.csv")
+    val halifax  = Loader.fromCsvPath[HalifaxTransaction]("samples/sample_halifax.csv")
+    val starling = Loader.fromCsvPath[StarlingTransaction]("samples/sample_starling.csv")
+    val amex     = Loader.fromCsvPath[AmexTransaction]("samples/sample_amex.csv")
 
-    val csvReader = new FileCsvReader(new java.io.File("samples/sample_barclays.csv"))
-    val result    = implicitly[CsvProcessor[BarclaysTransaction]].process(csvReader.read)
-    result
-      .map { x =>
-        println(x); x
-      }.compile.toVector.unsafeRunSync()
+    (barclays append halifax append starling append amex)
+      .compile
+      .toList
+      .unsafeRunSync()
+      .foreach(println)
 
     ExitCode.Success
   }

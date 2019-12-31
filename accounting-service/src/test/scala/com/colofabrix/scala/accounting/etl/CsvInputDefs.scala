@@ -37,7 +37,7 @@ trait InputTestData[T <: InputTransaction] {
  * Defines the tests for all input conversions
  */
 trait InputConversionSpec[T <: InputTransaction]
-    extends FlatSpec
+    extends WordSpec
     with Matchers
     with ValidatedMatchers
     with DebugHelpers { this: InputTestData[T] =>
@@ -45,43 +45,47 @@ trait InputConversionSpec[T <: InputTransaction]
   /** Needed to provide the processor to convert the data */
   implicit val csvProcessor: CsvProcessor[T]
 
-  s"A valid input data for ${name}" should "be converted into a valid result" in {
-    val result = read(this.sampleCorrectCsvData).through(csvProcessor.process)
-    withValidatedIoStream(result) { computed =>
-      computed.foreach(_ shouldBe valid)
+  s"The ${name} processor" when {
+    "provied with a valid input" should {
+      "return a valid result" in {
+        val result = read(this.sampleCorrectCsvData).through(csvProcessor.process)
+        withValidatedIoStream(result) { computed =>
+          computed.foreach(_ shouldBe valid)
+        }
+      }
+      s"convert the input into List[${name}InputTransaction]" in {
+        val result    = read(this.sampleCorrectCsvData).through(csvProcessor.process)
+        val expectedV = this.convertedCorrectData.aValid
+        withValidatedIoStream(result) { computedV =>
+          (computedV.sequence, expectedV).mapN { (computed, expected) =>
+            computed should contain theSameElementsInOrderAs (expected)
+          }
+        }
+      }
     }
-  }
 
-  s"A valid input data for ${name}" should s"be converted into a sequence of ${name}Transaction" in {
-    val result    = read(this.sampleCorrectCsvData).through(csvProcessor.process)
-    val expectedV = this.convertedCorrectData.aValid
-    withValidatedIoStream(result) { computedV =>
-      (computedV.sequence, expectedV).mapN { (computed, expected) =>
-        computed should contain theSameElementsInOrderAs (expected)
+    "provied with an invalid input" should {
+      "return an invalid result" in {
+        val result = read(this.sampleBadCsvData).through(csvProcessor.process)
+        withValidatedIoStream(result) { computed =>
+          computed.foreach(_ shouldBe invalid)
+        }
+      }
+      "return a detailed description of conversion errors" in {
+        val result = read(this.sampleBadCsvData).through(csvProcessor.process)
+        withValidatedIoStream(result) { computed =>
+          computed should contain theSameElementsAs (this.convertedBadData)
+        }
+      }
+    }
+
+    "provided with specific record values" should {
+      "dropped these values" in {
+        val result = read(this.sampleDroppedCsvData).through(csvProcessor.process)
+        withValidatedIoStream(result) { computed =>
+          computed should have size (0)
+        }
       }
     }
   }
-
-  s"An invalid input data for ${name}" should "be converted into an invalid result" in {
-    val result = read(this.sampleBadCsvData).through(csvProcessor.process)
-    withValidatedIoStream(result) { computed =>
-      computed.foreach(_ shouldBe invalid)
-    }
-  }
-
-  s"An invalid input data for ${name}" should "report correct conversion errors" in {
-    val result = read(this.sampleBadCsvData).through(csvProcessor.process)
-    withValidatedIoStream(result) { computed =>
-      // computed.foreach(println)
-      computed should contain theSameElementsAs (this.convertedBadData)
-    }
-  }
-
-  s"Specific record values for ${name}" should "be dropped from the stream" in {
-    val result = read(this.sampleDroppedCsvData).through(csvProcessor.process)
-    withValidatedIoStream(result) { computed =>
-      computed should have size (0)
-    }
-  }
-
 }

@@ -2,20 +2,14 @@ package com.colofabrix.scala.accounting.etl.csv
 
 import java.io.File
 import cats.effect._
+import com.colofabrix.scala.accounting.etl._
 import com.colofabrix.scala.accounting.etl.definitions._
 import com.colofabrix.scala.accounting.utils.validation._
 
 /**
- * Interface for a generic CSV reader that reads raw data
- */
-trait CsvReader {
-  def read: VRawInput[IO]
-}
-
-/**
  * CSV Reader from Iterable
  */
-class IterableCsvReader(input: Iterable[RawRecord]) extends CsvReader {
+class IterableCsvReader(input: Iterable[RawRecord]) extends InputReader {
   def read: VRawInput[IO] = {
     fs2.Stream.unfold(input.iterator)(i => if (i.hasNext) Some((i.next.aValid, i)) else None)
   }
@@ -24,7 +18,7 @@ class IterableCsvReader(input: Iterable[RawRecord]) extends CsvReader {
 /**
  * CSV Reader from file
  */
-class FileCsvReader(file: File) extends CsvReader {
+class FileCsvReader(file: File) extends InputReader {
   import kantan.csv._
   import kantan.csv.ops._
 

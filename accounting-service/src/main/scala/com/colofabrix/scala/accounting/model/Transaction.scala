@@ -8,7 +8,6 @@ import java.time.LocalDate
 final case class Transaction(
     date: LocalDate,
     amount: BigDecimal,
-    `type`: String,
     description: String,
     bank: String,
     category: String,
