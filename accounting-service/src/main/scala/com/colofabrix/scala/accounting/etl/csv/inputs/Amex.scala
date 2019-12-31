@@ -7,6 +7,7 @@ import com.colofabrix.scala.accounting.etl.definitions._
 import com.colofabrix.scala.accounting.etl.RecordConverter
 import com.colofabrix.scala.accounting.model.AmexTransaction
 import com.colofabrix.scala.accounting.utils.validation._
+import CsvProcessorUtils._
 import shapeless._
 
 /**
@@ -14,9 +15,7 @@ import shapeless._
  */
 class AmexCsvProcessor extends CsvProcessor[AmexTransaction] with RecordConverter[AmexTransaction] {
 
-  protected def filter(input: VRawInput[fs2.Pure]): VRawInput[fs2.Pure] = {
-    dropEmptyRows(input)
-  }
+  protected def filter: RawInputFilter = dropEmptyRows
 
   protected def convert(record: RawRecord): AValidated[AmexTransaction] = {
     convertRecord(record) {

@@ -7,6 +7,7 @@ import com.colofabrix.scala.accounting.etl.definitions._
 import com.colofabrix.scala.accounting.etl.RecordConverter
 import com.colofabrix.scala.accounting.model.BarclaysTransaction
 import com.colofabrix.scala.accounting.utils.validation._
+import CsvProcessorUtils._
 import shapeless._
 
 /**
@@ -14,9 +15,7 @@ import shapeless._
  */
 class BarclaysCsvProcessor extends CsvProcessor[BarclaysTransaction] with RecordConverter[BarclaysTransaction] {
 
-  protected def filter(input: VRawInput[fs2.Pure]): VRawInput[fs2.Pure] = {
-    dropEmptyRows(dropHeader(input))
-  }
+  protected def filter: RawInputFilter = dropHeader andThen dropEmptyRows
 
   protected def convert(record: RawRecord): AValidated[BarclaysTransaction] = {
     convertRecord(record) {

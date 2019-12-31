@@ -164,7 +164,20 @@ trait StarlingTestData extends InputTestData[StarlingTransaction] {
   )
 
   val convertedBadData: List[Invalid[NonEmptyChain[String]]] = List(
-    Invalid(NonEmptyChain("Exception on converting field 'null': java.lang.NullPointerException")),
+    Invalid(NonEmptyChain(
+      "Exception on converting field 'text': java.lang.NumberFormatException",
+      "Exception on converting field 'text': java.lang.NumberFormatException",
+      "Exception on converting field 'text': java.time.format.DateTimeParseException: Text 'text' could not be parsed at index 0"
+    )),
+    Invalid(NonEmptyChain(
+      "Exception on converting field '': java.time.format.DateTimeParseException: Text '' could not be parsed at index 0"
+    )),
+    Invalid(NonEmptyChain(
+      "Exception on converting field 'null': java.lang.NullPointerException"
+    )),
+    Invalid(NonEmptyChain(
+      "Exception on converting record List(04/03/2019, Sainsbury's, SAINSBURYS SACAT, CONTACTLESS, -3.70): java.lang.IndexOutOfBoundsException: 5"
+    )),
   )
 
   val sampleDroppedCsvData: List[RawRecord] = List(

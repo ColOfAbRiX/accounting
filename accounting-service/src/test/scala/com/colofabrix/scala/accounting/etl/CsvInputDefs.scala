@@ -72,6 +72,7 @@ trait InputConversionSpec[T <: InputTransaction]
   s"An invalid input data for ${name}" should "report correct conversion errors" in {
     val result = read(this.sampleBadCsvData).through(csvProcessor.process)
     withValidatedIoStream(result) { computed =>
+      // computed.foreach(println)
       computed should contain theSameElementsAs (this.convertedBadData)
     }
   }
@@ -79,7 +80,7 @@ trait InputConversionSpec[T <: InputTransaction]
   s"Specific record values for ${name}" should "be dropped from the stream" in {
     val result = read(this.sampleDroppedCsvData).through(csvProcessor.process)
     withValidatedIoStream(result) { computed =>
-      computed.length should equal (0)
+      computed should have size (0)
     }
   }
 

@@ -7,6 +7,7 @@ import com.colofabrix.scala.accounting.etl.definitions._
 import com.colofabrix.scala.accounting.etl.RecordConverter
 import com.colofabrix.scala.accounting.model.StarlingTransaction
 import com.colofabrix.scala.accounting.utils.validation._
+import CsvProcessorUtils._
 import shapeless._
 
 /**
@@ -14,13 +15,8 @@ import shapeless._
  */
 class StarlingCsvProcessor extends CsvProcessor[StarlingTransaction] with RecordConverter[StarlingTransaction] {
 
-  protected def filter(input: VRawInput[fs2.Pure]): VRawInput[fs2.Pure] = {
-    val dropInitial = dropAnyMatch { s =>
-      print(s"Checking '$s': ")
-      println(s == null || s != null && s.trim.toLowerCase == "opening balance")
-      s == null || s != null && s.trim.toLowerCase == "opening balance"
-    }(_)
-    dropInitial(dropEmptyRows(dropHeader(input)))
+  protected def filter: RawInputFilter = {
+    dropHeader andThen dropEmptyRows andThen dropAnyMatch(_.contains("opening balance"))
   }
 
   protected def convert(record: RawRecord): AValidated[StarlingTransaction] = {
