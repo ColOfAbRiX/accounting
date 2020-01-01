@@ -12,10 +12,10 @@ trait Transformer[T <: InputTransaction] {
 
 object Transformer {
   /** Converts a given stream into transactions */
-  // def apply[T <: InputTransaction]()
-  // def fromStream[T <: InputTransaction](stream: VRawInput[IO])(implicit converter: Loader[T]) = {
-  //   stream.through(converter.load)
-  // }
+  def apply[T <: InputTransaction](implicit transformer: Transformer[T]): VPipe[fs2.Pure, T, Transaction] = { input =>
+    // FIXME: Check if I can use cats.Nested to simplify these all around
+    input.map(_.map(transformer.transform))
+  }
 
   implicit val barclaysTransformer = new Transformer[BarclaysTransaction] {
     def transform(input: BarclaysTransaction): Transaction = {
