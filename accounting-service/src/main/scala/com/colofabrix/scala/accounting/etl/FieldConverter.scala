@@ -25,7 +25,7 @@ object FieldConverter {
   def parse[A](extract: RawRecord => String)(implicit parser: FieldConverter[A]): FieldBuilder[A] =
     Kleisli { record =>
       val extracted = TryE(extract(record)).leftMap { ex =>
-        s"Exception on converting record $record: ${ex.toString}"
+        s"Exception on converting record ${record.toString}: ${ex.toString}"
       }.toAValidated
       val parsed = parser.parseField _
       extracted andThen parsed
@@ -61,6 +61,7 @@ object FieldConverter {
   }
 
   /** Parser for result type "LocalDate" */
+  @SuppressWarnings(Array("org.wartremover.warts.ImplicitConversion"))
   implicit def localDateParser(dateFormat: String): FieldConverter[LocalDate] = {
     FieldConverter[LocalDate] { cell =>
       LocalDate.parse(cell.trim, DateTimeFormatter.ofPattern(dateFormat))

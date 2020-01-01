@@ -10,6 +10,8 @@ import com.colofabrix.scala.accounting.model.BarclaysTransaction
 import com.colofabrix.scala.accounting.utils.validation._
 import shapeless._
 import com.colofabrix.scala.accounting.model.Transaction
+import com.colofabrix.scala.accounting.etl.GenericConverter
+import cats.data.Kleisli
 
 /**
  * Barclays CSV file processor

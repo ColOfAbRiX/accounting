@@ -1,14 +1,29 @@
 package com.colofabrix.scala.accounting.utils
 
-import cats.{ Show, _ }
+import cats._
 import cats.data.Validated.{ Invalid, Valid }
 import cats.effect._
 import cats.implicits._
 import com.colofabrix.scala.accounting.utils.validation._
 
 /**
+ * Helpers to test streams and validated streams
+ */
+trait StreamHelpers {
+  /** Runs a function for all the elements of a stream */
+  def withValidatedIoStream[O](input: VStream[IO, O])(f: List[AValidated[O]] => Unit): Unit = {
+    withStream[IO, AValidated, O](input)(f).unsafeRunSync()
+  }
+  /** Runs a function for all the elements of a stream */
+  def withStream[E[_]: Effect, F[_]: Functor, O](input: fs2.Stream[E, F[O]])(f: List[F[O]] => Unit): E[Unit] = {
+    input.compile.to[List].map(f)
+  }
+}
+
+/**
  * Helpers to print debugging values
  */
+@SuppressWarnings(Array("org.wartremover.warts.All"))
 trait DebugHelpers {
 
   implicit def showIterable[A] = new Show[A] {
@@ -35,19 +50,10 @@ trait DebugHelpers {
   def printC[A](computed: Iterable[A], expected: Iterable[A]): Unit = {
     computed.zip(expected).foreach {
       case (exp, comp) =>
-        println(s"Expected: $exp")
-        println(s"Computed: $comp")
+        println(s"Expected: ${exp.toString}")
+        println(s"Computed: ${comp.toString}")
         if (exp != comp) println("DIFFERENT")
         println("")
     }
-  }
-
-  /** Runs a function for all the elements of a stream */
-  def withValidatedIoStream[O](input: fs2.Stream[IO, AValidated[O]])(f: List[AValidated[O]] => Unit) = {
-    withStream[IO, AValidated, O](input)(f).unsafeRunSync()
-  }
-  /** Runs a function for all the elements of a stream */
-  def withStream[E[_]: Effect, F[_]: Functor, O](input: fs2.Stream[E, F[O]])(f: List[F[O]] => Unit) = {
-    input.compile.to[List].map(f)
   }
 }

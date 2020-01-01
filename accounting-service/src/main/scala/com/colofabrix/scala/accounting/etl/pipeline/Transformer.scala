@@ -1,11 +1,15 @@
 package com.colofabrix.scala.accounting.etl.csv
 
+import cats.implicits._
 import cats.data._
 import com.colofabrix.scala.accounting.etl.definitions._
 import com.colofabrix.scala.accounting.etl.inputs._
 import com.colofabrix.scala.accounting.model._
 import com.colofabrix.scala.accounting.utils.validation._
 
+/**
+ * Transforms an InputTransaction into the final Transaction
+ */
 trait Transformer[T <: InputTransaction] {
   def transform(input: T): Transaction
 }
@@ -13,31 +17,32 @@ trait Transformer[T <: InputTransaction] {
 object Transformer {
   /** Converts a given stream into transactions */
   def apply[T <: InputTransaction](implicit transformer: Transformer[T]): VPipe[fs2.Pure, T, Transaction] = { input =>
-    // FIXME: Check if I can use cats.Nested to simplify these all around
-    input.map(_.map(transformer.transform))
+    Nested(input)
+      .map(transformer.transform)
+      .value
   }
 
-  implicit val barclaysTransformer = new Transformer[BarclaysTransaction] {
-    def transform(input: BarclaysTransaction): Transaction = {
-      new BarclaysCsvProcessor().transform(input)
+  implicit val barclaysTransformer: Transformer[BarclaysTransaction] =
+    new Transformer[BarclaysTransaction] {
+      def transform(input: BarclaysTransaction) =
+        new BarclaysCsvProcessor().transform(input)
     }
-  }
 
-  implicit val halifaxTransformer = new Transformer[HalifaxTransaction] {
-    def transform(input: HalifaxTransaction): Transaction = {
-      new HalifaxCsvProcessor().transform(input)
+  implicit val halifaxTransformer: Transformer[HalifaxTransaction] =
+    new Transformer[HalifaxTransaction] {
+      def transform(input: HalifaxTransaction) =
+        new HalifaxCsvProcessor().transform(input)
     }
-  }
 
-  implicit val starlingTransformer = new Transformer[StarlingTransaction] {
-    def transform(input: StarlingTransaction): Transaction = {
-      new StarlingCsvProcessor().transform(input)
+  implicit val starlingTransformer: Transformer[StarlingTransaction] =
+    new Transformer[StarlingTransaction] {
+      def transform(input: StarlingTransaction) =
+        new StarlingCsvProcessor().transform(input)
     }
-  }
 
-  implicit val amexTransformer = new Transformer[AmexTransaction] {
-    def transform(input: AmexTransaction): Transaction = {
-      new AmexCsvProcessor().transform(input)
+  implicit val amexTransformer: Transformer[AmexTransaction] =
+    new Transformer[AmexTransaction] {
+      def transform(input: AmexTransaction) =
+        new AmexCsvProcessor().transform(input)
     }
-  }
 }

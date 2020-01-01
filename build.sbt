@@ -72,12 +72,12 @@ scalacOptions ++= Seq(
 )
 
 // Wartremover
-wartremoverExcluded += baseDirectory.value / "src" / "test" / "scala"
-wartremoverErrors ++= Warts.allBut(
+wartremoverExcluded in ThisBuild += baseDirectory.value / "src" / "test" / "scala"
+wartremoverErrors in ThisBuild ++= Warts.allBut(
   // Temporary, to allow the predefined template to work
   Wart.Any,
   Wart.Nothing,
-  Wart.EitherProjectionPartial,
+  // Wart.EitherProjectionPartial,
 )
 
 // Standardize formatting

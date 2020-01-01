@@ -3,6 +3,7 @@ package com.colofabrix.scala.accounting
 import java.util.concurrent._
 import java.util.concurrent.atomic.AtomicLong
 import scala.concurrent.ExecutionContext
+import scala.concurrent.ExecutionContextExecutor
 
 object ExecutionContexts {
 
@@ -10,7 +11,7 @@ object ExecutionContexts {
 
   private val coresCount = Runtime.getRuntime().availableProcessors()
 
-  private def threadFactory(name: String, priority: Int = Thread.NORM_PRIORITY) = new ThreadFactory {
+  private def threadFactory(name: String, priority: Int) = new ThreadFactory {
     private val counter = new AtomicLong(0L)
     def newThread(r: Runnable) = {
       val th = new Thread(r)
@@ -24,17 +25,17 @@ object ExecutionContexts {
   // See https://gist.github.com/djspiewak/46b543800958cf61af6efa8e072bfd5c
 
   /** Default scala global context */
-  val global = ExecutionContext.global
+  val global: ExecutionContextExecutor = ExecutionContext.global
   /** CPU-bound pool */
-  val computePool = ExecutionContext.fromExecutor(
-    Executors.newFixedThreadPool(coresCount, threadFactory("compute")),
+  val computePool: ExecutionContextExecutor = ExecutionContext.fromExecutor(
+    Executors.newFixedThreadPool(coresCount, threadFactory("compute", Thread.NORM_PRIORITY)),
   )
   /** Blocking IO pool */
-  val ioPool = ExecutionContext.fromExecutor(
-    Executors.newCachedThreadPool(threadFactory("io")),
+  val ioPool: ExecutionContextExecutor = ExecutionContext.fromExecutor(
+    Executors.newCachedThreadPool(threadFactory("io", Thread.NORM_PRIORITY)),
   )
   /** Non-blocking IO polling pool */
-  val eventsPool = ExecutionContext.fromExecutor(
+  val eventsPool: ExecutionContextExecutor = ExecutionContext.fromExecutor(
     Executors.newFixedThreadPool(1, threadFactory("event", Thread.MAX_PRIORITY)),
   )
 

@@ -1,5 +1,6 @@
 package com.colofabrix.scala.accounting.etl.csv
 
+import cats.implicits._
 import cats.data._
 import com.colofabrix.scala.accounting.etl.definitions._
 import com.colofabrix.scala.accounting.model._
@@ -70,7 +71,9 @@ object CsvProcessorUtils {
 
   /** Converts null fields into empty strings */
   def fixNulls: RawInputFilter = { input =>
-    input.map(_.map(_.map(nullSafe("", identity))))
+    Nested(Nested(input))
+      .map(nullSafe("", identity))
+      .value.value
   }
 
 }

@@ -6,6 +6,7 @@ import etl._
 import etl.pipeline._
 import csv._
 import Transformer._
+import cats.data.Validated.Valid
 
 // object Main extends IOApp {
 //   def run(args: List[String]) =
@@ -31,7 +32,12 @@ object Main extends IOApp {
       .fromCsvPath[AmexTransaction]("samples/sample_amex.csv")
       .through(Transformer[AmexTransaction])
 
-    val result = (barclays append halifax append starling append amex)
+    val result = for {
+      inputsV     <- barclays append halifax append starling append amex
+      transaction <- inputsV.fold(_ => fs2.Stream.empty, fs2.Stream(_))
+    } yield {
+      transaction
+    }
 
     result
       .compile
