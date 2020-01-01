@@ -1,7 +1,7 @@
 package com.colofabrix.scala.accounting.etl
 
 import com.colofabrix.scala.accounting.etl.csv.CsvProcessor
-import com.colofabrix.scala.accounting.etl.csv.inputs._
+import com.colofabrix.scala.accounting.etl.inputs._
 import com.colofabrix.scala.accounting.model._
 
 class BarclaysInputConversionSpec extends InputConversionSpec[BarclaysTransaction] with BarclaysTestData {

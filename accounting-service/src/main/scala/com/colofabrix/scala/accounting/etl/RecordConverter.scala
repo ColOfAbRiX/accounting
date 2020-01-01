@@ -8,11 +8,15 @@ import com.colofabrix.scala.accounting.utils.validation._
 import shapeless.{ Generic, HList, HNil, Poly2 }
 import shapeless.ops.hlist.RightFolder
 import shapeless.UnaryTCConstraint.*->*
+import cats.data.Kleisli
+import cats.Functor
 
 /**
- * Represents an object that can convert inputs into type T
+ * Represents an object that can convert Inputs records into Output types
  */
-trait RecordConverter[T <: InputTransaction] {
+trait GenericConverter[Input, Output] {
+
+  type GenericBuilder[A] = Kleisli[AValidated, Input, A]
 
   // -- The following has been adapted from https://stackoverflow.com/a/25316124 -- //
 
@@ -21,10 +25,10 @@ trait RecordConverter[T <: InputTransaction] {
   // then we append it to the accumulator.
 
   // format: off
-  private type Accumulator[A <: HList] = (RawRecord, AValidated[A])
+  private type Accumulator[A <: HList] = (Input, AValidated[A])
 
   private object ApplyRecord extends Poly2 {
-    implicit def folder[T, V <: HList] = at[FieldBuilder[T], Accumulator[V]] {
+    implicit def folder[Output, V <: HList] = at[GenericBuilder[Output], Accumulator[V]] {
       case (recordParser, (record, accumulator)) =>
         val parsed = recordParser(record)
         val next = (accumulator, parsed).mapN((v, t) => t :: v)
@@ -35,14 +39,14 @@ trait RecordConverter[T <: InputTransaction] {
   // UnaryTCConstraint taken from here: https://mpilquist.github.io/blog/2013/06/09/scodec-part-3/
 
   protected def convertRecord[
-    HParsers <: HList : *->*[FieldBuilder]#λ,
+    HParsers <: HList : *->*[GenericBuilder]#λ,
     HParsed <: HList](
-      record: RawRecord)(
+      record: Input)(
       parsers: HParsers)(
         implicit
         folder: RightFolder.Aux[HParsers, Accumulator[HNil], ApplyRecord.type, Accumulator[HParsed]],
-        gen: Generic.Aux[T, HParsed],
-  ): AValidated[T] = {
+        gen: Generic.Aux[Output, HParsed],
+  ): AValidated[Output] = {
     parsers
       .foldRight((record, (HNil: HNil).aValid))(ApplyRecord)._2
       .map(gen.from)
@@ -51,6 +55,7 @@ trait RecordConverter[T <: InputTransaction] {
 
 }
 
-object RecordConverter {
-  implicit def recordConverter[T <: InputTransaction] = new RecordConverter[T] {}
-}
+/**
+ * Specialization to convert RawRecords into InputTransaction
+ */
+trait RecordConverter[T <: InputTransaction] extends GenericConverter[RawRecord, T]
