@@ -12,7 +12,7 @@ import cats.kernel.Semigroup
  */
 object validation {
 
-  /** The type used to validate Csv data */
+  /** The type used to validate data */
   type AValidated[+A] = Validated[NonEmptyChain[String], A]
 
   /** Validated Stream */
@@ -83,7 +83,7 @@ object validation {
 
   //  COMBINATORS  //
 
-  // V(alida)tor
+  // Validator/Vtor
   private type Vtor[A] = ((=> String, A) => AValidated[A])
 
   /** Build a validation function as concatenation of the provided functions */

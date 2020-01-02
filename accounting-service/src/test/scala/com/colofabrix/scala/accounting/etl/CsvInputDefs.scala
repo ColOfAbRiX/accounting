@@ -8,7 +8,7 @@ import cats.scalatest._
 import com.colofabrix.scala.accounting.etl.csv._
 import com.colofabrix.scala.accounting.etl.definitions._
 import com.colofabrix.scala.accounting.model._
-import com.colofabrix.scala.accounting.utils.DebugHelpers
+import com.colofabrix.scala.accounting.utils.StreamHelpers
 import com.colofabrix.scala.accounting.utils.validation._
 import java.time.LocalDate
 import org.scalatest._
@@ -40,7 +40,7 @@ trait InputConversionSpec[T <: InputTransaction]
     extends WordSpec
     with Matchers
     with ValidatedMatchers
-    with DebugHelpers { this: InputTestData[T] =>
+    with StreamHelpers { this: InputTestData[T] =>
 
   /** Needed to provide the processor to convert the data */
   implicit val csvProcessor: CsvProcessor[T]

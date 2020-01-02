@@ -4,7 +4,6 @@ import cats.scalatest._
 import com.colofabrix.scala.accounting.utils.validation._
 import com.colofabrix.scala.accounting.etl.definitions._
 import org.scalatest._
-import com.colofabrix.scala.accounting.utils.DebugHelpers
 import csv.CsvProcessorUtils._
 
 class CsvProcessorSpecs extends FlatSpec with Matchers {
