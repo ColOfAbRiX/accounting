@@ -73,7 +73,7 @@ scalacOptions ++= Seq(
 
 // Wartremover
 wartremoverExcluded in ThisBuild ++= (baseDirectory.value * "**" / "src" / "test").get
-wartremoverErrors in ThisBuild ++= Warts.allBut(Wart.Any, Wart.Nothing)
+wartremoverErrors in ThisBuild ++= Warts.allBut(Wart.Any, Wart.Nothing, Wart.ToString)
 
 // Standardize formatting
 scalafmtOnCompile in ThisBuild := true

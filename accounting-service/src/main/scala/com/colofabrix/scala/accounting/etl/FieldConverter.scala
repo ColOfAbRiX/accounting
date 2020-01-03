@@ -11,72 +11,80 @@ import com.colofabrix.scala.accounting.utils.validation._
 /**
  * Parser to transform record fields into JVM types
  */
-trait FieldConverter[+A] {
-  def parseField(field: String): AValidated[A]
+trait FieldConverter[-I, +O] {
+  def parseField(field: I): AValidated[O]
 }
 
 object FieldConverter {
 
   /** A composable parser of fields to type A: given a input record it produces an validated A */
-  type FieldBuilder[A] = Kleisli[AValidated, RawRecord, A]
+  type FieldBuilder[-I, O] = Kleisli[AValidated, List[I], O]
 
   /** Type-safe method to parse a value given a function to extract what to parse from a RawRecord */
-  @implicitNotFound("Couldn't find FieldConverter for type FieldConverter[${A}]")
-  def parse[A](extract: RawRecord => String)(implicit parser: FieldConverter[A]): FieldBuilder[A] =
+  @implicitNotFound("Couldn't find FieldConverter for type FieldConverter[${I}, ${O}]")
+  def iParseO[I, O](extract: List[I] => I)(implicit parser: FieldConverter[I, O]): FieldBuilder[I, O] =
     Kleisli { record =>
       val extracted = TryE(extract(record)).leftMap { ex =>
-        s"Exception on converting record ${record.toString}: ${ex.toString}"
+        val r = Option(record).map(_.toString).getOrElse("null")
+        s"Exception on converting record $r: ${ex.toString}"
       }.toAValidated
       val parsed = parser.parseField _
       extracted andThen parsed
     }
 
+  /** Type-safe method to parse a value given a function to extract what to parse from a RawRecord */
+  @implicitNotFound("Couldn't find FieldConverter for type FieldConverter[String, ${O}]")
+  def sParse[O](e: List[String] => String)(implicit p: FieldConverter[String, O]): FieldBuilder[String, O] = {
+    iParseO[String, O](e)(p)
+  }
+
   /** Method to create the default parser for the given type */
-  def apply[A](f: String => A): FieldConverter[A] = new FieldConverter[A] {
-    def parseField(field: String): AValidated[A] = {
+  def apply[I, O](f: I => O): FieldConverter[I, O] = new FieldConverter[I, O] {
+    def parseField(field: I): AValidated[O] = {
       TryE(f(field)).leftMap { ex =>
-        s"Exception on converting field '$field': ${ex.toString}"
+        val f = Option(field).map(_.toString).getOrElse("null")
+        s"Exception on converting field '$f': ${ex.toString}"
       }.toAValidated
     }
   }
 
   /** Parser for result type "String" */
-  implicit val stringParser: FieldConverter[String] = FieldConverter[String] {
+  implicit val stringParser: FieldConverter[String, String] = FieldConverter[String, String] {
     _.trim.toLowerCase.replaceAll("\\s+", " ")
   }
 
   /** Parser for result type "Int" */
-  implicit val intParser: FieldConverter[Int] = FieldConverter[Int] {
+  implicit val intParser: FieldConverter[String, Int] = FieldConverter[String, Int] {
     _.trim.toInt
   }
 
   /** Parser for result type "Double" */
-  implicit val doubleParser: FieldConverter[Double] = FieldConverter[Double] {
+  implicit val doubleParser: FieldConverter[String, Double] = FieldConverter[String, Double] {
     _.trim.toDouble
   }
 
   /** Parser for result type "BigDecimal" */
-  implicit val bigDecimalParser: FieldConverter[BigDecimal] = FieldConverter[BigDecimal] { cell =>
+  implicit val bigDecimalParser: FieldConverter[String, BigDecimal] = FieldConverter[String, BigDecimal] { cell =>
     BigDecimal(cell.trim)
   }
 
   /** Parser for result type "LocalDate" */
   @SuppressWarnings(Array("org.wartremover.warts.ImplicitConversion"))
-  implicit def localDateParser(dateFormat: String): FieldConverter[LocalDate] = {
-    FieldConverter[LocalDate] { cell =>
+  implicit def localDateParser(dateFormat: String): FieldConverter[String, LocalDate] = {
+    FieldConverter[String, LocalDate] { cell =>
       LocalDate.parse(cell.trim, DateTimeFormatter.ofPattern(dateFormat))
     }
   }
 
   /** Parser for result type "Option[A]" */
   @implicitNotFound("Couldn't find FieldConverter for type FieldConverter[${A}]")
-  implicit def optionParser[A](implicit aParser: FieldConverter[A]): FieldConverter[Option[A]] = {
-    FieldConverter[Option[A]](aParser.parseField(_).toOption)
+  implicit def optionParser[A](implicit aParser: FieldConverter[String, A]): FieldConverter[String, Option[A]] = {
+    FieldConverter[String, Option[A]](aParser.parseField(_).toOption)
   }
 
   /** Parser for result type "List[A]" */
   @implicitNotFound("Couldn't find FieldConverter for type FieldConverter[${A}]")
-  implicit def listParser[A](implicit aParser: FieldConverter[A]): FieldConverter[List[A]] = { cell =>
+  implicit def listParser[A](implicit aParser: FieldConverter[String, A]): FieldConverter[String, List[A]] = { cell =>
     cell.split(",").toList.traverse(aParser.parseField)
   }
 }

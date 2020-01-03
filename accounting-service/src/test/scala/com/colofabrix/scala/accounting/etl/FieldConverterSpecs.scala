@@ -10,7 +10,7 @@ class FieldConverterSpecs extends WordSpec with Matchers with ValidatedMatchers 
 
   // parse[String]
   "Running parse[String]" when {
-    val parser = parse[String](x => x(0))
+    val parser = sParse[String](x => x(0))
 
     "providing a String" should {
       "return a valid String" in {
@@ -29,7 +29,7 @@ class FieldConverterSpecs extends WordSpec with Matchers with ValidatedMatchers 
     }
 
     "providing null value" should {
-      "complain with a NullPointerException" in {
+      "return an invalid result containing NullPointerException" in {
         val computed = parser.run(List(null))
         val expected = "Exception on converting field 'null': java.lang.NullPointerException".aInvalid
         computed should equal(expected)
@@ -47,7 +47,7 @@ class FieldConverterSpecs extends WordSpec with Matchers with ValidatedMatchers 
 
   // parse[Int]
   "Running parse[Int]" when {
-    val parser = parse[Int](x => x(0))
+    val parser = sParse[Int](x => x(0))
 
     "providing a String" should {
       "return a valid Int" in {
@@ -58,7 +58,7 @@ class FieldConverterSpecs extends WordSpec with Matchers with ValidatedMatchers 
     }
 
     "providing an a badly formatted String" should {
-      "complain with a NumberFormatException" in {
+      "return an invalid result containing NumberFormatException" in {
         val computed = parser.run(List("ab12cd"))
         val expected =
           "Exception on converting field 'ab12cd': java.lang.NumberFormatException: For input string: \"ab12cd\"".aInvalid
@@ -67,7 +67,7 @@ class FieldConverterSpecs extends WordSpec with Matchers with ValidatedMatchers 
     }
 
     "providing an empty String" should {
-      "complain with a NumberFormatException" in {
+      "return an invalid result containing NumberFormatException" in {
         val computed = parser.run(List(""))
         val expected =
           "Exception on converting field '': java.lang.NumberFormatException: For input string: \"\"".aInvalid
@@ -76,7 +76,7 @@ class FieldConverterSpecs extends WordSpec with Matchers with ValidatedMatchers 
     }
 
     "providing null value" should {
-      "complain with a NullPointerException" in {
+      "return an invalid result containing NullPointerException" in {
         val computed = parser.run(List(null))
         val expected = "Exception on converting field 'null': java.lang.NullPointerException".aInvalid
         computed should equal(expected)
@@ -94,7 +94,7 @@ class FieldConverterSpecs extends WordSpec with Matchers with ValidatedMatchers 
 
   // parse[Double]
   "Running parse[Double]" when {
-    val parser = parse[Double](x => x(0))
+    val parser = sParse[Double](x => x(0))
 
     "providing a String" should {
       "return a valid Double" in {
@@ -105,7 +105,7 @@ class FieldConverterSpecs extends WordSpec with Matchers with ValidatedMatchers 
     }
 
     "providing an empty String" should {
-      "complain with a NumberFormatException" in {
+      "return an invalid result containing NumberFormatException" in {
         val computed = parser.run(List(""))
         val expected = "Exception on converting field '': java.lang.NumberFormatException: empty String".aInvalid
         computed should equal(expected)
@@ -113,7 +113,7 @@ class FieldConverterSpecs extends WordSpec with Matchers with ValidatedMatchers 
     }
 
     "providing null value" should {
-      "complain with a NullPointerException" in {
+      "return an invalid result containing NullPointerException" in {
         val computed = parser.run(List(null))
         val expected = "Exception on converting field 'null': java.lang.NullPointerException".aInvalid
         computed should equal(expected)
@@ -131,7 +131,7 @@ class FieldConverterSpecs extends WordSpec with Matchers with ValidatedMatchers 
 
   // parse[BigDecimal]
   "Running parse[BigDecimal]" when {
-    val parser = parse[BigDecimal](x => x(0))
+    val parser = sParse[BigDecimal](x => x(0))
 
     "providing a String" should {
       "return a valid BigDecimal" in {
@@ -142,7 +142,7 @@ class FieldConverterSpecs extends WordSpec with Matchers with ValidatedMatchers 
     }
 
     "providing an a badly formatted String" should {
-      "complain with a NumberFormatException" in {
+      "return an invalid result containing NumberFormatException" in {
         val computed = parser.run(List("ab12cd"))
         val expected = "Exception on converting field 'ab12cd': java.lang.NumberFormatException".aInvalid
         computed should equal(expected)
@@ -150,7 +150,7 @@ class FieldConverterSpecs extends WordSpec with Matchers with ValidatedMatchers 
     }
 
     "providing an empty String" should {
-      "complain with a NumberFormatException" in {
+      "return an invalid result containing NumberFormatException" in {
         val computed = parser.run(List(""))
         val expected = "Exception on converting field '': java.lang.NumberFormatException".aInvalid
         computed should equal(expected)
@@ -158,7 +158,7 @@ class FieldConverterSpecs extends WordSpec with Matchers with ValidatedMatchers 
     }
 
     "providing null value" should {
-      "complain with a NullPointerException" in {
+      "return an invalid result containing NullPointerException" in {
         val computed = parser.run(List(null))
         val expected = "Exception on converting field 'null': java.lang.NullPointerException".aInvalid
         computed should equal(expected)
@@ -176,7 +176,7 @@ class FieldConverterSpecs extends WordSpec with Matchers with ValidatedMatchers 
 
   // parse[LocalDate]
   "Running parse[LocalDate]" when {
-    val parser = parse[LocalDate](x => x(0))("dd/MM/yyyy")
+    val parser = sParse[LocalDate](x => x(0))("dd/MM/yyyy")
 
     "providing a String" should {
       "return a valid LocalDate" in {
@@ -187,7 +187,7 @@ class FieldConverterSpecs extends WordSpec with Matchers with ValidatedMatchers 
     }
 
     "providing an a badly formatted String" should {
-      "complain with a NumberFormatException" in {
+      "return an invalid result containing NumberFormatException" in {
         val computed = parser.run(List("ab12cd"))
         val expected =
           """Exception on converting field 'ab12cd': java.time.format.DateTimeParseException: Text 'ab12cd' could not be parsed at index 0""".aInvalid
@@ -197,7 +197,7 @@ class FieldConverterSpecs extends WordSpec with Matchers with ValidatedMatchers 
     }
 
     "providing an empty String" should {
-      "complain with a NumberFormatException" in {
+      "return an invalid result containing NumberFormatException" in {
         val computed = parser.run(List(""))
         val expected =
           "Exception on converting field '': java.time.format.DateTimeParseException: Text '' could not be parsed at index 0".aInvalid
@@ -206,7 +206,7 @@ class FieldConverterSpecs extends WordSpec with Matchers with ValidatedMatchers 
     }
 
     "providing null value" should {
-      "complain with a NullPointerException" in {
+      "return an invalid result containing NullPointerException" in {
         val computed = parser.run(List(null))
         val expected = "Exception on converting field 'null': java.lang.NullPointerException".aInvalid
         computed should equal(expected)
@@ -224,7 +224,7 @@ class FieldConverterSpecs extends WordSpec with Matchers with ValidatedMatchers 
 
   // parse[Option[A]]
   "Running parse[Option[A]]" when {
-    val parser = parse[Option[Int]](x => x(0))
+    val parser = sParse[Option[Int]](x => x(0))
 
     "providing a String" should {
       "return a valid Some[A]" in {

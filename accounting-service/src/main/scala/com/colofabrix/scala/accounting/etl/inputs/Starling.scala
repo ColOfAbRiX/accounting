@@ -22,12 +22,12 @@ class StarlingCsvProcessor extends CsvProcessor[StarlingTransaction] with Record
 
   protected def convert(record: RawRecord): AValidated[StarlingTransaction] = {
     convertRecord(record) {
-      val date         = parse[LocalDate](r => r(0))("dd/MM/yyyy")
-      val counterParty = parse[String](r => r(1))
-      val reference    = parse[String](r => r(2))
-      val `type`       = parse[String](r => r(3))
-      val amount       = parse[BigDecimal](r => r(4))
-      val balance      = parse[BigDecimal](r => r(5))
+      val date         = sParse[LocalDate](r => r(0))("dd/MM/yyyy")
+      val counterParty = sParse[String](r => r(1))
+      val reference    = sParse[String](r => r(2))
+      val `type`       = sParse[String](r => r(3))
+      val amount       = sParse[BigDecimal](r => r(4))
+      val balance      = sParse[BigDecimal](r => r(5))
       date :: counterParty :: reference :: `type` :: amount :: balance :: HNil
     }
   }
