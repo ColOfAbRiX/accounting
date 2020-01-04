@@ -36,7 +36,7 @@ class HalifaxInputProcessor
   }
 
   def clean(tr: HalifaxTransaction): HalifaxTransaction = {
-    val stringCleaning = toLowercase andThen removeRedundantSpaces
+    val stringCleaning = trim andThen toLowercase andThen removeRedundantSpaces andThen removePunctuation
     tr.copy(
       reference = stringCleaning(tr.reference),
       description = stringCleaning(tr.description),

@@ -26,14 +26,17 @@ object ExecutionContexts {
 
   /** Default scala global context */
   val global: ExecutionContextExecutor = ExecutionContext.global
+
   /** CPU-bound pool */
   val computePool: ExecutionContextExecutor = ExecutionContext.fromExecutor(
     Executors.newFixedThreadPool(coresCount, threadFactory("compute", Thread.NORM_PRIORITY)),
   )
+
   /** Blocking IO pool */
   val ioPool: ExecutionContextExecutor = ExecutionContext.fromExecutor(
     Executors.newCachedThreadPool(threadFactory("io", Thread.NORM_PRIORITY)),
   )
+
   /** Non-blocking IO polling pool */
   val eventsPool: ExecutionContextExecutor = ExecutionContext.fromExecutor(
     Executors.newFixedThreadPool(1, threadFactory("event", Thread.MAX_PRIORITY)),

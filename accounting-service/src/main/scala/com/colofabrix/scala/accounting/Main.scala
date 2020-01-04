@@ -18,18 +18,22 @@ object Main extends IOApp {
   def run(args: List[String]): IO[ExitCode] = IO.pure {
     val barclays = Loader
       .fromCsvPath[BarclaysTransaction]("samples/sample_barclays.csv")
+      .through(Cleaner[BarclaysTransaction])
       .through(Transformer[BarclaysTransaction])
 
     val halifax = Loader
       .fromCsvPath[HalifaxTransaction]("samples/sample_halifax.csv")
+      .through(Cleaner[HalifaxTransaction])
       .through(Transformer[HalifaxTransaction])
 
     val starling = Loader
       .fromCsvPath[StarlingTransaction]("samples/sample_starling.csv")
+      .through(Cleaner[StarlingTransaction])
       .through(Transformer[StarlingTransaction])
 
     val amex = Loader
       .fromCsvPath[AmexTransaction]("samples/sample_amex.csv")
+      .through(Cleaner[AmexTransaction])
       .through(Transformer[AmexTransaction])
 
     val result = for {

@@ -19,22 +19,22 @@ trait Loader[T] {
 
 object Loader {
   /** Converts a given stream into transactions */
-  def fromStream[T](stream: VRawInput[IO])(implicit loader: Loader[T]): VStream[IO, T] = {
-    stream.through(loader.load)
+  def fromStream[T](stream: VRawInput[IO])(implicit L: Loader[T]): VStream[IO, T] = {
+    stream.through(L.load)
   }
 
   /** Converts a given InputReader into transactions */
-  def fromReader[T](reader: InputReader)(implicit loader: Loader[T]): VStream[IO, T] = {
-    reader.read.through(loader.load)
+  def fromReader[T](reader: InputReader)(implicit L: Loader[T]): VStream[IO, T] = {
+    reader.read.through(L.load)
   }
 
   /** Converts a given File interpreted as CSV into transactions */
-  def fromCsvFile[T](file: File)(implicit loader: Loader[T]): VStream[IO, T] = {
+  def fromCsvFile[T](file: File)(implicit L: Loader[T]): VStream[IO, T] = {
     fromReader[T](new FileCsvReader(file))
   }
 
   /** Converts a given path interpreted as CSV file into transactions */
-  def fromCsvPath[T](path: String)(implicit loader: Loader[T]): VStream[IO, T] = {
+  def fromCsvPath[T](path: String)(implicit L: Loader[T]): VStream[IO, T] = {
     fromCsvFile[T](new File(path))
   }
 

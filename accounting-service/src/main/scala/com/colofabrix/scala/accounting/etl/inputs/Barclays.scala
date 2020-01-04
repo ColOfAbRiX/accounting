@@ -39,7 +39,7 @@ class BarclaysInputProcessor
   }
 
   def clean(tr: BarclaysTransaction): BarclaysTransaction = {
-    val stringCleaning = toLowercase andThen removeRedundantSpaces
+    val stringCleaning = trim andThen toLowercase andThen removeRedundantSpaces andThen removePunctuation
     tr.copy(
       account = stringCleaning(tr.account),
       subcategory = stringCleaning(tr.subcategory),

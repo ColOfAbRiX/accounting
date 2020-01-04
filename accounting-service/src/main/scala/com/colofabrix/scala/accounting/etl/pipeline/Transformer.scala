@@ -16,9 +16,9 @@ trait Transformer[T <: InputTransaction] {
 
 object Transformer {
   /** Converts a given stream into transactions */
-  def apply[T <: InputTransaction](implicit transformer: Transformer[T]): VPipe[fs2.Pure, T, Transaction] = { input =>
+  def apply[T <: InputTransaction](implicit T: Transformer[T]): VPipe[fs2.Pure, T, Transaction] = { input =>
     Nested(input)
-      .map(transformer.transform)
+      .map(T.transform)
       .value
   }
 

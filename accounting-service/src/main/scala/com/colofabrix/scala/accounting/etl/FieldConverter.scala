@@ -103,4 +103,7 @@ object FieldConverterUtils {
   /** Removes the punctuation from a string */
   def removePunctuation: String => String = _.replaceAll("""[\p{Punct}&&[^.]]""", "")
 
+  /** Removes the punctuation from a string */
+  def trim: String => String = _.trim
+
 }

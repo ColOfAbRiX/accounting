@@ -39,7 +39,7 @@ class StarlingInputProcessor
   }
 
   def clean(tr: StarlingTransaction): StarlingTransaction = {
-    val stringCleaning = toLowercase andThen removeRedundantSpaces
+    val stringCleaning = trim andThen toLowercase andThen removeRedundantSpaces andThen removePunctuation
     tr.copy(
       counterParty = stringCleaning(tr.counterParty),
       reference = stringCleaning(tr.reference),
