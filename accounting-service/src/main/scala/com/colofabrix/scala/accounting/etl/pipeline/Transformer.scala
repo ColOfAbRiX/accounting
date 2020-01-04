@@ -1,4 +1,4 @@
-package com.colofabrix.scala.accounting.etl.csv
+package com.colofabrix.scala.accounting.etl.pipeline
 
 import cats.implicits._
 import cats.data._
@@ -25,24 +25,24 @@ object Transformer {
   implicit val barclaysTransformer: Transformer[BarclaysTransaction] =
     new Transformer[BarclaysTransaction] {
       def transform(input: BarclaysTransaction) =
-        new BarclaysCsvProcessor().transform(input)
+        new BarclaysInputProcessor().transform(input)
     }
 
   implicit val halifaxTransformer: Transformer[HalifaxTransaction] =
     new Transformer[HalifaxTransaction] {
       def transform(input: HalifaxTransaction) =
-        new HalifaxCsvProcessor().transform(input)
+        new HalifaxInputProcessor().transform(input)
     }
 
   implicit val starlingTransformer: Transformer[StarlingTransaction] =
     new Transformer[StarlingTransaction] {
       def transform(input: StarlingTransaction) =
-        new StarlingCsvProcessor().transform(input)
+        new StarlingInputProcessor().transform(input)
     }
 
   implicit val amexTransformer: Transformer[AmexTransaction] =
     new Transformer[AmexTransaction] {
       def transform(input: AmexTransaction) =
-        new AmexCsvProcessor().transform(input)
+        new AmexInputProcessor().transform(input)
     }
 }

@@ -5,17 +5,17 @@ import com.colofabrix.scala.accounting.etl.inputs._
 import com.colofabrix.scala.accounting.model._
 
 class BarclaysInputConversionSpec extends InputConversionSpec[BarclaysTransaction] with BarclaysTestData {
-  implicit val csvProcessor: CsvProcessor[BarclaysTransaction] = new BarclaysCsvProcessor()
+  implicit val csvProcessor: CsvProcessor[BarclaysTransaction] = new BarclaysInputProcessor()
 }
 
 class HalifaxInputConversionSpec extends InputConversionSpec[HalifaxTransaction] with HalifaxTestData {
-  implicit val csvProcessor: CsvProcessor[HalifaxTransaction] = new HalifaxCsvProcessor()
+  implicit val csvProcessor: CsvProcessor[HalifaxTransaction] = new HalifaxInputProcessor()
 }
 
 class AmexInputConversionSpec extends InputConversionSpec[AmexTransaction] with AmexTestData {
-  implicit val csvProcessor: CsvProcessor[AmexTransaction] = new AmexCsvProcessor()
+  implicit val csvProcessor: CsvProcessor[AmexTransaction] = new AmexInputProcessor()
 }
 
 class StarlingInputConversionSpec extends InputConversionSpec[StarlingTransaction] with StarlingTestData {
-  implicit val csvProcessor: CsvProcessor[StarlingTransaction] = new StarlingCsvProcessor()
+  implicit val csvProcessor: CsvProcessor[StarlingTransaction] = new StarlingInputProcessor()
 }

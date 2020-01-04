@@ -40,21 +40,21 @@ object Loader {
 
   implicit val barclaysConverter: Loader[BarclaysTransaction] =
     new Loader[BarclaysTransaction] {
-      def load = new BarclaysCsvProcessor().process
+      def load = new BarclaysInputProcessor().process
     }
 
   implicit val halifaxConverter: Loader[HalifaxTransaction] =
     new Loader[HalifaxTransaction] {
-      def load = new HalifaxCsvProcessor().process
+      def load = new HalifaxInputProcessor().process
     }
 
   implicit val starlingConverter: Loader[StarlingTransaction] =
     new Loader[StarlingTransaction] {
-      def load = new StarlingCsvProcessor().process
+      def load = new StarlingInputProcessor().process
     }
 
   implicit val amexConverter: Loader[AmexTransaction] =
     new Loader[AmexTransaction] {
-      def load = new AmexCsvProcessor().process
+      def load = new AmexInputProcessor().process
     }
 }

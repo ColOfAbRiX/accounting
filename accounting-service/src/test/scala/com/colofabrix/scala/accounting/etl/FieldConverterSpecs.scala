@@ -8,8 +8,8 @@ import org.scalatest._
 
 class FieldConverterSpecs extends WordSpec with Matchers with ValidatedMatchers {
 
-  // parse[String]
-  "Running parse[String]" when {
+  // sParse[String]
+  "Running sParse[String]" when {
     val parser = sParse[String](x => x(0))
 
     "providing a String" should {
@@ -45,8 +45,8 @@ class FieldConverterSpecs extends WordSpec with Matchers with ValidatedMatchers 
     }
   }
 
-  // parse[Int]
-  "Running parse[Int]" when {
+  // sParse[Int]
+  "Running sParse[Int]" when {
     val parser = sParse[Int](x => x(0))
 
     "providing a String" should {
@@ -92,8 +92,8 @@ class FieldConverterSpecs extends WordSpec with Matchers with ValidatedMatchers 
     }
   }
 
-  // parse[Double]
-  "Running parse[Double]" when {
+  // sParse[Double]
+  "Running sParse[Double]" when {
     val parser = sParse[Double](x => x(0))
 
     "providing a String" should {
@@ -129,8 +129,8 @@ class FieldConverterSpecs extends WordSpec with Matchers with ValidatedMatchers 
     }
   }
 
-  // parse[BigDecimal]
-  "Running parse[BigDecimal]" when {
+  // sParse[BigDecimal]
+  "Running sParse[BigDecimal]" when {
     val parser = sParse[BigDecimal](x => x(0))
 
     "providing a String" should {
@@ -174,8 +174,8 @@ class FieldConverterSpecs extends WordSpec with Matchers with ValidatedMatchers 
     }
   }
 
-  // parse[LocalDate]
-  "Running parse[LocalDate]" when {
+  // sParse[LocalDate]
+  "Running sParse[LocalDate]" when {
     val parser = sParse[LocalDate](x => x(0))("dd/MM/yyyy")
 
     "providing a String" should {
@@ -222,8 +222,8 @@ class FieldConverterSpecs extends WordSpec with Matchers with ValidatedMatchers 
     }
   }
 
-  // parse[Option[A]]
-  "Running parse[Option[A]]" when {
+  // sParse[Option[A]]
+  "Running sParse[Option[A]]" when {
     val parser = sParse[Option[Int]](x => x(0))
 
     "providing a String" should {

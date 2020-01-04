@@ -1,22 +1,25 @@
 package com.colofabrix.scala.accounting.etl.inputs
 
-import java.time.LocalDate
 import com.colofabrix.scala.accounting.etl.csv._
-import com.colofabrix.scala.accounting.etl.FieldConverter._
-import com.colofabrix.scala.accounting.etl.definitions._
-import com.colofabrix.scala.accounting.etl.RecordConverter
 import com.colofabrix.scala.accounting.etl.csv.CsvProcessorUtils._
+import com.colofabrix.scala.accounting.etl.definitions._
+import com.colofabrix.scala.accounting.etl.FieldConverter._
+import com.colofabrix.scala.accounting.etl.FieldConverterUtils._
+import com.colofabrix.scala.accounting.etl.pipeline._
+import com.colofabrix.scala.accounting.etl.RecordConverter
 import com.colofabrix.scala.accounting.model.HalifaxTransaction
-import com.colofabrix.scala.accounting.utils.validation._
-import shapeless._
 import com.colofabrix.scala.accounting.model.Transaction
+import com.colofabrix.scala.accounting.utils.validation._
+import java.time.LocalDate
+import shapeless._
 
 /**
  * Halifax CSV file processor
  */
-class HalifaxCsvProcessor
+class HalifaxInputProcessor
     extends CsvProcessor[HalifaxTransaction]
     with RecordConverter[HalifaxTransaction]
+    with Cleaner[HalifaxTransaction]
     with Transformer[HalifaxTransaction] {
 
   protected def filter: RawInputFilter = dropHeader andThen dropEmptyRows
@@ -30,6 +33,14 @@ class HalifaxCsvProcessor
       val amount      = sParse[BigDecimal](r => r(4)).map(amount => -1.0 * amount)
       date :: dateEntered :: reference :: description :: amount :: HNil
     }
+  }
+
+  def clean(tr: HalifaxTransaction): HalifaxTransaction = {
+    val stringCleaning = toLowercase andThen removeRedundantSpaces
+    tr.copy(
+      reference = stringCleaning(tr.reference),
+      description = stringCleaning(tr.description),
+    )
   }
 
   def transform(input: HalifaxTransaction): Transaction = {

@@ -50,7 +50,7 @@ object FieldConverter {
 
   /** Parser for result type "String" */
   implicit val stringParser: FieldConverter[String, String] = FieldConverter[String, String] {
-    _.trim.toLowerCase.replaceAll("\\s+", " ")
+    identity
   }
 
   /** Parser for result type "Int" */
@@ -87,4 +87,20 @@ object FieldConverter {
   implicit def listParser[A](implicit aParser: FieldConverter[String, A]): FieldConverter[String, List[A]] = { cell =>
     cell.split(",").toList.traverse(aParser.parseField)
   }
+}
+
+/**
+ * Utility functions for  FieldConverter
+ */
+object FieldConverterUtils {
+
+  /** Transforms a string field into lowercase */
+  def toLowercase: String => String = _.toLowerCase()
+
+  /** Reduces multiple spaces into one single space */
+  def removeRedundantSpaces: String => String = _.replaceAll("\\s+", " ")
+
+  /** Removes the punctuation from a string */
+  def removePunctuation: String => String = _.replaceAll("""[\p{Punct}&&[^.]]""", "")
+
 }

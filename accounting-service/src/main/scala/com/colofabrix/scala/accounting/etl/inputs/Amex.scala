@@ -1,22 +1,25 @@
 package com.colofabrix.scala.accounting.etl.inputs
 
-import java.time.LocalDate
 import com.colofabrix.scala.accounting.etl.csv._
-import com.colofabrix.scala.accounting.etl.FieldConverter._
-import com.colofabrix.scala.accounting.etl.definitions._
-import com.colofabrix.scala.accounting.etl.RecordConverter
 import com.colofabrix.scala.accounting.etl.csv.CsvProcessorUtils._
+import com.colofabrix.scala.accounting.etl.definitions._
+import com.colofabrix.scala.accounting.etl.FieldConverter._
+import com.colofabrix.scala.accounting.etl.FieldConverterUtils._
+import com.colofabrix.scala.accounting.etl.pipeline._
+import com.colofabrix.scala.accounting.etl.RecordConverter
 import com.colofabrix.scala.accounting.model.AmexTransaction
-import com.colofabrix.scala.accounting.utils.validation._
-import shapeless._
 import com.colofabrix.scala.accounting.model.Transaction
+import com.colofabrix.scala.accounting.utils.validation._
+import java.time.LocalDate
+import shapeless._
 
 /**
  * Amex CSV file processor
  */
-class AmexCsvProcessor
+class AmexInputProcessor
     extends CsvProcessor[AmexTransaction]
     with RecordConverter[AmexTransaction]
+    with Cleaner[AmexTransaction]
     with Transformer[AmexTransaction] {
 
   protected def filter: RawInputFilter = dropEmptyRows
@@ -30,6 +33,15 @@ class AmexCsvProcessor
       val extra       = sParse[String](r => r(4))
       date :: reference :: amount :: description :: extra :: HNil
     }
+  }
+
+  def clean(tr: AmexTransaction): AmexTransaction = {
+    val stringCleaning = toLowercase andThen removeRedundantSpaces
+    tr.copy(
+      reference = stringCleaning(tr.reference),
+      description = stringCleaning(tr.description),
+      extra = stringCleaning(tr.extra),
+    )
   }
 
   def transform(input: AmexTransaction): Transaction = {

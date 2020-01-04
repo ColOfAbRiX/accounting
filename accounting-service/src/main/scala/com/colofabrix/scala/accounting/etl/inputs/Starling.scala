@@ -1,20 +1,26 @@
 package com.colofabrix.scala.accounting.etl.inputs
 
-import java.time.LocalDate
 import com.colofabrix.scala.accounting.etl.csv._
-import com.colofabrix.scala.accounting.etl.FieldConverter._
-import com.colofabrix.scala.accounting.etl.definitions._
-import com.colofabrix.scala.accounting.etl.RecordConverter
 import com.colofabrix.scala.accounting.etl.csv.CsvProcessorUtils._
+import com.colofabrix.scala.accounting.etl.definitions._
+import com.colofabrix.scala.accounting.etl.FieldConverter._
+import com.colofabrix.scala.accounting.etl.FieldConverterUtils._
+import com.colofabrix.scala.accounting.etl.pipeline._
+import com.colofabrix.scala.accounting.etl.RecordConverter
 import com.colofabrix.scala.accounting.model.StarlingTransaction
-import com.colofabrix.scala.accounting.utils.validation._
-import shapeless._
 import com.colofabrix.scala.accounting.model.Transaction
+import com.colofabrix.scala.accounting.utils.validation._
+import java.time.LocalDate
+import shapeless._
 
 /**
  * Starling CSV file processor
  */
-class StarlingCsvProcessor extends CsvProcessor[StarlingTransaction] with RecordConverter[StarlingTransaction] {
+class StarlingInputProcessor
+    extends CsvProcessor[StarlingTransaction]
+    with RecordConverter[StarlingTransaction]
+    with Cleaner[StarlingTransaction]
+    with Transformer[StarlingTransaction] {
 
   protected def filter: RawInputFilter = {
     dropHeader andThen dropEmptyRows andThen dropAnyMatch(_.toLowerCase.contains("opening balance"))
@@ -30,6 +36,15 @@ class StarlingCsvProcessor extends CsvProcessor[StarlingTransaction] with Record
       val balance      = sParse[BigDecimal](r => r(5))
       date :: counterParty :: reference :: `type` :: amount :: balance :: HNil
     }
+  }
+
+  def clean(tr: StarlingTransaction): StarlingTransaction = {
+    val stringCleaning = toLowercase andThen removeRedundantSpaces
+    tr.copy(
+      counterParty = stringCleaning(tr.counterParty),
+      reference = stringCleaning(tr.reference),
+      `type` = stringCleaning(tr.`type`),
+    )
   }
 
   def transform(input: StarlingTransaction): Transaction = {
