@@ -1,13 +1,11 @@
 package com.colofabrix.scala.accounting.etl.inputs
 
-import com.colofabrix.scala.accounting.etl.csv._
-import com.colofabrix.scala.accounting.etl.csv.CsvProcessorUtils._
+import com.colofabrix.scala.accounting.etl._
 import com.colofabrix.scala.accounting.etl.definitions._
 import com.colofabrix.scala.accounting.etl.FieldConverter._
-import com.colofabrix.scala.accounting.etl.pipeline.CleanerUtils._
 import com.colofabrix.scala.accounting.etl.pipeline._
-import com.colofabrix.scala.accounting.etl.RecordConverter
-import com.colofabrix.scala.accounting.model.StarlingTransaction
+import com.colofabrix.scala.accounting.etl.pipeline.CleanerUtils._
+import com.colofabrix.scala.accounting.etl.pipeline.InputProcessorUtils._
 import com.colofabrix.scala.accounting.model._
 import com.colofabrix.scala.accounting.utils.validation._
 import java.time.LocalDate
@@ -17,17 +15,17 @@ import shapeless._
  * Starling CSV file processor
  */
 class StarlingInputProcessor
-    extends CsvProcessor[StarlingTransaction]
-    with RecordConverter[StarlingTransaction]
+    extends InputProcessor[StarlingTransaction]
     with Cleaner[StarlingTransaction]
     with Normalizer[StarlingTransaction] {
 
-  protected def filter: RawInputFilter = {
+  protected def filterInput: RawInputFilter = {
     dropHeader andThen dropEmptyRows andThen dropAnyMatch(_.toLowerCase.contains("opening balance"))
   }
 
-  protected def convert(record: RawRecord): AValidated[StarlingTransaction] = {
-    convertRecord(record) {
+  protected def convertRaw(record: RawRecord): AValidated[StarlingTransaction] = {
+    val converter = new RecordConverter[StarlingTransaction] {}
+    converter.convertRecord(record) {
       val date         = sParse[LocalDate](r => r(0))("dd/MM/yyyy")
       val counterParty = sParse[String](r => r(1))
       val reference    = sParse[String](r => r(2))

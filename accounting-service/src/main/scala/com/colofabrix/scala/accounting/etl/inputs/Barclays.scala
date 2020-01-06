@@ -1,15 +1,11 @@
 package com.colofabrix.scala.accounting.etl.inputs
 
-import cats.data.Kleisli
-import com.colofabrix.scala.accounting.etl.csv._
-import com.colofabrix.scala.accounting.etl.csv.CsvProcessorUtils._
+import com.colofabrix.scala.accounting.etl._
 import com.colofabrix.scala.accounting.etl.definitions._
 import com.colofabrix.scala.accounting.etl.FieldConverter._
-import com.colofabrix.scala.accounting.etl.pipeline.CleanerUtils._
-import com.colofabrix.scala.accounting.etl.GenericConverter
 import com.colofabrix.scala.accounting.etl.pipeline._
-import com.colofabrix.scala.accounting.etl.RecordConverter
-import com.colofabrix.scala.accounting.model.BarclaysTransaction
+import com.colofabrix.scala.accounting.etl.pipeline.CleanerUtils._
+import com.colofabrix.scala.accounting.etl.pipeline.InputProcessorUtils._
 import com.colofabrix.scala.accounting.model._
 import com.colofabrix.scala.accounting.utils.validation._
 import java.time.LocalDate
@@ -19,15 +15,15 @@ import shapeless._
  * Barclays CSV file processor
  */
 class BarclaysInputProcessor
-    extends CsvProcessor[BarclaysTransaction]
-    with RecordConverter[BarclaysTransaction]
+    extends InputProcessor[BarclaysTransaction]
     with Cleaner[BarclaysTransaction]
     with Normalizer[BarclaysTransaction] {
 
-  protected def filter: RawInputFilter = dropHeader andThen dropEmptyRows
+  protected def filterInput: RawInputFilter = dropHeader andThen dropEmptyRows
 
-  protected def convert(record: RawRecord): AValidated[BarclaysTransaction] = {
-    convertRecord(record) {
+  protected def convertRaw(record: RawRecord): AValidated[BarclaysTransaction] = {
+    val converter = new RecordConverter[BarclaysTransaction] {}
+    converter.convertRecord(record) {
       val number      = sParse[Option[Int]](r => r(0))
       val date        = sParse[LocalDate](r => r(1))("dd/MM/yyyy")
       val account     = sParse[String](r => r(2))

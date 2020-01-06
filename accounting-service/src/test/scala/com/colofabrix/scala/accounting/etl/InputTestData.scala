@@ -1,12 +1,11 @@
 package com.colofabrix.scala.accounting.etl
 
-import com.colofabrix.scala.accounting.utils.validation._
+import cats.data._
+import cats.data.Validated._
+import cats.effect._
 import com.colofabrix.scala.accounting.etl.definitions._
 import com.colofabrix.scala.accounting.model._
-import com.colofabrix.scala.accounting.etl.csv._
-import cats.data._
-import cats.effect._
-import cats.data.Validated._
+import com.colofabrix.scala.accounting.utils.validation._
 import java.time.LocalDate
 
 /**
@@ -15,7 +14,7 @@ import java.time.LocalDate
 trait InputTestData[T <: InputTransaction] {
   def date(y: Int, m: Int, d: Int): LocalDate    = LocalDate.of(y, m, d)
   def name: String                               = this.getClass.getSimpleName.replaceAll("""InputConversion.*$""", "")
-  def read(data: List[RawRecord]): VRawInput[IO] = new IterableCsvReader(data).read
+  def read(data: List[RawRecord]): VRawInput[IO] = new IterableReader(data).read
 
   /** Test dataset of correct CSV data */
   def sampleCorrectCsvData: List[RawRecord]

@@ -5,8 +5,8 @@ import cats.data.Validated.{ Invalid, Valid }
 import cats.effect._
 import cats.implicits._
 import cats.scalatest._
-import com.colofabrix.scala.accounting.etl.csv._
 import com.colofabrix.scala.accounting.etl.definitions._
+import com.colofabrix.scala.accounting.etl.pipeline.InputProcessor
 import com.colofabrix.scala.accounting.model._
 import com.colofabrix.scala.accounting.utils.StreamHelpers
 import com.colofabrix.scala.accounting.utils.validation._
@@ -23,7 +23,7 @@ trait PipelineSpecsDefs[T <: InputTransaction]
     with StreamHelpers { this: InputTestData[T] =>
 
   /** Needed to provide the processor to convert the data */
-  implicit val processor: CsvProcessor[T]
+  implicit val processor: InputProcessor[T]
 
   s"The ${name} processor" when {
     "provied with a valid input" should {

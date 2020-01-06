@@ -1,13 +1,11 @@
 package com.colofabrix.scala.accounting.etl.inputs
 
-import com.colofabrix.scala.accounting.etl.csv._
-import com.colofabrix.scala.accounting.etl.csv.CsvProcessorUtils._
+import com.colofabrix.scala.accounting.etl._
 import com.colofabrix.scala.accounting.etl.definitions._
 import com.colofabrix.scala.accounting.etl.FieldConverter._
-import com.colofabrix.scala.accounting.etl.pipeline.CleanerUtils._
 import com.colofabrix.scala.accounting.etl.pipeline._
-import com.colofabrix.scala.accounting.etl.RecordConverter
-import com.colofabrix.scala.accounting.model.HalifaxTransaction
+import com.colofabrix.scala.accounting.etl.pipeline.CleanerUtils._
+import com.colofabrix.scala.accounting.etl.pipeline.InputProcessorUtils._
 import com.colofabrix.scala.accounting.model._
 import com.colofabrix.scala.accounting.utils.validation._
 import java.time.LocalDate
@@ -17,15 +15,15 @@ import shapeless._
  * Halifax CSV file processor
  */
 class HalifaxInputProcessor
-    extends CsvProcessor[HalifaxTransaction]
-    with RecordConverter[HalifaxTransaction]
+    extends InputProcessor[HalifaxTransaction]
     with Cleaner[HalifaxTransaction]
     with Normalizer[HalifaxTransaction] {
 
-  protected def filter: RawInputFilter = dropHeader andThen dropEmptyRows
+  protected def filterInput: RawInputFilter = dropHeader andThen dropEmptyRows
 
-  protected def convert(record: RawRecord): AValidated[HalifaxTransaction] = {
-    convertRecord(record) {
+  protected def convertRaw(record: RawRecord): AValidated[HalifaxTransaction] = {
+    val converter = new RecordConverter[HalifaxTransaction] {}
+    converter.convertRecord(record) {
       val date        = sParse[LocalDate](r => r(0))("dd/MM/yyyy")
       val dateEntered = sParse[LocalDate](r => r(1))("dd/MM/yyyy")
       val reference   = sParse[String](r => r(2))

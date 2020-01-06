@@ -1,12 +1,12 @@
 package com.colofabrix.scala.accounting.etl
 
 import cats.scalatest._
-import com.colofabrix.scala.accounting.utils.validation._
 import com.colofabrix.scala.accounting.etl.definitions._
+import com.colofabrix.scala.accounting.etl.pipeline.InputProcessorUtils._
+import com.colofabrix.scala.accounting.utils.validation._
 import org.scalatest._
-import csv.CsvProcessorUtils._
 
-class CsvProcessorUtilsSpecs extends FlatSpec with Matchers {
+class CsvInputProcessorUtilsSpecs extends FlatSpec with Matchers {
 
   def rawInput(data: List[RawRecord]): VRawInput[fs2.Pure] = fs2.Stream.emits(data.map(_.aValid))
 

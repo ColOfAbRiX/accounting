@@ -4,7 +4,6 @@ import cats.effect._
 import com.colofabrix.scala.accounting.model._
 import etl._
 import etl.pipeline._
-import csv._
 import Normalizer._
 import cats.data.Validated.Valid
 
@@ -16,22 +15,22 @@ import cats.data.Validated.Valid
 object Main extends IOApp {
 
   def run(args: List[String]): IO[ExitCode] = IO.pure {
-    val barclays = Loader
+    val barclays = InputProcessor
       .fromCsvPath[BarclaysTransaction]("samples/sample_barclays.csv")
       .through(Cleaner[BarclaysTransaction])
       .through(Normalizer[BarclaysTransaction])
 
-    val halifax = Loader
+    val halifax = InputProcessor
       .fromCsvPath[HalifaxTransaction]("samples/sample_halifax.csv")
       .through(Cleaner[HalifaxTransaction])
       .through(Normalizer[HalifaxTransaction])
 
-    val starling = Loader
+    val starling = InputProcessor
       .fromCsvPath[StarlingTransaction]("samples/sample_starling.csv")
       .through(Cleaner[StarlingTransaction])
       .through(Normalizer[StarlingTransaction])
 
-    val amex = Loader
+    val amex = InputProcessor
       .fromCsvPath[AmexTransaction]("samples/sample_amex.csv")
       .through(Cleaner[AmexTransaction])
       .through(Normalizer[AmexTransaction])

@@ -13,4 +13,5 @@ object definitions {
 
   /** An input as collection of RawRecords */
   type VRawInput[F[_]] = fs2.Stream[F, AValidated[RawRecord]]
+
 }

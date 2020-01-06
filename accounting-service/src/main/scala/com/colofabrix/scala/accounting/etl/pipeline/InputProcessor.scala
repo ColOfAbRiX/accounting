@@ -1,31 +1,62 @@
-package com.colofabrix.scala.accounting.etl.csv
+package com.colofabrix.scala.accounting.etl.pipeline
 
-import cats.implicits._
 import cats.data._
-import com.colofabrix.scala.accounting.etl.definitions._
+import cats.implicits._
+import cats.effect._
 import com.colofabrix.scala.accounting.model._
 import com.colofabrix.scala.accounting.utils.validation._
+import com.colofabrix.scala.accounting.etl.definitions._
+import com.colofabrix.scala.accounting.etl._
+import com.colofabrix.scala.accounting.etl.inputs._
+import java.io.File
 
 /**
- * Processes a CSV file like filtering bad records and converting them to case classes
+ * Converts an input source into transactions
  */
-trait CsvProcessor[+T <: InputTransaction] {
-  /** Converts one CSV record into an input transaction */
-  protected def convert(record: RawRecord): AValidated[T]
+trait InputProcessor[T] {
+  /** Converts one raw record into an input transaction */
+  protected def convertRaw(record: RawRecord): AValidated[T]
 
   /** Filter an input to adapt it for processing, like removing head, empty rows and so on */
-  protected def filter: VPipe[fs2.Pure, RawRecord, RawRecord]
+  protected def filterInput: VPipe[fs2.Pure, RawRecord, RawRecord]
 
   /** Processes the input data by filtering and converting the stream */
   def process: VPipe[fs2.Pure, RawRecord, T] = { record =>
-    filter(record).map(_.flatMapV(convert))
+    filterInput(record).map(_.flatMapV(convertRaw))
   }
 }
 
+object InputProcessor {
+  /** Converts a given stream into transactions */
+  def fromStream[T](stream: VRawInput[IO])(implicit L: InputProcessor[T]): VStream[IO, T] = {
+    stream.through(L.process)
+  }
+
+  /** Converts a given InputReader into transactions */
+  def fromReader[T](reader: InputReader)(implicit L: InputProcessor[T]): VStream[IO, T] = {
+    reader.read.through(L.process)
+  }
+
+  /** Converts a given File interpreted as CSV into transactions */
+  def fromCsvFile[T](file: File)(implicit L: InputProcessor[T]): VStream[IO, T] = {
+    fromReader[T](new CsvFileReader(file))
+  }
+
+  /** Converts a given path interpreted as CSV file into transactions */
+  def fromCsvPath[T](path: String)(implicit L: InputProcessor[T]): VStream[IO, T] = {
+    fromCsvFile[T](new File(path))
+  }
+
+  implicit val barclaysConverter: InputProcessor[BarclaysTransaction] = InputInstances.barclaysInput
+  implicit val halifaxConverter: InputProcessor[HalifaxTransaction]   = InputInstances.halifaxInput
+  implicit val starlingConverter: InputProcessor[StarlingTransaction] = InputInstances.starlingInput
+  implicit val amexConverter: InputProcessor[AmexTransaction]         = InputInstances.amexInput
+}
+
 /**
- * Utility functions for CsvProcessor
+ * Utility functions for CsvInputProcessor
  */
-object CsvProcessorUtils {
+object InputProcessorUtils {
 
   /** Represents a processor of a raw input */
   type RawInputFilter = VPipe[fs2.Pure, RawRecord, RawRecord]

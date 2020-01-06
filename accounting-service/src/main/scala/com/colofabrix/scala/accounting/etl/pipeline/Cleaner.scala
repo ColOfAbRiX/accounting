@@ -17,37 +17,17 @@ trait Cleaner[T <: InputTransaction] {
 }
 
 object Cleaner {
-
+  /** Cleans a stream of InputTransaction */
   def apply[T <: InputTransaction](implicit C: Cleaner[T]): VPipe[fs2.Pure, T, T] = { input =>
     Nested(input)
       .map(C.clean)
       .value
   }
 
-  implicit val barclaysCleaner: Cleaner[BarclaysTransaction] =
-    new Cleaner[BarclaysTransaction] {
-      def clean(transaction: BarclaysTransaction) =
-        InputInstances.barclaysInput.clean(transaction)
-    }
-
-  implicit val halifaxCleaner: Cleaner[HalifaxTransaction] =
-    new Cleaner[HalifaxTransaction] {
-      def clean(transaction: HalifaxTransaction) =
-        InputInstances.halifaxInput.clean(transaction)
-    }
-
-  implicit val starlingCleaner: Cleaner[StarlingTransaction] =
-    new Cleaner[StarlingTransaction] {
-      def clean(transaction: StarlingTransaction) =
-        InputInstances.starlingInput.clean(transaction)
-    }
-
-  implicit val amexCleaner: Cleaner[AmexTransaction] =
-    new Cleaner[AmexTransaction] {
-      def clean(transaction: AmexTransaction) =
-        InputInstances.amexInput.clean(transaction)
-    }
-
+  implicit val barclaysCleaner: Cleaner[BarclaysTransaction] = InputInstances.barclaysInput
+  implicit val halifaxCleaner: Cleaner[HalifaxTransaction]   = InputInstances.halifaxInput
+  implicit val starlingCleaner: Cleaner[StarlingTransaction] = InputInstances.starlingInput
+  implicit val amexCleaner: Cleaner[AmexTransaction]         = InputInstances.amexInput
 }
 
 /**
