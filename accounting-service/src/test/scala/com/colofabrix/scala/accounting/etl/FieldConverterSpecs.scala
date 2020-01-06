@@ -191,7 +191,6 @@ class FieldConverterSpecs extends WordSpec with Matchers with ValidatedMatchers 
         val computed = parser.run(List("ab12cd"))
         val expected =
           """Exception on converting field 'ab12cd': java.time.format.DateTimeParseException: Text 'ab12cd' could not be parsed at index 0""".aInvalid
-        println(expected)
         computed should equal(expected)
       }
     }

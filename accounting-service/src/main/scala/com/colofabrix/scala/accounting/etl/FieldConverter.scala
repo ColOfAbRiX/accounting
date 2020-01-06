@@ -88,22 +88,3 @@ object FieldConverter {
     cell.split(",").toList.traverse(aParser.parseField)
   }
 }
-
-/**
- * Utility functions for  FieldConverter
- */
-object FieldConverterUtils {
-
-  /** Transforms a string field into lowercase */
-  def toLowercase: String => String = _.toLowerCase()
-
-  /** Reduces multiple spaces into one single space */
-  def removeRedundantSpaces: String => String = _.replaceAll("\\s+", " ")
-
-  /** Removes the punctuation from a string */
-  def removePunctuation: String => String = _.replaceAll("""[\p{Punct}&&[^.]]""", "")
-
-  /** Removes the punctuation from a string */
-  def trim: String => String = _.trim
-
-}

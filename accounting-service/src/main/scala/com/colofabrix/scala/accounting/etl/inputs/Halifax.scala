@@ -4,11 +4,11 @@ import com.colofabrix.scala.accounting.etl.csv._
 import com.colofabrix.scala.accounting.etl.csv.CsvProcessorUtils._
 import com.colofabrix.scala.accounting.etl.definitions._
 import com.colofabrix.scala.accounting.etl.FieldConverter._
-import com.colofabrix.scala.accounting.etl.FieldConverterUtils._
+import com.colofabrix.scala.accounting.etl.pipeline.CleanerUtils._
 import com.colofabrix.scala.accounting.etl.pipeline._
 import com.colofabrix.scala.accounting.etl.RecordConverter
 import com.colofabrix.scala.accounting.model.HalifaxTransaction
-import com.colofabrix.scala.accounting.model.Transaction
+import com.colofabrix.scala.accounting.model._
 import com.colofabrix.scala.accounting.utils.validation._
 import java.time.LocalDate
 import shapeless._
@@ -20,7 +20,7 @@ class HalifaxInputProcessor
     extends CsvProcessor[HalifaxTransaction]
     with RecordConverter[HalifaxTransaction]
     with Cleaner[HalifaxTransaction]
-    with Transformer[HalifaxTransaction] {
+    with Normalizer[HalifaxTransaction] {
 
   protected def filter: RawInputFilter = dropHeader andThen dropEmptyRows
 
@@ -35,16 +35,15 @@ class HalifaxInputProcessor
     }
   }
 
-  def clean(tr: HalifaxTransaction): HalifaxTransaction = {
-    val stringCleaning = trim andThen toLowercase andThen removeRedundantSpaces andThen removePunctuation
-    tr.copy(
-      reference = stringCleaning(tr.reference),
-      description = stringCleaning(tr.description),
-    )
+  def clean(transactions: HalifaxTransaction): HalifaxTransaction = {
+    val cleaned = Generic[HalifaxTransaction]
+      .to(transactions)
+      .map(defaultCleaner)
+    Generic[HalifaxTransaction].from(cleaned)
   }
 
-  def transform(input: HalifaxTransaction): Transaction = {
-    Transaction(input.date, input.amount, input.description, "Halifax", "", "", "")
+  def toTransaction(input: HalifaxTransaction): Transaction = {
+    Transaction(input.date, input.amount, input.description, InputName("Halifax"), "", "", "")
   }
 
 }

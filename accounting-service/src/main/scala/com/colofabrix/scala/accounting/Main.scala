@@ -5,7 +5,7 @@ import com.colofabrix.scala.accounting.model._
 import etl._
 import etl.pipeline._
 import csv._
-import Transformer._
+import Normalizer._
 import cats.data.Validated.Valid
 
 // object Main extends IOApp {
@@ -19,22 +19,22 @@ object Main extends IOApp {
     val barclays = Loader
       .fromCsvPath[BarclaysTransaction]("samples/sample_barclays.csv")
       .through(Cleaner[BarclaysTransaction])
-      .through(Transformer[BarclaysTransaction])
+      .through(Normalizer[BarclaysTransaction])
 
     val halifax = Loader
       .fromCsvPath[HalifaxTransaction]("samples/sample_halifax.csv")
       .through(Cleaner[HalifaxTransaction])
-      .through(Transformer[HalifaxTransaction])
+      .through(Normalizer[HalifaxTransaction])
 
     val starling = Loader
       .fromCsvPath[StarlingTransaction]("samples/sample_starling.csv")
       .through(Cleaner[StarlingTransaction])
-      .through(Transformer[StarlingTransaction])
+      .through(Normalizer[StarlingTransaction])
 
     val amex = Loader
       .fromCsvPath[AmexTransaction]("samples/sample_amex.csv")
       .through(Cleaner[AmexTransaction])
-      .through(Transformer[AmexTransaction])
+      .through(Normalizer[AmexTransaction])
 
     val result = for {
       inputsV     <- barclays append halifax append starling append amex

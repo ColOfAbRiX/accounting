@@ -4,12 +4,12 @@ import com.colofabrix.scala.accounting.etl.csv._
 import com.colofabrix.scala.accounting.etl.csv.CsvProcessorUtils._
 import com.colofabrix.scala.accounting.etl.definitions._
 import com.colofabrix.scala.accounting.etl.FieldConverter._
-import com.colofabrix.scala.accounting.etl.FieldConverterUtils._
 import com.colofabrix.scala.accounting.etl.pipeline._
 import com.colofabrix.scala.accounting.etl.RecordConverter
 import com.colofabrix.scala.accounting.model.AmexTransaction
-import com.colofabrix.scala.accounting.model.Transaction
+import com.colofabrix.scala.accounting.model._
 import com.colofabrix.scala.accounting.utils.validation._
+import com.colofabrix.scala.accounting.etl.pipeline.CleanerUtils._
 import java.time.LocalDate
 import shapeless._
 
@@ -20,7 +20,7 @@ class AmexInputProcessor
     extends CsvProcessor[AmexTransaction]
     with RecordConverter[AmexTransaction]
     with Cleaner[AmexTransaction]
-    with Transformer[AmexTransaction] {
+    with Normalizer[AmexTransaction] {
 
   protected def filter: RawInputFilter = dropEmptyRows
 
@@ -35,17 +35,15 @@ class AmexInputProcessor
     }
   }
 
-  def clean(tr: AmexTransaction): AmexTransaction = {
-    val stringCleaning = trim andThen toLowercase andThen removeRedundantSpaces andThen removePunctuation
-    tr.copy(
-      reference = stringCleaning(tr.reference),
-      description = stringCleaning(tr.description),
-      extra = stringCleaning(tr.extra),
-    )
+  def clean(transactions: AmexTransaction): AmexTransaction = {
+    val cleaned = Generic[AmexTransaction]
+      .to(transactions)
+      .map(defaultCleaner)
+    Generic[AmexTransaction].from(cleaned)
   }
 
-  def transform(input: AmexTransaction): Transaction = {
-    Transaction(input.date, input.amount, input.description, "Amex", "", "", "")
+  def toTransaction(input: AmexTransaction): Transaction = {
+    Transaction(input.date, input.amount, input.description, InputName("Amex"), "", "", "")
   }
 
 }

@@ -3,9 +3,31 @@ package com.colofabrix.scala.accounting.etl
 import com.colofabrix.scala.accounting.utils.validation._
 import com.colofabrix.scala.accounting.etl.definitions._
 import com.colofabrix.scala.accounting.model._
+import com.colofabrix.scala.accounting.etl.csv._
 import cats.data._
-import cats.data.Validated.Invalid
-import cats.data.Validated.Valid
+import cats.effect._
+import cats.data.Validated._
+import java.time.LocalDate
+
+/**
+ * Defines a mixin to provide test data
+ */
+trait InputTestData[T <: InputTransaction] {
+  def date(y: Int, m: Int, d: Int): LocalDate    = LocalDate.of(y, m, d)
+  def name: String                               = this.getClass.getSimpleName.replaceAll("""InputConversion.*$""", "")
+  def read(data: List[RawRecord]): VRawInput[IO] = new IterableCsvReader(data).read
+
+  /** Test dataset of correct CSV data */
+  def sampleCorrectCsvData: List[RawRecord]
+  /** Expected result for conversion of sampleCorrectCsvData */
+  def convertedCorrectData: List[T]
+  /** Test dataset of invalid CSV data */
+  def sampleBadCsvData: List[RawRecord]
+  /** Expected result for conversion of sampleBadCsvData */
+  def convertedBadData: List[Invalid[NonEmptyChain[String]]]
+  /** Data that the processor will drop */
+  def sampleDroppedCsvData: List[RawRecord]
+}
 
 // format: off
 

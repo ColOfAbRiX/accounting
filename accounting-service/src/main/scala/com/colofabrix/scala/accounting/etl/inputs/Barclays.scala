@@ -5,12 +5,12 @@ import com.colofabrix.scala.accounting.etl.csv._
 import com.colofabrix.scala.accounting.etl.csv.CsvProcessorUtils._
 import com.colofabrix.scala.accounting.etl.definitions._
 import com.colofabrix.scala.accounting.etl.FieldConverter._
-import com.colofabrix.scala.accounting.etl.FieldConverterUtils._
+import com.colofabrix.scala.accounting.etl.pipeline.CleanerUtils._
 import com.colofabrix.scala.accounting.etl.GenericConverter
 import com.colofabrix.scala.accounting.etl.pipeline._
 import com.colofabrix.scala.accounting.etl.RecordConverter
 import com.colofabrix.scala.accounting.model.BarclaysTransaction
-import com.colofabrix.scala.accounting.model.Transaction
+import com.colofabrix.scala.accounting.model._
 import com.colofabrix.scala.accounting.utils.validation._
 import java.time.LocalDate
 import shapeless._
@@ -22,7 +22,7 @@ class BarclaysInputProcessor
     extends CsvProcessor[BarclaysTransaction]
     with RecordConverter[BarclaysTransaction]
     with Cleaner[BarclaysTransaction]
-    with Transformer[BarclaysTransaction] {
+    with Normalizer[BarclaysTransaction] {
 
   protected def filter: RawInputFilter = dropHeader andThen dropEmptyRows
 
@@ -38,17 +38,15 @@ class BarclaysInputProcessor
     }
   }
 
-  def clean(tr: BarclaysTransaction): BarclaysTransaction = {
-    val stringCleaning = trim andThen toLowercase andThen removeRedundantSpaces andThen removePunctuation
-    tr.copy(
-      account = stringCleaning(tr.account),
-      subcategory = stringCleaning(tr.subcategory),
-      memo = stringCleaning(tr.memo),
-    )
+  def clean(transactions: BarclaysTransaction): BarclaysTransaction = {
+    val cleaned = Generic[BarclaysTransaction]
+      .to(transactions)
+      .map(defaultCleaner)
+    Generic[BarclaysTransaction].from(cleaned)
   }
 
-  def transform(input: BarclaysTransaction): Transaction = {
-    Transaction(input.date, input.amount, input.memo, "Barclays", "", "", "")
+  def toTransaction(input: BarclaysTransaction): Transaction = {
+    Transaction(input.date, input.amount, input.memo, InputName("Barclays"), "", "", "")
   }
 
 }

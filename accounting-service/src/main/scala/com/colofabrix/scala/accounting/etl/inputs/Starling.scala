@@ -4,11 +4,11 @@ import com.colofabrix.scala.accounting.etl.csv._
 import com.colofabrix.scala.accounting.etl.csv.CsvProcessorUtils._
 import com.colofabrix.scala.accounting.etl.definitions._
 import com.colofabrix.scala.accounting.etl.FieldConverter._
-import com.colofabrix.scala.accounting.etl.FieldConverterUtils._
+import com.colofabrix.scala.accounting.etl.pipeline.CleanerUtils._
 import com.colofabrix.scala.accounting.etl.pipeline._
 import com.colofabrix.scala.accounting.etl.RecordConverter
 import com.colofabrix.scala.accounting.model.StarlingTransaction
-import com.colofabrix.scala.accounting.model.Transaction
+import com.colofabrix.scala.accounting.model._
 import com.colofabrix.scala.accounting.utils.validation._
 import java.time.LocalDate
 import shapeless._
@@ -20,7 +20,7 @@ class StarlingInputProcessor
     extends CsvProcessor[StarlingTransaction]
     with RecordConverter[StarlingTransaction]
     with Cleaner[StarlingTransaction]
-    with Transformer[StarlingTransaction] {
+    with Normalizer[StarlingTransaction] {
 
   protected def filter: RawInputFilter = {
     dropHeader andThen dropEmptyRows andThen dropAnyMatch(_.toLowerCase.contains("opening balance"))
@@ -38,17 +38,15 @@ class StarlingInputProcessor
     }
   }
 
-  def clean(tr: StarlingTransaction): StarlingTransaction = {
-    val stringCleaning = trim andThen toLowercase andThen removeRedundantSpaces andThen removePunctuation
-    tr.copy(
-      counterParty = stringCleaning(tr.counterParty),
-      reference = stringCleaning(tr.reference),
-      `type` = stringCleaning(tr.`type`),
-    )
+  def clean(transactions: StarlingTransaction): StarlingTransaction = {
+    val cleaned = Generic[StarlingTransaction]
+      .to(transactions)
+      .map(defaultCleaner)
+    Generic[StarlingTransaction].from(cleaned)
   }
 
-  def transform(input: StarlingTransaction): Transaction = {
-    Transaction(input.date, input.amount, input.reference, "Halifax", "", "", "")
+  def toTransaction(input: StarlingTransaction): Transaction = {
+    Transaction(input.date, input.amount, input.reference, InputName("Starling"), "", "", "")
   }
 
 }

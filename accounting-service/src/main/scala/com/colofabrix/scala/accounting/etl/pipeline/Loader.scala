@@ -13,7 +13,6 @@ import java.io.File
  * Converts an input source into transactions
  */
 trait Loader[T] {
-  /** Converts a stream of validated RawRecords into a stream of validated transactions */
   def load: VPipe[IO, RawRecord, T]
 }
 
@@ -40,21 +39,21 @@ object Loader {
 
   implicit val barclaysConverter: Loader[BarclaysTransaction] =
     new Loader[BarclaysTransaction] {
-      def load = new BarclaysInputProcessor().process
+      def load = InputInstances.barclaysInput.process
     }
 
   implicit val halifaxConverter: Loader[HalifaxTransaction] =
     new Loader[HalifaxTransaction] {
-      def load = new HalifaxInputProcessor().process
+      def load = InputInstances.halifaxInput.process
     }
 
   implicit val starlingConverter: Loader[StarlingTransaction] =
     new Loader[StarlingTransaction] {
-      def load = new StarlingInputProcessor().process
+      def load = InputInstances.starlingInput.process
     }
 
   implicit val amexConverter: Loader[AmexTransaction] =
     new Loader[AmexTransaction] {
-      def load = new AmexInputProcessor().process
+      def load = InputInstances.amexInput.process
     }
 }
