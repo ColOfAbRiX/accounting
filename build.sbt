@@ -88,7 +88,7 @@ lazy val accountingRoot: Project = project
   .in(file("."))
   .settings(
     organization := "com.colofabrix.scala.accounting",
-    name := "accounting-root",
+    name := "accounting",
     version := AccountingVersion,
     scalaVersion := ScalaVersion,
     libraryDependencies ++= Seq(
@@ -98,7 +98,7 @@ lazy val accountingRoot: Project = project
     ),
   )
   .aggregate(
-    accountingService
+    etlService
   )
 
 // Utils project
@@ -117,15 +117,27 @@ lazy val utils = project
     ),
   )
 
-// Service project
-lazy val accountingService = project
-  .in(file("accounting-service"))
+// Business Model project
+lazy val model = project
+  .in(file("model"))
+  .settings(
+    organization := "com.colofabrix.scala.accounting",
+    name := "model",
+    version := AccountingVersion,
+    scalaVersion := ScalaVersion,
+    libraryDependencies ++= Seq(),
+  )
+
+// ETL Service project
+lazy val etlService = project
+  .in(file("etl-service"))
   .dependsOn(
-    utils
+    utils,
+    model
   )
   .settings(
     organization := "com.colofabrix.scala.accounting",
-    name := "accounting-service",
+    name := "etl-service",
     version := AccountingVersion,
     scalaVersion := ScalaVersion,
     libraryDependencies ++= Seq(

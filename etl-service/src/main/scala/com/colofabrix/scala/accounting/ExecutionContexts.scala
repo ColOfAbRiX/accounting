@@ -1,4 +1,4 @@
-package com.colofabrix.scala.accounting
+package com.colofabrix.scala.accounting.utils
 
 import java.util.concurrent._
 import java.util.concurrent.atomic.AtomicLong
