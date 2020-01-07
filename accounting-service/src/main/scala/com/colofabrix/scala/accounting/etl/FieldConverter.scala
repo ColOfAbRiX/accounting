@@ -6,6 +6,7 @@ import scala.annotation.implicitNotFound
 import cats.data.Kleisli
 import cats.implicits._
 import com.colofabrix.scala.accounting.utils.validation._
+import cats.Show
 
 /**
  * Parser to transform record fields into JVM types
@@ -19,29 +20,29 @@ object FieldConverter {
   /** A composable parser of fields to type A: given a input record it produces an validated A */
   type FieldBuilder[-I, O] = Kleisli[AValidated, List[I], O]
 
-  /** Type-safe method to parse a value given a function to extract what to parse from a RawRecord */
+  /** Type-safe method to parse a value given a function that extracts what to parse from an input value */
   @implicitNotFound("Couldn't find FieldConverter for type FieldConverter[${I}, ${O}]")
-  def iParseO[I, O](extract: List[I] => I)(implicit parser: FieldConverter[I, O]): FieldBuilder[I, O] =
+  def iParseO[I, O](extract: List[I] => I)(implicit P: FieldConverter[I, O]): FieldBuilder[I, O] =
     Kleisli { record =>
       val extracted = TryE(extract(record)).leftMap { ex =>
         val r = Option(record).map(_.toString).getOrElse("null")
         s"Exception on converting record $r: ${ex.toString}"
       }.toAValidated
-      val parsed = parser.parseField _
-      extracted andThen parsed
+
+      extracted andThen P.parseField _
     }
 
-  /** Type-safe method to parse a value given a function to extract what to parse from a RawRecord */
+  /** Type-safe method to parse a value given a function that extracts what to parse from a String value */
   @implicitNotFound("Couldn't find FieldConverter for type FieldConverter[String, ${O}]")
-  def sParse[O](e: List[String] => String)(implicit p: FieldConverter[String, O]): FieldBuilder[String, O] = {
-    iParseO[String, O](e)(p)
+  def sParse[O](e: List[String] => String)(implicit P: FieldConverter[String, O]): FieldBuilder[String, O] = {
+    iParseO[String, O](e)(P)
   }
 
   /** Method to create the default parser for the given type */
-  def apply[I, O](f: I => O): FieldConverter[I, O] = new FieldConverter[I, O] {
+  def apply[I, O](f: I => O)(implicit S: Show[I]): FieldConverter[I, O] = new FieldConverter[I, O] {
     def parseField(field: I): AValidated[O] = {
       TryE(f(field)).leftMap { ex =>
-        val f = Option(field).map(_.toString).getOrElse("null")
+        val f = Option(field).map(S.show).getOrElse("null")
         s"Exception on converting field '$f': ${ex.toString}"
       }.toAValidated
     }
@@ -49,7 +50,7 @@ object FieldConverter {
 
   /** Parser for result type "String" */
   implicit val stringParser: FieldConverter[String, String] = FieldConverter[String, String] {
-    identity
+    _.toString // Using .toString to raise an exception when the input is null
   }
 
   /** Parser for result type "Int" */

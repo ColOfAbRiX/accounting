@@ -1,5 +1,3 @@
-Write Cleaner object for the pipeline
-Check if Loader, Transformer and the yer-to-be-written Cleaner can be combined with cats.Arrow
 Manage validation results -> Not in the translator project, that should only read and convert
 Load the default CsvReader as global singleton -> This should work for streamed data from the web
 Make the choice of InputReader configurable via properties

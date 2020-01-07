@@ -6,9 +6,9 @@ package com.colofabrix.scala.accounting.etl.inputs
  */
 object InputInstances {
 
-  val barclaysInput: BarclaysInputProcessor = new BarclaysInputProcessor()
-  val halifaxInput: HalifaxInputProcessor   = new HalifaxInputProcessor()
-  val starlingInput: StarlingInputProcessor = new StarlingInputProcessor()
-  val amexInput: AmexInputProcessor         = new AmexInputProcessor()
+  val barclaysInput: BarclaysCsvInput = new BarclaysCsvInput()
+  val halifaxInput: HalifaxCsvInput   = new HalifaxCsvInput()
+  val starlingInput: StarlingCsvInput = new StarlingCsvInput()
+  val amexInput: AmexCsvInput         = new AmexCsvInput()
 
 }

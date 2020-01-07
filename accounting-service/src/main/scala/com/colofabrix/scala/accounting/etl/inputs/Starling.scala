@@ -12,9 +12,9 @@ import com.colofabrix.scala.accounting.utils.validation._
 import shapeless._
 
 /**
- * Starling CSV file processor
+ * Starling CSV data processor
  */
-class StarlingInputProcessor
+class StarlingCsvInput
     extends InputProcessor[StarlingTransaction]
     with Cleaner[StarlingTransaction]
     with Normalizer[StarlingTransaction] {

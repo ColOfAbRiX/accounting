@@ -12,9 +12,9 @@ import com.colofabrix.scala.accounting.utils.validation._
 import shapeless._
 
 /**
- * Amex CSV file processor
+ * Amex CSV data processor
  */
-class AmexInputProcessor
+class AmexCsvInput
     extends InputProcessor[AmexTransaction]
     with Cleaner[AmexTransaction]
     with Normalizer[AmexTransaction] {

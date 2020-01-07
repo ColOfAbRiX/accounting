@@ -12,9 +12,9 @@ import com.colofabrix.scala.accounting.utils.validation._
 import shapeless._
 
 /**
- * Halifax CSV file processor
+ * Halifax CSV data processor
  */
-class HalifaxInputProcessor
+class HalifaxCsvInput
     extends InputProcessor[HalifaxTransaction]
     with Cleaner[HalifaxTransaction]
     with Normalizer[HalifaxTransaction] {

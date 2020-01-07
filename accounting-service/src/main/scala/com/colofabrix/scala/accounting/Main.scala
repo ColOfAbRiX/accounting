@@ -8,6 +8,7 @@ import com.colofabrix.scala.accounting.model._
 object Main extends IOApp {
 
   def run(args: List[String]): IO[ExitCode] = IO.pure {
+    // The "samples" directory is omitted on purpose from the repo to use it as dirty working directory
     val barclays = Pipeline.fromCsvPath[BarclaysTransaction]("samples/sample_barclays.csv")
     val halifax  = Pipeline.fromCsvPath[HalifaxTransaction]("samples/sample_halifax.csv")
     val starling = Pipeline.fromCsvPath[StarlingTransaction]("samples/sample_starling.csv")

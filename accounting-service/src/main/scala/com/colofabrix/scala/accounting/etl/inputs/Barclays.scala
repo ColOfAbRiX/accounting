@@ -12,9 +12,9 @@ import com.colofabrix.scala.accounting.utils.validation._
 import shapeless._
 
 /**
- * Barclays CSV file processor
+ * Barclays CSV data processor
  */
-class BarclaysInputProcessor
+class BarclaysCsvInput
     extends InputProcessor[BarclaysTransaction]
     with Cleaner[BarclaysTransaction]
     with Normalizer[BarclaysTransaction] {
