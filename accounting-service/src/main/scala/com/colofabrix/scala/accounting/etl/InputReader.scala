@@ -1,10 +1,9 @@
 package com.colofabrix.scala.accounting.etl
 
-import cats.effect._
-import definitions._
-import com.colofabrix.scala.accounting.model.InputTransaction
-import com.colofabrix.scala.accounting.utils.validation._
 import java.io.File
+import cats.effect._
+import com.colofabrix.scala.accounting.etl.definitions._
+import com.colofabrix.scala.accounting.utils.validation._
 
 /**
  * Interface for a generic reader that reads raw data

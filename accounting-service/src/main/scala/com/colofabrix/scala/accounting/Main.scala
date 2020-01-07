@@ -1,39 +1,17 @@
 package com.colofabrix.scala.accounting
 
 import cats.effect._
+import com.colofabrix.scala.accounting.etl.pipeline._
+import com.colofabrix.scala.accounting.etl.pipeline.Normalizer._
 import com.colofabrix.scala.accounting.model._
-import etl._
-import etl.pipeline._
-import Normalizer._
-import cats.data.Validated.Valid
-
-// object Main extends IOApp {
-//   def run(args: List[String]) =
-//     AccountingServer.stream[IO].compile.drain.as(ExitCode.Success)
-// }
 
 object Main extends IOApp {
 
   def run(args: List[String]): IO[ExitCode] = IO.pure {
-    val barclays = InputProcessor
-      .fromCsvPath[BarclaysTransaction]("samples/sample_barclays.csv")
-      .through(Cleaner[BarclaysTransaction])
-      .through(Normalizer[BarclaysTransaction])
-
-    val halifax = InputProcessor
-      .fromCsvPath[HalifaxTransaction]("samples/sample_halifax.csv")
-      .through(Cleaner[HalifaxTransaction])
-      .through(Normalizer[HalifaxTransaction])
-
-    val starling = InputProcessor
-      .fromCsvPath[StarlingTransaction]("samples/sample_starling.csv")
-      .through(Cleaner[StarlingTransaction])
-      .through(Normalizer[StarlingTransaction])
-
-    val amex = InputProcessor
-      .fromCsvPath[AmexTransaction]("samples/sample_amex.csv")
-      .through(Cleaner[AmexTransaction])
-      .through(Normalizer[AmexTransaction])
+    val barclays = Pipeline.fromCsvPath[BarclaysTransaction]("samples/sample_barclays.csv")
+    val halifax  = Pipeline.fromCsvPath[HalifaxTransaction]("samples/sample_halifax.csv")
+    val starling = Pipeline.fromCsvPath[StarlingTransaction]("samples/sample_starling.csv")
+    val amex     = Pipeline.fromCsvPath[AmexTransaction]("samples/sample_amex.csv")
 
     val result = for {
       inputsV     <- barclays append halifax append starling append amex

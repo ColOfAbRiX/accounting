@@ -1,5 +1,6 @@
 package com.colofabrix.scala.accounting.etl.inputs
 
+import java.time.LocalDate
 import com.colofabrix.scala.accounting.etl._
 import com.colofabrix.scala.accounting.etl.definitions._
 import com.colofabrix.scala.accounting.etl.FieldConverter._
@@ -8,7 +9,6 @@ import com.colofabrix.scala.accounting.etl.pipeline.CleanerUtils._
 import com.colofabrix.scala.accounting.etl.pipeline.InputProcessorUtils._
 import com.colofabrix.scala.accounting.model._
 import com.colofabrix.scala.accounting.utils.validation._
-import java.time.LocalDate
 import shapeless._
 
 /**
@@ -34,7 +34,7 @@ class BarclaysInputProcessor
     }
   }
 
-  def clean(transactions: BarclaysTransaction): BarclaysTransaction = {
+  def cleanInputTransaction(transactions: BarclaysTransaction): BarclaysTransaction = {
     val cleaned = Generic[BarclaysTransaction]
       .to(transactions)
       .map(defaultCleaner)

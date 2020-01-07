@@ -1,6 +1,5 @@
 package com.colofabrix.scala.accounting.etl
 
-import cats.scalatest._
 import com.colofabrix.scala.accounting.etl.definitions._
 import com.colofabrix.scala.accounting.etl.pipeline.InputProcessorUtils._
 import com.colofabrix.scala.accounting.utils.validation._

@@ -1,15 +1,13 @@
 package com.colofabrix.scala.accounting.etl
 
+import cats.data.Kleisli
 import cats.implicits._
-import com.colofabrix.scala.accounting.etl.FieldConverter._
 import com.colofabrix.scala.accounting.etl.definitions._
 import com.colofabrix.scala.accounting.model.InputTransaction
 import com.colofabrix.scala.accounting.utils.validation._
 import shapeless.{ Generic, HList, HNil, Poly2 }
 import shapeless.ops.hlist.RightFolder
 import shapeless.UnaryTCConstraint.*->*
-import cats.data.Kleisli
-import cats.Functor
 
 /**
  * Represents an object that can convert Inputs records into Output types

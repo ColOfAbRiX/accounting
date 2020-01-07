@@ -1,16 +1,11 @@
 package com.colofabrix.scala.accounting.etl
 
-import cats.data._
-import cats.data.Validated.{ Invalid, Valid }
-import cats.effect._
 import cats.implicits._
 import cats.scalatest._
-import com.colofabrix.scala.accounting.etl.definitions._
 import com.colofabrix.scala.accounting.etl.pipeline.InputProcessor
 import com.colofabrix.scala.accounting.model._
 import com.colofabrix.scala.accounting.utils.StreamHelpers
 import com.colofabrix.scala.accounting.utils.validation._
-import java.time.LocalDate
 import org.scalatest._
 
 /**

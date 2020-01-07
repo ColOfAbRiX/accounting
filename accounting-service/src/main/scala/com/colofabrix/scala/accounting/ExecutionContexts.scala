@@ -2,8 +2,7 @@ package com.colofabrix.scala.accounting
 
 import java.util.concurrent._
 import java.util.concurrent.atomic.AtomicLong
-import scala.concurrent.ExecutionContext
-import scala.concurrent.ExecutionContextExecutor
+import scala.concurrent._
 
 object ExecutionContexts {
 

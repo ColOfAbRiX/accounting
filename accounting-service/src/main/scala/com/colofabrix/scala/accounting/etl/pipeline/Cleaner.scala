@@ -1,26 +1,24 @@
 package com.colofabrix.scala.accounting.etl.pipeline
 
+import java.time.LocalDate
 import cats.data.Nested
 import cats.implicits._
 import com.colofabrix.scala.accounting.etl.inputs._
 import com.colofabrix.scala.accounting.model._
-import com.colofabrix.scala.accounting.utils.validation
 import com.colofabrix.scala.accounting.utils.validation._
-import shapeless.Generic
-import java.time.LocalDate
 
 /**
  * Cleans the individual fields of the InputTransactions
  */
 trait Cleaner[T <: InputTransaction] {
-  def clean(transaction: T): T
+  def cleanInputTransaction(transaction: T): T
 }
 
 object Cleaner {
   /** Cleans a stream of InputTransaction */
   def apply[T <: InputTransaction](implicit C: Cleaner[T]): VPipe[fs2.Pure, T, T] = { input =>
     Nested(input)
-      .map(C.clean)
+      .map(C.cleanInputTransaction)
       .value
   }
 

@@ -1,12 +1,11 @@
 package com.colofabrix.scala.accounting.etl
 
+import java.time.LocalDate
 import cats.data._
 import cats.data.Validated._
 import cats.effect._
 import com.colofabrix.scala.accounting.etl.definitions._
 import com.colofabrix.scala.accounting.model._
-import com.colofabrix.scala.accounting.utils.validation._
-import java.time.LocalDate
 
 /**
  * Defines a mixin to provide test data

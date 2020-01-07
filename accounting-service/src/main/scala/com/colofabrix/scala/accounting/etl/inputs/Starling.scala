@@ -1,5 +1,6 @@
 package com.colofabrix.scala.accounting.etl.inputs
 
+import java.time.LocalDate
 import com.colofabrix.scala.accounting.etl._
 import com.colofabrix.scala.accounting.etl.definitions._
 import com.colofabrix.scala.accounting.etl.FieldConverter._
@@ -8,7 +9,6 @@ import com.colofabrix.scala.accounting.etl.pipeline.CleanerUtils._
 import com.colofabrix.scala.accounting.etl.pipeline.InputProcessorUtils._
 import com.colofabrix.scala.accounting.model._
 import com.colofabrix.scala.accounting.utils.validation._
-import java.time.LocalDate
 import shapeless._
 
 /**
@@ -36,7 +36,7 @@ class StarlingInputProcessor
     }
   }
 
-  def clean(transactions: StarlingTransaction): StarlingTransaction = {
+  def cleanInputTransaction(transactions: StarlingTransaction): StarlingTransaction = {
     val cleaned = Generic[StarlingTransaction]
       .to(transactions)
       .map(defaultCleaner)

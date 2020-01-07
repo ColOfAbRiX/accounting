@@ -1,19 +1,19 @@
 package com.colofabrix.scala.accounting.etl.pipeline
 
+import java.io.File
 import cats.data._
-import cats.implicits._
 import cats.effect._
+import cats.implicits._
+import com.colofabrix.scala.accounting.etl._
+import com.colofabrix.scala.accounting.etl.definitions._
+import com.colofabrix.scala.accounting.etl.inputs._
 import com.colofabrix.scala.accounting.model._
 import com.colofabrix.scala.accounting.utils.validation._
-import com.colofabrix.scala.accounting.etl.definitions._
-import com.colofabrix.scala.accounting.etl._
-import com.colofabrix.scala.accounting.etl.inputs._
-import java.io.File
 
 /**
  * Converts an input source into transactions
  */
-trait InputProcessor[T] {
+trait InputProcessor[T <: InputTransaction] {
   /** Converts one raw record into an input transaction */
   protected def convertRaw(record: RawRecord): AValidated[T]
 
@@ -27,30 +27,15 @@ trait InputProcessor[T] {
 }
 
 object InputProcessor {
-  /** Converts a given stream into transactions */
-  def fromStream[T](stream: VRawInput[IO])(implicit L: InputProcessor[T]): VStream[IO, T] = {
-    stream.through(L.process)
+  /** Converts a stream of RawRecord into InputTransaction */
+  def apply[T <: InputTransaction](implicit L: InputProcessor[T]): VPipe[fs2.Pure, RawRecord, T] = {
+    L.process
   }
 
-  /** Converts a given InputReader into transactions */
-  def fromReader[T](reader: InputReader)(implicit L: InputProcessor[T]): VStream[IO, T] = {
-    reader.read.through(L.process)
-  }
-
-  /** Converts a given File interpreted as CSV into transactions */
-  def fromCsvFile[T](file: File)(implicit L: InputProcessor[T]): VStream[IO, T] = {
-    fromReader[T](new CsvFileReader(file))
-  }
-
-  /** Converts a given path interpreted as CSV file into transactions */
-  def fromCsvPath[T](path: String)(implicit L: InputProcessor[T]): VStream[IO, T] = {
-    fromCsvFile[T](new File(path))
-  }
-
-  implicit val barclaysConverter: InputProcessor[BarclaysTransaction] = InputInstances.barclaysInput
-  implicit val halifaxConverter: InputProcessor[HalifaxTransaction]   = InputInstances.halifaxInput
-  implicit val starlingConverter: InputProcessor[StarlingTransaction] = InputInstances.starlingInput
-  implicit val amexConverter: InputProcessor[AmexTransaction]         = InputInstances.amexInput
+  implicit val barclaysProcessor: InputProcessor[BarclaysTransaction] = InputInstances.barclaysInput
+  implicit val halifaxProcessor: InputProcessor[HalifaxTransaction]   = InputInstances.halifaxInput
+  implicit val starlingProcessor: InputProcessor[StarlingTransaction] = InputInstances.starlingInput
+  implicit val amexProcessor: InputProcessor[AmexTransaction]         = InputInstances.amexInput
 }
 
 /**

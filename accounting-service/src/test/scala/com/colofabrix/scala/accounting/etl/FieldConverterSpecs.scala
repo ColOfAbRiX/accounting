@@ -1,9 +1,9 @@
 package com.colofabrix.scala.accounting.etl
 
-import cats.scalatest._
-import com.colofabrix.scala.accounting.utils.validation._
-import FieldConverter._
 import java.time.LocalDate
+import cats.scalatest._
+import com.colofabrix.scala.accounting.etl.FieldConverter._
+import com.colofabrix.scala.accounting.utils.validation._
 import org.scalatest._
 
 class FieldConverterSpecs extends WordSpec with Matchers with ValidatedMatchers {

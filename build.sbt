@@ -11,7 +11,7 @@ val CirceVersion         = "0.12.3"
 val FS2Version           = "2.1.0"
 val Http4sVersion        = "0.21.0-M5"
 val KantanCsvVersion     = "0.6.0"
-val KittenVersion        = "2.0.0"
+val KittensVersion       = "2.0.0"
 val LogbackVersion       = "1.2.3"
 val ScalatestVersion     = "3.1.0"
 val ShapelessVersion     = "2.3.3"
@@ -71,6 +71,7 @@ scalacOptions ++= Seq(
   "-language:postfixOps",
   "-feature",
   "-Xfatal-warnings",
+  "-Wunused:imports",
 )
 
 // Wartremover
