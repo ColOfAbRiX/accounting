@@ -15,12 +15,12 @@ val KittensVersion       = "2.0.0"
 val LogbackVersion       = "1.2.3"
 val ScalatestVersion     = "3.1.0"
 val ShapelessVersion     = "2.3.3"
+val TapirVersion         = "0.12.0"
 // val AirframeVersion      = "19.11.0"
 // val DoobieVersion        = "0.8.4"
 // val MonocleVersion       = "2.0.0"
 // val PureconfigVersion    = "0.12.1"
 // val ScalacheckVersion    = "1.14.1"
-// val TapirVersion         = "0.11.9"
 
 // Compiler plugins
 val WartRemoverVersion      = "2.4.3"
@@ -30,30 +30,31 @@ val BetterMonadicForVersion = "0.3.0"
 //  - - - - - - - - - - - - - - - - - //
 
 // Libraries
-val CatsCoreDep          = "org.typelevel"    %% "cats-core"           % CatsVersion
-val CatsEffectsDep       = "org.typelevel"    %% "cats-effect"         % CatsVersion
-val CatsScalaTestDep     = "com.ironcorelabs" %% "cats-scalatest"      % CatsScalaTestVersion % "test"
-val CirceGenericDep      = "io.circe"         %% "circe-generic"       % CirceVersion
-val FS2CoreDep           = "co.fs2"           %% "fs2-core"            % FS2Version
-val Http4sBlazeClientDep = "org.http4s"       %% "http4s-blaze-client" % Http4sVersion
-val Http4sBlazeServerDep = "org.http4s"       %% "http4s-blaze-server" % Http4sVersion
-val Http4sCirceDep       = "org.http4s"       %% "http4s-circe"        % Http4sVersion
-val Http4sDslDep         = "org.http4s"       %% "http4s-dsl"          % Http4sVersion
-val KantanCatsCsvDep     = "com.nrinaudo"     %% "kantan.csv-cats"     % KantanCsvVersion
-val KantanCsvDep         = "com.nrinaudo"     %% "kantan.csv"          % KantanCsvVersion
-val KittensDep           = "org.typelevel"    %% "kittens"             % KittensVersion
-val LogbackClassicDep    = "ch.qos.logback"   % "logback-classic"      % LogbackVersion
-val ScalatestDep         = "org.scalatest"    %% "scalatest"           % ScalatestVersion % "test"
-val ShapelessDep         = "com.chuusai"      %% "shapeless"           % ShapelessVersion
+val CatsCoreDep          = "org.typelevel"               %% "cats-core"           % CatsVersion
+val CatsEffectsDep       = "org.typelevel"               %% "cats-effect"         % CatsVersion
+val CatsScalaTestDep     = "com.ironcorelabs"            %% "cats-scalatest"      % CatsScalaTestVersion % "test"
+val CirceGenericDep      = "io.circe"                    %% "circe-generic"       % CirceVersion
+val FS2CoreDep           = "co.fs2"                      %% "fs2-core"            % FS2Version
+val Http4sBlazeServerDep = "org.http4s"                  %% "http4s-blaze-server" % Http4sVersion
+val Http4sCirceDep       = "org.http4s"                  %% "http4s-circe"        % Http4sVersion
+val Http4sDslDep         = "org.http4s"                  %% "http4s-dsl"          % Http4sVersion
+val KantanCatsCsvDep     = "com.nrinaudo"                %% "kantan.csv-cats"     % KantanCsvVersion
+val KantanCsvDep         = "com.nrinaudo"                %% "kantan.csv"          % KantanCsvVersion
+val KittensDep           = "org.typelevel"               %% "kittens"             % KittensVersion
+val LogbackClassicDep    = "ch.qos.logback"              %  "logback-classic"     % LogbackVersion
+val ScalatestDep         = "org.scalatest"               %% "scalatest"           % ScalatestVersion % "test"
+val ShapelessDep         = "com.chuusai"                 %% "shapeless"           % ShapelessVersion
+val TapirCoreDep         = "com.softwaremill.sttp.tapir" %% "tapir-core"          % TapirVersion
+val TapirHttp4sServerDep = "com.softwaremill.sttp.tapir" %% "tapir-http4s-server" % TapirVersion
+val TapirJsonCirceDep    = "com.softwaremill.sttp.tapir" %% "tapir-json-circe"    % TapirVersion
 // val AirframeDep          = "org.wvlet.airframe"         %% "airframe"            % AirframeVersion
 // val DoobieCoreDep        = "org.tpolecat"               %% "doobie-core"         % DoobieVersion % "test"
+// val Http4sBlazeClientDep = "org.http4s"                 %% "http4s-blaze-client" % Http4sVersion
 // val MonocleCoreDep       = "com.github.julien-truffaut" %% "monocle-core"        % MonocleVersion % "test"
 // val MonocleLawDep        = "com.github.julien-truffaut" %% "monocle-law"         % MonocleVersio
 // val MonocleMacroDep      = "com.github.julien-truffaut" %% "monocle-macro"       % MonocleVersion
 // val PureconfigDep        = "com.github.pureconfig"      %% "pureconfig"          % PureconfigVersion
 // val ScalacheckDep        = "org.scalacheck"             %% "scalacheck"          % ScalacheckVersion
-// val TapirCoreDep         = "com.softwaremill.tapir"     %% "tapir-core"          % TapirVersion
-// val TapirHttp4sServerDep = "com.softwaremill.tapir"     %% "tapir-http4s-server" % TapirVersion
 
 // Compiler plugins
 val BetterMonadicForPlugin = compilerPlugin("com.olegpy"      %% "better-monadic-for" % BetterMonadicForVersion)
@@ -146,7 +147,6 @@ lazy val etlService = project
       CatsScalaTestDep,
       CirceGenericDep,
       FS2CoreDep,
-      Http4sBlazeClientDep,
       Http4sBlazeServerDep,
       Http4sCirceDep,
       Http4sDslDep,
@@ -155,5 +155,8 @@ lazy val etlService = project
       LogbackClassicDep,
       ScalatestDep,
       ShapelessDep,
+      TapirCoreDep,
+      TapirHttp4sServerDep,
+      TapirJsonCirceDep,
     ),
   )

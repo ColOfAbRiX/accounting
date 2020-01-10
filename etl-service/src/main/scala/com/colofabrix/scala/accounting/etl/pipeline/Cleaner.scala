@@ -6,6 +6,7 @@ import cats.implicits._
 import com.colofabrix.scala.accounting.etl.inputs._
 import com.colofabrix.scala.accounting.model._
 import com.colofabrix.scala.accounting.utils.validation._
+import shapeless._
 
 /**
  * Cleans the individual fields of the InputTransactions
@@ -32,7 +33,6 @@ object Cleaner {
  * Utility functions for cleaning
  */
 object CleanerUtils {
-  import shapeless._
 
   @SuppressWarnings(Array("org.wartremover.warts.ExplicitImplicitTypes", "org.wartremover.warts.PublicInference"))
   object defaultCleaner extends Poly1 {

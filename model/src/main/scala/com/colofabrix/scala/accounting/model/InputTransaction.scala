@@ -2,10 +2,16 @@ package com.colofabrix.scala.accounting.model
 
 import java.time.LocalDate
 
+sealed trait InputType
+final case object BarclaysInputType extends InputType
+final case object HalifaxInputType  extends InputType
+final case object StarlingInputType extends InputType
+final case object AmexInputType     extends InputType
+
 /**
  * Transaction in a specific Bank's format
  */
-trait InputTransaction
+sealed trait InputTransaction
 
 /** Transaction on a Barclays CSV file */
 final case class BarclaysTransaction(
