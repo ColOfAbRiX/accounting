@@ -1,17 +1,11 @@
 package com.colofabrix.scala.accounting.etl.pipeline
 
-import cats.data._
 import cats.effect.IO
-import cats.implicits._
 import com.colofabrix.scala.accounting.etl._
 import com.colofabrix.scala.accounting.etl.definitions._
-import com.colofabrix.scala.accounting.etl.inputs._
 import com.colofabrix.scala.accounting.model._
 import com.colofabrix.scala.accounting.utils.validation._
 import java.io.File
-import InputProcessor._
-import Normalizer._
-import Cleaner._
 
 /**
  * The ETL pipeline

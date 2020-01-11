@@ -15,6 +15,7 @@ val KittensVersion       = "2.0.0"
 val LogbackVersion       = "1.2.3"
 val ScalatestVersion     = "3.1.0"
 val ShapelessVersion     = "2.3.3"
+val SilencerVersion      = "1.4.3"
 val TapirVersion         = "0.12.0"
 // val AirframeVersion      = "19.11.0"
 // val DoobieVersion        = "0.8.4"
@@ -44,6 +45,7 @@ val KittensDep           = "org.typelevel"               %% "kittens"           
 val LogbackClassicDep    = "ch.qos.logback"              %  "logback-classic"     % LogbackVersion
 val ScalatestDep         = "org.scalatest"               %% "scalatest"           % ScalatestVersion % "test"
 val ShapelessDep         = "com.chuusai"                 %% "shapeless"           % ShapelessVersion
+val SilencerDep          = "com.github.ghik"             %  "silencer-lib"        % SilencerVersion % Provided cross CrossVersion.full
 val TapirCoreDep         = "com.softwaremill.sttp.tapir" %% "tapir-core"          % TapirVersion
 val TapirHttp4sServerDep = "com.softwaremill.sttp.tapir" %% "tapir-http4s-server" % TapirVersion
 val TapirJsonCirceDep    = "com.softwaremill.sttp.tapir" %% "tapir-json-circe"    % TapirVersion
@@ -60,19 +62,20 @@ val TapirJsonCirceDep    = "com.softwaremill.sttp.tapir" %% "tapir-json-circe"  
 val BetterMonadicForPlugin = compilerPlugin("com.olegpy"      %% "better-monadic-for" % BetterMonadicForVersion)
 val KindProjectorPlugin    = compilerPlugin("org.typelevel"   %% "kind-projector"     % KindProjectorVersion)
 val WartremoverPlugin      = compilerPlugin("org.wartremover" %% "wartremover"        % WartRemoverVersion cross CrossVersion.full)
+val SilencerPlugin         = compilerPlugin("com.github.ghik" %  "silencer-plugin"    % SilencerVersion cross CrossVersion.full)
 
 //  - - - - - - - - - - - - - - - - - //
 
 // Compiler options
-scalacOptions ++= Seq(
+scalacOptions in ThisBuild ++= Seq(
   "-deprecation",
   "-encoding",
   "UTF-8",
+  "-feature",
   "-language:higherKinds",
   "-language:postfixOps",
-  "-feature",
   "-Xfatal-warnings",
-  "-Wunused:imports",
+  "-Ywarn-unused",
 )
 
 // Wartremover
@@ -81,6 +84,11 @@ wartremoverErrors in ThisBuild ++= Warts.allBut(Wart.Any, Wart.Nothing)
 
 // Standardize formatting
 scalafmtOnCompile in ThisBuild := true
+
+// Global compiler plugins
+libraryDependencies in ThisBuild ++= Seq(
+  SilencerPlugin, SilencerDep
+)
 
 //  - - - - - - - - - - - - - - - - - //
 

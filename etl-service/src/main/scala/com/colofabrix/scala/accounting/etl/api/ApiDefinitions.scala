@@ -4,8 +4,6 @@ import com.colofabrix.scala.accounting.etl.definitions._
 import com.colofabrix.scala.accounting.model._
 import EtlApiCodecs._
 import EtlApiInputs._
-import EtlApiModel._
-import io.circe.generic.auto._
 import sttp.model.StatusCode
 import sttp.tapir._
 import sttp.tapir.Codec._
@@ -46,6 +44,7 @@ object EtlApiCodecs {
 object EtlApiInputs {
 
   val recordTypeQuery: EndpointInput[InputType] = query[InputType]("recordType")
+  val testQuery: EndpointInput[Int]             = query[Int]("test")
 
 }
 
@@ -69,6 +68,14 @@ object EtlApiEndpoints {
       .get
       .in("convert-record")
       .in(recordTypeQuery)
+      .out(stringBody)
+
+  val convertRecords: Endpoint[(InputType, String), ErrorOutput, String, Nothing] =
+    baseEndpoint
+      .get
+      .in("convert-record")
+      .in(recordTypeQuery)
+      .in(stringBody)
       .out(stringBody)
 
 }

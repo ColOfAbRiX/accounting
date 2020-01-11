@@ -1,10 +1,7 @@
 package com.colofabrix.scala.accounting.etl.pipeline
 
-import java.io.File
 import cats.data._
-import cats.effect._
 import cats.implicits._
-import com.colofabrix.scala.accounting.etl._
 import com.colofabrix.scala.accounting.etl.definitions._
 import com.colofabrix.scala.accounting.etl.inputs._
 import com.colofabrix.scala.accounting.model._
@@ -52,9 +49,6 @@ object InputProcessorUtils {
   }
 
   /** Drops records based on a condition on Valid data */
-  private def invalidDropOnCondition[A](f: NonEmptyChain[String] => Boolean): RawInputFilter = { input =>
-    input.filter(vRecord => vRecord.fold(!f(_), _ => true))
-  }
 
   /** Applies a function to a field that can be null */
   private def nullSafe[A](default: A, f: String => A): String => A = { field =>

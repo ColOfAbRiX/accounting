@@ -1,16 +1,11 @@
 package com.colofabrix.scala.accounting
 
-import java.util.concurrent.atomic.AtomicReference
-
 import cats.effect._
 import cats.implicits._
-import io.circe.generic.auto._
 import org.http4s.HttpRoutes
 import org.http4s.server.Router
 import org.http4s.server.blaze.BlazeServerBuilder
 import org.http4s.syntax.kleisli._
-import sttp.tapir._
-import sttp.tapir.json.circe._
 import sttp.tapir.server.http4s._
 
 import scala.concurrent.ExecutionContext
@@ -40,7 +35,6 @@ object MultipleEndpointsDocumentationHttp4sServer extends App {
     .resource
     .use { _ =>
       IO {
-        println("Press any key to exit ...")
         scala.io.StdIn.readLine()
       }
     }

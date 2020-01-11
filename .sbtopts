@@ -1,3 +1,4 @@
+-J-Xss2m
 -J-Xss256M
 -J-Xmx512M
 -J-XX:MaxHeapSize=512M
