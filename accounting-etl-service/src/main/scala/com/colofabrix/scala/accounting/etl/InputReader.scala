@@ -43,8 +43,8 @@ class CsvFileReader(file: File) extends InputReader {
   }
 
   private def unfoldCsv(iterator: KantanReader): Option[(AValidated[RawRecord], KantanReader)] = {
-    def onError(e: ReadError) = Some(e.toString.aInvalid, iterator)
-    def onValid(v: RawRecord) = Some(v.aValid, iterator)
+    def onError(e: ReadError) = Some((e.toString.aInvalid, iterator))
+    def onValid(v: RawRecord) = Some((v.aValid, iterator))
     if (iterator.hasNext) iterator.next.fold(onError, onValid) else None
   }
 }

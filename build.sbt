@@ -1,82 +1,12 @@
+import Dependencies._
+import Compiler._
+
 // General
 val ScalaVersion      = "2.13.0"
 val AccountingVersion = "0.1.0-SNAPSHOT"
 
-//  - - - - - - - - - - - - - - - - - //
-
-// Versions
-val CatsScalaTestVersion = "3.0.4"
-val CatsVersion          = "2.0.0"
-val CirceVersion         = "0.12.3"
-val FS2Version           = "2.1.0"
-val Http4sVersion        = "0.21.0-M5"
-val KantanCsvVersion     = "0.6.0"
-val KittensVersion       = "2.0.0"
-val LogbackVersion       = "1.2.3"
-val ScalatestVersion     = "3.1.0"
-val ShapelessVersion     = "2.3.3"
-val SilencerVersion      = "1.4.3"
-val TapirVersion         = "0.12.0"
-// val AirframeVersion      = "19.11.0"
-// val DoobieVersion        = "0.8.4"
-// val MonocleVersion       = "2.0.0"
-// val PureconfigVersion    = "0.12.1"
-// val ScalacheckVersion    = "1.14.1"
-
-// Compiler plugins
-val WartRemoverVersion      = "2.4.3"
-val KindProjectorVersion    = "0.10.3"
-val BetterMonadicForVersion = "0.3.0"
-
-//  - - - - - - - - - - - - - - - - - //
-
-// Libraries
-val CatsCoreDep          = "org.typelevel"               %% "cats-core"           % CatsVersion
-val CatsEffectsDep       = "org.typelevel"               %% "cats-effect"         % CatsVersion
-val CatsScalaTestDep     = "com.ironcorelabs"            %% "cats-scalatest"      % CatsScalaTestVersion % "test"
-val CirceGenericDep      = "io.circe"                    %% "circe-generic"       % CirceVersion
-val FS2CoreDep           = "co.fs2"                      %% "fs2-core"            % FS2Version
-val Http4sBlazeServerDep = "org.http4s"                  %% "http4s-blaze-server" % Http4sVersion
-val Http4sCirceDep       = "org.http4s"                  %% "http4s-circe"        % Http4sVersion
-val Http4sDslDep         = "org.http4s"                  %% "http4s-dsl"          % Http4sVersion
-val KantanCatsCsvDep     = "com.nrinaudo"                %% "kantan.csv-cats"     % KantanCsvVersion
-val KantanCsvDep         = "com.nrinaudo"                %% "kantan.csv"          % KantanCsvVersion
-val KittensDep           = "org.typelevel"               %% "kittens"             % KittensVersion
-val LogbackClassicDep    = "ch.qos.logback"              %  "logback-classic"     % LogbackVersion
-val ScalatestDep         = "org.scalatest"               %% "scalatest"           % ScalatestVersion % "test"
-val ShapelessDep         = "com.chuusai"                 %% "shapeless"           % ShapelessVersion
-val SilencerDep          = "com.github.ghik"             %  "silencer-lib"        % SilencerVersion % Provided cross CrossVersion.full
-val TapirCoreDep         = "com.softwaremill.sttp.tapir" %% "tapir-core"          % TapirVersion
-val TapirHttp4sServerDep = "com.softwaremill.sttp.tapir" %% "tapir-http4s-server" % TapirVersion
-val TapirJsonCirceDep    = "com.softwaremill.sttp.tapir" %% "tapir-json-circe"    % TapirVersion
-// val AirframeDep          = "org.wvlet.airframe"         %% "airframe"            % AirframeVersion
-// val DoobieCoreDep        = "org.tpolecat"               %% "doobie-core"         % DoobieVersion % "test"
-// val Http4sBlazeClientDep = "org.http4s"                 %% "http4s-blaze-client" % Http4sVersion
-// val MonocleCoreDep       = "com.github.julien-truffaut" %% "monocle-core"        % MonocleVersion % "test"
-// val MonocleLawDep        = "com.github.julien-truffaut" %% "monocle-law"         % MonocleVersio
-// val MonocleMacroDep      = "com.github.julien-truffaut" %% "monocle-macro"       % MonocleVersion
-// val PureconfigDep        = "com.github.pureconfig"      %% "pureconfig"          % PureconfigVersion
-// val ScalacheckDep        = "org.scalacheck"             %% "scalacheck"          % ScalacheckVersion
-
-// Compiler plugins
-val BetterMonadicForPlugin = compilerPlugin("com.olegpy"      %% "better-monadic-for" % BetterMonadicForVersion)
-val KindProjectorPlugin    = compilerPlugin("org.typelevel"   %% "kind-projector"     % KindProjectorVersion)
-val WartremoverPlugin      = compilerPlugin("org.wartremover" %% "wartremover"        % WartRemoverVersion cross CrossVersion.full)
-val SilencerPlugin         = compilerPlugin("com.github.ghik" %  "silencer-plugin"    % SilencerVersion cross CrossVersion.full)
-
-//  - - - - - - - - - - - - - - - - - //
-
 // Compiler options
-scalacOptions in ThisBuild ++= Seq(
-  "-deprecation",
-  "-encoding",
-  "UTF-8",
-  "-feature",
-  "-language:higherKinds",
-  "-language:postfixOps",
-  "-Xfatal-warnings",
-  "-Ywarn-unused",
-)
+scalacOptions in ThisBuild ++= TpolecatOptions
 
 // Wartremover
 wartremoverExcluded in ThisBuild ++= (baseDirectory.value * "**" / "src" / "test").get
@@ -112,10 +42,10 @@ lazy val accountingRoot: Project = project
 
 // Utils project
 lazy val utils = project
-  .in(file("utils"))
+  .in(file("accounting-utils"))
   .settings(
     organization := "com.colofabrix.scala.accounting",
-    name := "utils",
+    name := "accounting-utils",
     version := AccountingVersion,
     scalaVersion := ScalaVersion,
     libraryDependencies ++= Seq(
@@ -128,10 +58,10 @@ lazy val utils = project
 
 // Business Model project
 lazy val model = project
-  .in(file("model"))
+  .in(file("accounting-model"))
   .settings(
     organization := "com.colofabrix.scala.accounting",
-    name := "model",
+    name := "accounting-model",
     version := AccountingVersion,
     scalaVersion := ScalaVersion,
     libraryDependencies ++= Seq(),
@@ -139,14 +69,14 @@ lazy val model = project
 
 // ETL Service project
 lazy val etlService = project
-  .in(file("etl-service"))
+  .in(file("accounting-etl-service"))
   .dependsOn(
     utils,
     model
   )
   .settings(
     organization := "com.colofabrix.scala.accounting",
-    name := "etl-service",
+    name := "accounting-etl-service",
     version := AccountingVersion,
     scalaVersion := ScalaVersion,
     libraryDependencies ++= Seq(

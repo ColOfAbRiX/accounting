@@ -31,10 +31,17 @@ object Pipeline {
   }
 
   /** Converts a given stream into transactions */
-  def fromStream[F[_], T <: InputTransaction: InputProcessor: Cleaner: Normalizer](
+  def fromVStream[F[_], T <: InputTransaction: InputProcessor: Cleaner: Normalizer](
       stream: VRawInput[F],
   ): VStream[F, Transaction] = {
     stream.through(Pipeline[T])
+  }
+
+  /** Converts a given stream into transactions */
+  def fromStream[F[_], T <: InputTransaction: InputProcessor: Cleaner: Normalizer](
+      stream: RawInput[F],
+  ): VStream[F, Transaction] = {
+    fromVStream(stream.map(_.aValid))
   }
 
   /** Converts a given InputReader into transactions */

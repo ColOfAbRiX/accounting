@@ -44,7 +44,6 @@ object EtlApiCodecs {
 object EtlApiInputs {
 
   val recordTypeQuery: EndpointInput[InputType] = query[InputType]("recordType")
-  val testQuery: EndpointInput[Int]             = query[Int]("test")
 
 }
 
@@ -73,7 +72,7 @@ object EtlApiEndpoints {
   val convertRecords: Endpoint[(InputType, String), ErrorOutput, String, Nothing] =
     baseEndpoint
       .get
-      .in("convert-record")
+      .in("convert-records")
       .in(recordTypeQuery)
       .in(stringBody)
       .out(stringBody)

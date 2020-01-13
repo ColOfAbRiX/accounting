@@ -9,24 +9,57 @@ import org.http4s.syntax.kleisli._
 import sttp.tapir.server.http4s._
 
 import scala.concurrent.ExecutionContext
-import com.colofabrix.scala.accounting.etl.api.EtlApiEndpoints
+import com.colofabrix.scala.accounting.etl.api._
+import com.colofabrix.scala.accounting.etl.definitions._
+import com.colofabrix.scala.accounting.etl.pipeline._
+import com.colofabrix.scala.accounting.model._
+import com.colofabrix.scala.accounting.utils.ExecutionContexts
+
+import com.colofabrix.scala.accounting.etl.pipeline.Normalizer._
 
 @SuppressWarnings(Array("org.wartremover.warts.All"))
 object MultipleEndpointsDocumentationHttp4sServer extends App {
 
-  implicit val ec: ExecutionContext           = scala.concurrent.ExecutionContext.Implicits.global
+  // implicit val ec: ExecutionContext           = scala.concurrent.ExecutionContext.Implicits.global
+  implicit val ec: ExecutionContext           = ExecutionContexts.computePool
   implicit val contextShift: ContextShift[IO] = IO.contextShift(ec)
   implicit val timer: Timer[IO]               = IO.timer(ec)
 
   val listSupportedInputsRoutes: HttpRoutes[IO] = EtlApiEndpoints
     .listSupportedInputs
-    .toRoutes(_ => IO("listSupportedInputsRoutes is working!".asRight[EtlApiEndpoints.ErrorOutput]))
+    .toRoutes { _ =>
+      IO("listSupportedInputsRoutes is working!".asRight[EtlApiEndpoints.ErrorOutput])
+    }
 
   val convertRecordRoutes: HttpRoutes[IO] = EtlApiEndpoints
     .convertRecord
-    .toRoutes(x => IO(s"You want to convert a record of type $x".asRight[EtlApiEndpoints.ErrorOutput]))
+    .toRoutes { inputType =>
+      IO(s"You want to convert a record of type $inputType".asRight[EtlApiEndpoints.ErrorOutput])
+    }
 
-  val routes: HttpRoutes[IO] = listSupportedInputsRoutes <+> convertRecordRoutes
+  val convertRecordsRoutes: HttpRoutes[IO] = EtlApiEndpoints
+    .convertRecords
+    .toRoutes {
+      case (inputType, body) =>
+        val record: RawInput[IO] = fs2.Stream.emit(List(body))
+        val converted = inputType match {
+          case BarclaysInputType =>
+            println
+            val result = Pipeline.fromStream[IO, BarclaysTransaction](record)
+            result.map { x =>
+              println(x)
+              x
+            }
+          case HalifaxInputType  => Pipeline.fromStream[IO, HalifaxTransaction](record)
+          case StarlingInputType => Pipeline.fromStream[IO, StarlingTransaction](record)
+          case AmexInputType     => Pipeline.fromStream[IO, AmexTransaction](record)
+        }
+        IO {
+          converted.compile.toList.unsafeRunSync.toString.asRight[EtlApiEndpoints.ErrorOutput]
+        }
+    }
+
+  val routes: HttpRoutes[IO] = listSupportedInputsRoutes <+> convertRecordRoutes <+> convertRecordsRoutes
 
   // starting the server
   BlazeServerBuilder[IO]

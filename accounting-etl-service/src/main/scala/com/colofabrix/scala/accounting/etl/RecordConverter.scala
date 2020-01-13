@@ -27,7 +27,7 @@ trait GenericConverter[Input, Output] {
 
   private object ApplyRecord extends Poly2 {
     @SuppressWarnings(Array("org.wartremover.warts.ExplicitImplicitTypes"))
-    implicit def folder[Output, V <: HList] = at[GenericBuilder[Output], Accumulator[V]] {
+    implicit def folder[O, V <: HList] = at[GenericBuilder[O], Accumulator[V]] {
       case (recordParser, (record, accumulator)) =>
         val parsed = recordParser(record)
         val next = (accumulator, parsed).mapN((v, t) => t :: v)

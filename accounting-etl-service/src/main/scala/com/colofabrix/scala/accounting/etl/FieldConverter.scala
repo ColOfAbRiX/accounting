@@ -7,7 +7,6 @@ import com.colofabrix.scala.accounting.utils.validation._
 import java.time.format.DateTimeFormatter
 import java.time.LocalDate
 import scala.annotation.implicitNotFound
-import scala.language.implicitConversions
 
 /**
  * Parser to transform record fields into JVM types
