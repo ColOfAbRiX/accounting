@@ -10,16 +10,16 @@ object Dependencies {
   lazy val Http4sVersion        = "0.21.0-M5"
   lazy val KantanCsvVersion     = "0.6.0"
   lazy val KittensVersion       = "2.0.0"
+  lazy val Log4sVersion         = "1.8.2"
   lazy val LogbackVersion       = "1.2.3"
   lazy val ScalatestVersion     = "3.1.0"
   lazy val ShapelessVersion     = "2.3.3"
   lazy val SilencerVersion      = "1.4.3"
   lazy val TapirVersion         = "0.12.0"
-  // val AirframeVersion      = "19.11.0"
-  // val DoobieVersion        = "0.8.4"
-  // val MonocleVersion       = "2.0.0"
-  // val PureconfigVersion    = "0.12.1"
-  // val ScalacheckVersion    = "1.14.1"
+  // lazy val DoobieVersion        = "0.8.4"
+  // lazy val MonocleVersion       = "2.0.0"
+  // lazy val PureconfigVersion    = "0.12.1"
+  // lazy val ScalacheckVersion    = "1.14.1"
 
   // Compiler plugins
   lazy val WartRemoverVersion      = "2.4.3"
@@ -40,6 +40,7 @@ object Dependencies {
   lazy val KantanCatsCsvDep     = "com.nrinaudo"                %% "kantan.csv-cats"     % KantanCsvVersion
   lazy val KantanCsvDep         = "com.nrinaudo"                %% "kantan.csv"          % KantanCsvVersion
   lazy val KittensDep           = "org.typelevel"               %% "kittens"             % KittensVersion
+  lazy val Log4sDep             = "org.log4s"                   %% "log4s"               % Log4sVersion
   lazy val LogbackClassicDep    = "ch.qos.logback"              %  "logback-classic"     % LogbackVersion
   lazy val ScalatestDep         = "org.scalatest"               %% "scalatest"           % ScalatestVersion % "test"
   lazy val ShapelessDep         = "com.chuusai"                 %% "shapeless"           % ShapelessVersion
@@ -47,14 +48,13 @@ object Dependencies {
   lazy val TapirCoreDep         = "com.softwaremill.sttp.tapir" %% "tapir-core"          % TapirVersion
   lazy val TapirHttp4sServerDep = "com.softwaremill.sttp.tapir" %% "tapir-http4s-server" % TapirVersion
   lazy val TapirJsonCirceDep    = "com.softwaremill.sttp.tapir" %% "tapir-json-circe"    % TapirVersion
-  // val AirframeDep          = "org.wvlet.airframe"         %% "airframe"            % AirframeVersion
-  // val DoobieCoreDep        = "org.tpolecat"               %% "doobie-core"         % DoobieVersion % "test"
-  // val Http4sBlazeClientDep = "org.http4s"                 %% "http4s-blaze-client" % Http4sVersion
-  // val MonocleCoreDep       = "com.github.julien-truffaut" %% "monocle-core"        % MonocleVersion % "test"
-  // val MonocleLawDep        = "com.github.julien-truffaut" %% "monocle-law"         % MonocleVersion
-  // val MonocleMacroDep      = "com.github.julien-truffaut" %% "monocle-macro"       % MonocleVersion
-  // val PureconfigDep        = "com.github.pureconfig"      %% "pureconfig"          % PureconfigVersion
-  // val ScalacheckDep        = "org.scalacheck"             %% "scalacheck"          % ScalacheckVersion
+  // lazy val DoobieCoreDep        = "org.tpolecat"               %% "doobie-core"         % DoobieVersion % "test"
+  // lazy val Http4sBlazeClientDep = "org.http4s"                 %% "http4s-blaze-client" % Http4sVersion
+  // lazy val MonocleCoreDep       = "com.github.julien-truffaut" %% "monocle-core"        % MonocleVersion % "test"
+  // lazy val MonocleLawDep        = "com.github.julien-truffaut" %% "monocle-law"         % MonocleVersion
+  // lazy val MonocleMacroDep      = "com.github.julien-truffaut" %% "monocle-macro"       % MonocleVersion
+  // lazy val PureconfigDep        = "com.github.pureconfig"      %% "pureconfig"          % PureconfigVersion
+  // lazy val ScalacheckDep        = "org.scalacheck"             %% "scalacheck"          % ScalacheckVersion
 
   // Compiler plugins
   lazy val BetterMonadicForPlugin = compilerPlugin("com.olegpy"      %% "better-monadic-for" % BetterMonadicForVersion)

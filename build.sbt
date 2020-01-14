@@ -17,7 +17,12 @@ scalafmtOnCompile in ThisBuild := true
 
 // Global compiler plugins
 libraryDependencies in ThisBuild ++= Seq(
-  SilencerPlugin, SilencerDep
+  BetterMonadicForPlugin,
+  KindProjectorPlugin,
+  Log4sDep,
+  LogbackClassicDep,
+  SilencerPlugin, SilencerDep,
+  WartremoverPlugin,
 )
 
 //  - - - - - - - - - - - - - - - - - //
@@ -30,11 +35,7 @@ lazy val accountingRoot: Project = project
     name := "accounting",
     version := AccountingVersion,
     scalaVersion := ScalaVersion,
-    libraryDependencies ++= Seq(
-      BetterMonadicForPlugin,
-      KindProjectorPlugin,
-      WartremoverPlugin,
-    ),
+    libraryDependencies ++= Seq(),
   )
   .aggregate(
     etlService
@@ -91,7 +92,6 @@ lazy val etlService = project
       KantanCatsCsvDep,
       KantanCsvDep,
       KittensDep,
-      LogbackClassicDep,
       ScalatestDep,
       ShapelessDep,
       TapirCoreDep,
