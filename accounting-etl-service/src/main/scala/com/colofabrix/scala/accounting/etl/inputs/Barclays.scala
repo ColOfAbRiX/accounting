@@ -22,8 +22,9 @@ class BarclaysCsvInput
   protected def filterInput: RawInputFilter = dropHeader andThen dropEmptyRows
 
   protected def convertRaw(record: RawRecord): AValidated[BarclaysTransaction] = {
+    println(s"RecordIN: ${record.toString}")
     val converter = new RecordConverter[BarclaysTransaction] {}
-    converter.convertRecord(record) {
+    val result = converter.convertRecord(record) {
       val number      = sParse[Option[Int]](r => r(0))
       val date        = sParse[LocalDate](r => r(1))("dd/MM/yyyy")
       val account     = sParse[String](r => r(2))
@@ -32,6 +33,8 @@ class BarclaysCsvInput
       val memo        = sParse[String](r => r(5))
       number :: date :: account :: amount :: subcategory :: memo :: HNil
     }
+    println(s"RecordOUT: ${result.toString}")
+    result
   }
 
   def cleanInputTransaction(transactions: BarclaysTransaction): BarclaysTransaction = {

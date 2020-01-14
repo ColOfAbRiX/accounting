@@ -62,11 +62,12 @@ object EtlApiEndpoints {
       .in("supported-inputs")
       .out(stringBody)
 
-  val convertRecord: Endpoint[InputType, ErrorOutput, String, Nothing] =
+  val convertRecord: Endpoint[(InputType, String), ErrorOutput, String, Nothing] =
     baseEndpoint
       .get
       .in("convert-record")
       .in(recordTypeQuery)
+      .in(stringBody)
       .out(stringBody)
 
   val convertRecords: Endpoint[(InputType, String), ErrorOutput, String, Nothing] =

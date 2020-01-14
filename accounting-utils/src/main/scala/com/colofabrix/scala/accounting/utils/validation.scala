@@ -6,20 +6,36 @@ import cats.data._
 import cats.data.Validated.{ Invalid, Valid }
 import cats.implicits._
 import cats.kernel.Semigroup
+import cats.Show
 
 /**
  * Accounting Validation (AValidation) module
  */
 object validation {
 
+  /** Representation of an error */
+  type ErrorDesc = String
+
   /** The type used to validate data */
-  type AValidated[+A] = Validated[NonEmptyChain[String], A]
+  type AValidated[+A] = Validated[NonEmptyChain[ErrorDesc], A]
 
   /** Validated Stream */
   type VStream[+F[_], +A] = fs2.Stream[F, AValidated[A]]
 
   /** Validated Pipe */
   type VPipe[F[_], -I, +O] = fs2.Pipe[F, AValidated[I], AValidated[O]]
+
+  //  TYPECLASSES  //
+
+  implicit def avalidatedShow[A](
+      implicit
+      se: Show[NonEmptyChain[ErrorDesc]],
+      sa: Show[A],
+  ): Show[AValidated[A]] = {
+    new Show[AValidated[A]] {
+      def show(t: AValidated[A]): String = t.fold(e => s"Invalid(${se.show(e)})", a => s"Valid(${sa.show(a)})")
+    }
+  }
 
   //  ENRICHMENT CLASSES  //
 
@@ -54,29 +70,29 @@ object validation {
   /** Enrichment for any object */
   implicit class AnyOps[A <: Any](private val anyObject: A) extends AnyVal {
     /** Mark the value as valid */
-    def aValid: AValidated[A] = anyObject.validNec[String]
+    def aValid: AValidated[A] = anyObject.validNec[ErrorDesc]
 
     /** Mark the value as invalid */
-    def aInvalid(msg: String): AValidated[A] = msg.invalidNec[A]
+    def aInvalid(msg: ErrorDesc): AValidated[A] = msg.invalidNec[A]
   }
 
   /** Enrichment for String */
-  implicit class ErrorContainerOps(private val stringObject: String) extends AnyVal {
+  implicit class ErrorContainerOps(private val stringObject: ErrorDesc) extends AnyVal {
     /** Mark the value as invalid */
     def aInvalid[A]: AValidated[A] = stringObject.invalidNec[A]
   }
 
   /** Enrichment for Either[String, A] */
-  implicit class EitherOps[A](private val eitherObject: Either[String, A]) extends AnyVal {
+  implicit class EitherOps[A](private val eitherObject: Either[ErrorDesc, A]) extends AnyVal {
     /** Converts an Either[String, A] into AValidated */
     def toAValidated: AValidated[A] = eitherObject.toValidatedNec
   }
 
   /** Enrichment for Either[NonEmptyChain[String], A] */
-  implicit class EitherNecOps[A](private val eitherObject: Either[NonEmptyChain[String], A]) extends AnyVal {
+  implicit class EitherNecOps[A](private val eitherObject: Either[NonEmptyChain[ErrorDesc], A]) extends AnyVal {
     /** Converts an Either[NonEmptyChain[String], A] into AValidated */
     def toAValidated: AValidated[A] = eitherObject match {
-      case Left(error)  => Validated.invalid[NonEmptyChain[String], A](error)
+      case Left(error)  => Validated.invalid[NonEmptyChain[ErrorDesc], A](error)
       case Right(value) => value.aValid
     }
   }

@@ -21,6 +21,16 @@ trait StreamHelpers {
 }
 
 /**
+ * Helpers to print debugging values for streams
+ */
+object StreamDebugHelpers {
+  def logStream[A](prefix: String): VPipe[fs2.Pure, A, A] = _.map { x =>
+    println(s"$prefix=${x.toString}")
+    x
+  }
+}
+
+/**
  * Helpers to print debugging values
  */
 @SuppressWarnings(Array("org.wartremover.warts.All"))

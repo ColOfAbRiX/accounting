@@ -6,6 +6,7 @@ import com.colofabrix.scala.accounting.etl.definitions._
 import com.colofabrix.scala.accounting.model._
 import com.colofabrix.scala.accounting.utils.validation._
 import java.io.File
+import kantan.csv.CsvSource
 
 /**
  * The ETL pipeline
@@ -25,9 +26,15 @@ import java.io.File
  */
 object Pipeline {
 
+  import com.colofabrix.scala.accounting.utils.StreamDebugHelpers._
+
   /** Pipeline builder */
   def apply[T <: InputTransaction: InputProcessor: Cleaner: Normalizer]: VPipe[fs2.Pure, RawRecord, Transaction] = {
-    InputProcessor[T] andThen Cleaner[T] andThen Normalizer[T]
+    logStream("input") andThen
+    InputProcessor[T] andThen logStream("InputProcessor") andThen
+    Cleaner[T] andThen logStream("Cleaner") andThen
+    Normalizer[T] andThen logStream("Normalizer") andThen
+    logStream("result")
   }
 
   /** Converts a given stream into transactions */
@@ -52,17 +59,18 @@ object Pipeline {
   }
 
   /** Converts a given File interpreted as CSV into transactions */
-  def fromCsvFile[T <: InputTransaction: InputProcessor: Cleaner: Normalizer](
-      file: File,
+  def fromCsv[A: CsvSource, T <: InputTransaction: InputProcessor: Cleaner: Normalizer](
+      input: A,
   ): VStream[IO, Transaction] = {
-    fromReader[T](new CsvFileReader(file))
+    fromReader[T](new CsvReader(input))
   }
 
   /** Converts a given path interpreted as CSV file into transactions */
+  @deprecated("This was useful while developing")
   def fromCsvPath[T <: InputTransaction: InputProcessor: Cleaner: Normalizer](
       path: String,
   ): VStream[IO, Transaction] = {
-    fromCsvFile[T](new File(path))
+    fromCsv[File, T](new File(path))
   }
 
 }

@@ -10,7 +10,7 @@ scalacOptions in ThisBuild ++= TpolecatOptions
 
 // Wartremover
 wartremoverExcluded in ThisBuild ++= (baseDirectory.value * "**" / "src" / "test").get
-wartremoverErrors in ThisBuild ++= Warts.allBut(Wart.Any, Wart.Nothing)
+wartremoverErrors in ThisBuild ++= Warts.allBut(Wart.Any, Wart.Nothing, Wart.ImplicitParameter, Wart.ToString)
 
 // Standardize formatting
 scalafmtOnCompile in ThisBuild := true
@@ -90,6 +90,7 @@ lazy val etlService = project
       Http4sDslDep,
       KantanCatsCsvDep,
       KantanCsvDep,
+      KittensDep,
       LogbackClassicDep,
       ScalatestDep,
       ShapelessDep,

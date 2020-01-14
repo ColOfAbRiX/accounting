@@ -1,6 +1,5 @@
 package com.colofabrix.scala.accounting.etl
 
-import java.io.File
 import cats.effect._
 import com.colofabrix.scala.accounting.etl.definitions._
 import com.colofabrix.scala.accounting.utils.validation._
@@ -22,16 +21,16 @@ class IterableReader(input: Iterable[RawRecord]) extends InputReader {
 }
 
 /**
- * CSV Reader from file
+ * Generic CSV
  */
-class CsvFileReader(file: File) extends InputReader {
+class CsvReader[A: kantan.csv.CsvSource](input: A) extends InputReader {
   import kantan.csv._
   import kantan.csv.ops._
 
   private type KantanReader = kantan.csv.CsvReader[ReadResult[List[String]]]
 
   def read: VRawInput[IO] = {
-    val openReader  = IO(file.asCsvReader[List[String]](rfc))
+    val openReader  = IO(input.asCsvReader[List[String]](rfc))
     val closeReader = (r: KantanReader) => IO(r.close())
     val reader      = Resource.make(openReader)(closeReader)
     for {
