@@ -2,7 +2,6 @@ package com.colofabrix.scala.accounting.etl.pipeline
 
 import cats.data._
 import cats.implicits._
-import com.colofabrix.scala.accounting.etl.inputs._
 import com.colofabrix.scala.accounting.model._
 import com.colofabrix.scala.accounting.utils.validation._
 
@@ -20,9 +19,4 @@ object Normalizer {
       .map(T.toTransaction)
       .value
   }
-
-  implicit val barclaysNormalizer: Normalizer[BarclaysTransaction] = InputInstances.barclaysInput
-  implicit val halifaxNormalizer: Normalizer[HalifaxTransaction]   = InputInstances.halifaxInput
-  implicit val starlingNormalizer: Normalizer[StarlingTransaction] = InputInstances.starlingInput
-  implicit val amexNormalizer: Normalizer[AmexTransaction]         = InputInstances.amexInput
 }

@@ -27,6 +27,7 @@ object validation {
 
   //  TYPECLASSES  //
 
+  @SuppressWarnings(Array("org.wartremover.warts.ImplicitParameter"))
   implicit def avalidatedShow[A](
       implicit
       se: Show[NonEmptyChain[ErrorDesc]],
@@ -60,6 +61,7 @@ object validation {
   }
 
   /** Enrichment for AValidated */
+  @deprecated("Replace this with x andThen y")
   implicit class AValidatedOps[A](private val avObject: AValidated[A]) extends AnyVal {
     def flatMapV[B](f: A => AValidated[B]): AValidated[B] = avObject match {
       case i @ Invalid(_) => i

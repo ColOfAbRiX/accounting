@@ -12,18 +12,16 @@ import com.colofabrix.scala.accounting.utils.validation._
 import shapeless._
 
 /**
- * Starling CSV data processor
+ * Starling API data processor
  */
-class StarlingCsvInput
+class StarlingApiInput
     extends InputProcessor[StarlingTransaction]
     with Cleaner[StarlingTransaction]
     with Normalizer[StarlingTransaction] {
 
-  protected def filterInput: RawInputFilter = {
-    dropHeader andThen dropEmptyRows andThen dropAnyMatch(_.toLowerCase.contains("opening balance"))
-  }
+  def filterInput: RawInputFilter = identity
 
-  protected def convertRaw(record: RawRecord): AValidated[StarlingTransaction] = {
+  def convertRaw(record: RawRecord): AValidated[StarlingTransaction] = {
     val converter = new RecordConverter[StarlingTransaction] {}
     converter.convertRecord(record) {
       val date         = sParse[LocalDate](r => r(0))("dd/MM/yyyy")
@@ -47,4 +45,13 @@ class StarlingCsvInput
     Transaction(input.date, input.amount, input.reference, InputName("Starling"), "", "", "")
   }
 
+}
+
+/**
+ * Starling CSV data processor
+ */
+class StarlingCsvInput extends StarlingApiInput {
+  override def filterInput: RawInputFilter = {
+    dropHeader andThen dropEmptyRows andThen dropAnyMatch(_.toLowerCase.contains("opening balance"))
+  }
 }

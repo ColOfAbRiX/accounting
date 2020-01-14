@@ -1,11 +1,10 @@
 package com.colofabrix.scala.accounting.etl.pipeline
 
-import java.time.LocalDate
 import cats.data.Nested
 import cats.implicits._
-import com.colofabrix.scala.accounting.etl.inputs._
 import com.colofabrix.scala.accounting.model._
 import com.colofabrix.scala.accounting.utils.validation._
+import java.time.LocalDate
 import shapeless._
 
 /**
@@ -22,11 +21,6 @@ object Cleaner {
       .map(C.cleanInputTransaction)
       .value
   }
-
-  implicit val barclaysCleaner: Cleaner[BarclaysTransaction] = InputInstances.barclaysInput
-  implicit val halifaxCleaner: Cleaner[HalifaxTransaction]   = InputInstances.halifaxInput
-  implicit val starlingCleaner: Cleaner[StarlingTransaction] = InputInstances.starlingInput
-  implicit val amexCleaner: Cleaner[AmexTransaction]         = InputInstances.amexInput
 }
 
 /**

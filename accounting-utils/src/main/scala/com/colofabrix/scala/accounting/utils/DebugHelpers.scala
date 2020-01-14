@@ -5,6 +5,7 @@ import cats.data.Validated.{ Invalid, Valid }
 import cats.effect._
 import cats.implicits._
 import com.colofabrix.scala.accounting.utils.validation._
+import org.log4s._
 
 /**
  * Helpers to test streams and validated streams
@@ -24,8 +25,10 @@ trait StreamHelpers {
  * Helpers to print debugging values for streams
  */
 object StreamDebugHelpers {
+  private[this] val logger = getLogger
+
   def logStream[A](prefix: String): VPipe[fs2.Pure, A, A] = _.map { x =>
-    println(s"$prefix=${x.toString}")
+    logger.trace(s"logStream($prefix)=${x.toString}")
     x
   }
 }

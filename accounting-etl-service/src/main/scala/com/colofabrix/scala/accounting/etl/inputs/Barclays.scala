@@ -12,17 +12,16 @@ import com.colofabrix.scala.accounting.utils.validation._
 import shapeless._
 
 /**
- * Barclays CSV data processor
+ * Barclays API data processor
  */
-class BarclaysCsvInput
+class BarclaysApiInput
     extends InputProcessor[BarclaysTransaction]
     with Cleaner[BarclaysTransaction]
     with Normalizer[BarclaysTransaction] {
 
-  protected def filterInput: RawInputFilter = dropHeader andThen dropEmptyRows
+  def filterInput: RawInputFilter = identity
 
-  protected def convertRaw(record: RawRecord): AValidated[BarclaysTransaction] = {
-    println(s"RecordIN: ${record.toString}")
+  def convertRaw(record: RawRecord): AValidated[BarclaysTransaction] = {
     val converter = new RecordConverter[BarclaysTransaction] {}
     val result = converter.convertRecord(record) {
       val number      = sParse[Option[Int]](r => r(0))
@@ -33,7 +32,6 @@ class BarclaysCsvInput
       val memo        = sParse[String](r => r(5))
       number :: date :: account :: amount :: subcategory :: memo :: HNil
     }
-    println(s"RecordOUT: ${result.toString}")
     result
   }
 
@@ -48,4 +46,11 @@ class BarclaysCsvInput
     Transaction(input.date, input.amount, input.memo, InputName("Barclays"), "", "", "")
   }
 
+}
+
+/**
+ * Barclays CSV data processor
+ */
+class BarclaysCsvInput extends BarclaysApiInput {
+  override def filterInput: RawInputFilter = dropHeader andThen dropEmptyRows
 }

@@ -14,8 +14,7 @@ import com.colofabrix.scala.accounting.etl.definitions._
 import com.colofabrix.scala.accounting.etl.pipeline._
 import com.colofabrix.scala.accounting.model._
 import com.colofabrix.scala.accounting.utils.ExecutionContexts
-
-import com.colofabrix.scala.accounting.etl.pipeline.Normalizer._
+import com.colofabrix.scala.accounting.etl.ApiPipelineInstances._
 
 @SuppressWarnings(Array("org.wartremover.warts.All"))
 object MultipleEndpointsDocumentationHttp4sServer extends App {
@@ -34,18 +33,11 @@ object MultipleEndpointsDocumentationHttp4sServer extends App {
     .convertRecord
     .toRoutes {
       case (inputType, body) =>
-        val record: RawInput[IO] = fs2.Stream.emit(List(body))
         val converted = inputType match {
-          case BarclaysInputType =>
-            println(record)
-            val result = Pipeline.fromCsv[String, BarclaysTransaction](body)
-            result.map { x =>
-              println(x)
-              x
-            }
-          case HalifaxInputType  => Pipeline.fromStream[IO, HalifaxTransaction](record)
-          case StarlingInputType => Pipeline.fromStream[IO, StarlingTransaction](record)
-          case AmexInputType     => Pipeline.fromStream[IO, AmexTransaction](record)
+          case BarclaysInputType => Pipeline.fromCsv[String, BarclaysTransaction](body).head
+          case HalifaxInputType  => Pipeline.fromCsv[String, HalifaxTransaction](body).head
+          case StarlingInputType => Pipeline.fromCsv[String, StarlingTransaction](body).head
+          case AmexInputType     => Pipeline.fromCsv[String, AmexTransaction](body).head
         }
         IO {
           converted.compile.toList.unsafeRunSync.toString.asRight[EtlApiEndpoints.ErrorOutput]

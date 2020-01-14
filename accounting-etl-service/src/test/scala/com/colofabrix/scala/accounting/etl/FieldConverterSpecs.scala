@@ -5,8 +5,10 @@ import cats.scalatest._
 import com.colofabrix.scala.accounting.etl.FieldConverter._
 import com.colofabrix.scala.accounting.utils.validation._
 import org.scalatest._
+import org.scalatest.wordspec._
+import org.scalatest.matchers.should._
 
-class FieldConverterSpecs extends WordSpec with Matchers with ValidatedMatchers {
+class FieldConverterSpecs extends AnyWordSpec with Matchers with ValidatedMatchers {
 
   // sParse[String]
   "Running sParse[String]" when {
@@ -52,7 +54,6 @@ class FieldConverterSpecs extends WordSpec with Matchers with ValidatedMatchers 
     "providing a String" should {
       "return a valid Int" in {
         val computed = parser.run(List("123"))
-        val expected = 123.aValid
         computed shouldBe valid
       }
     }

@@ -26,15 +26,9 @@ import kantan.csv.CsvSource
  */
 object Pipeline {
 
-  import com.colofabrix.scala.accounting.utils.StreamDebugHelpers._
-
   /** Pipeline builder */
   def apply[T <: InputTransaction: InputProcessor: Cleaner: Normalizer]: VPipe[fs2.Pure, RawRecord, Transaction] = {
-    logStream("input") andThen
-    InputProcessor[T] andThen logStream("InputProcessor") andThen
-    Cleaner[T] andThen logStream("Cleaner") andThen
-    Normalizer[T] andThen logStream("Normalizer") andThen
-    logStream("result")
+    InputProcessor[T] andThen Cleaner[T] andThen Normalizer[T]
   }
 
   /** Converts a given stream into transactions */
@@ -66,7 +60,7 @@ object Pipeline {
   }
 
   /** Converts a given path interpreted as CSV file into transactions */
-  @deprecated("This was useful while developing")
+  @deprecated("This was useful only while developing")
   def fromCsvPath[T <: InputTransaction: InputProcessor: Cleaner: Normalizer](
       path: String,
   ): VStream[IO, Transaction] = {

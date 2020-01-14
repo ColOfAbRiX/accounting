@@ -1,17 +1,14 @@
 <configuration>
 
   <appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
-    <!-- On Windows machines setting withJansi to true enables ANSI
-         color code interpretation by the Jansi library. This requires
-         org.fusesource.jansi:jansi:1.8 on the class path.  Note that
-         Unix-based operating systems such as Linux and Mac OS X
-         support ANSI color codes by default. -->
     <withJansi>true</withJansi>
     <encoder>
       <pattern>%d{yyyy-MM-dd} %d{HH:mm:ss.SSS} | %green(%thread) | %highlight(%5p) | %cyan(%logger{30}) | %msg%n</pattern>
       <charset>utf8</charset>
     </encoder>
   </appender>
+
+  <logger name="com.colofabrix.scala.accounting" level="TRACE"/>
 
   <root level="INFO">
     <appender-ref ref="STDOUT" />

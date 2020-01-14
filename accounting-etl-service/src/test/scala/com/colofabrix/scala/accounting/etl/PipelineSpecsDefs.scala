@@ -9,12 +9,14 @@ import com.colofabrix.scala.accounting.model._
 import com.colofabrix.scala.accounting.utils.StreamHelpers
 import com.colofabrix.scala.accounting.utils.validation._
 import org.scalatest._
+import org.scalatest.wordspec._
+import org.scalatest.matchers.should._
 
 /**
  * Defines the tests for all input conversions
  */
 trait PipelineSpecsDefs[T <: InputTransaction]
-    extends WordSpec
+    extends AnyWordSpec
     with Matchers
     with ValidatedMatchers
     with StreamHelpers { this: InputTestData[T] =>
@@ -44,7 +46,9 @@ trait PipelineSpecsDefs[T <: InputTransaction]
         withValidatedIoStream(result) { computedV =>
           (computedV.sequence, expectedV).mapN { (computed, expected) =>
             computed should contain theSameElementsInOrderAs (expected)
+            ()
           }
+          ()
         }
       }
     }
@@ -60,6 +64,7 @@ trait PipelineSpecsDefs[T <: InputTransaction]
         val result = runTestPipeline(this.sampleBadCsvData)
         withValidatedIoStream(result) { computed =>
           computed should contain theSameElementsAs (this.convertedBadData)
+          ()
         }
       }
     }
@@ -69,6 +74,7 @@ trait PipelineSpecsDefs[T <: InputTransaction]
         val result = runTestPipeline(this.sampleDroppedCsvData)
         withValidatedIoStream(result) { computed =>
           computed should have size (0)
+          ()
         }
       }
     }

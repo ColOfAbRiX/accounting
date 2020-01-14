@@ -3,7 +3,6 @@ package com.colofabrix.scala.accounting.etl.pipeline
 import cats.data._
 import cats.implicits._
 import com.colofabrix.scala.accounting.etl.definitions._
-import com.colofabrix.scala.accounting.etl.inputs._
 import com.colofabrix.scala.accounting.model._
 import com.colofabrix.scala.accounting.utils.validation._
 
@@ -12,27 +11,19 @@ import com.colofabrix.scala.accounting.utils.validation._
  */
 trait InputProcessor[T <: InputTransaction] {
   /** Converts one raw record into an input transaction */
-  protected def convertRaw(record: RawRecord): AValidated[T]
+  def convertRaw(record: RawRecord): AValidated[T]
 
   /** Filter an input to adapt it for processing, like removing head, empty rows and so on */
-  protected def filterInput: VPipe[fs2.Pure, RawRecord, RawRecord]
-
-  /** Processes the input data by filtering and converting the stream */
-  def process: VPipe[fs2.Pure, RawRecord, T] = { record =>
-    filterInput(record).map(_.flatMapV(convertRaw))
-  }
+  def filterInput: VPipe[fs2.Pure, RawRecord, RawRecord]
 }
 
 object InputProcessor {
   /** Converts a stream of RawRecord into InputTransaction */
   def apply[T <: InputTransaction](implicit L: InputProcessor[T]): VPipe[fs2.Pure, RawRecord, T] = {
-    L.process
+    L.filterInput andThen {
+      _.map(_ andThen L.convertRaw)
+    }
   }
-
-  implicit val barclaysProcessor: InputProcessor[BarclaysTransaction] = InputInstances.barclaysInput
-  implicit val halifaxProcessor: InputProcessor[HalifaxTransaction]   = InputInstances.halifaxInput
-  implicit val starlingProcessor: InputProcessor[StarlingTransaction] = InputInstances.starlingInput
-  implicit val amexProcessor: InputProcessor[AmexTransaction]         = InputInstances.amexInput
 }
 
 /**

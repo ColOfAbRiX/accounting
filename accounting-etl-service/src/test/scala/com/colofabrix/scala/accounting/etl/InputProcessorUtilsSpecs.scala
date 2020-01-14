@@ -4,8 +4,10 @@ import com.colofabrix.scala.accounting.etl.definitions._
 import com.colofabrix.scala.accounting.etl.pipeline.InputProcessorUtils._
 import com.colofabrix.scala.accounting.utils.validation._
 import org.scalatest._
+import org.scalatest.flatspec._
+import org.scalatest.matchers.should._
 
-class InputProcessorUtilsSpecs extends FlatSpec with Matchers {
+class InputProcessorUtilsSpecs extends AnyFlatSpec with Matchers {
 
   def rawInput(data: List[RawRecord]): VRawInput[fs2.Pure] = fs2.Stream.emits(data.map(_.aValid))
 

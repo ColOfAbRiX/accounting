@@ -12,16 +12,16 @@ import com.colofabrix.scala.accounting.utils.validation._
 import shapeless._
 
 /**
- * Amex CSV data processor
+ * Amex API data processor
  */
-class AmexCsvInput
+class AmexApiInput
     extends InputProcessor[AmexTransaction]
     with Cleaner[AmexTransaction]
     with Normalizer[AmexTransaction] {
 
-  protected def filterInput: RawInputFilter = dropEmptyRows
+  def filterInput: RawInputFilter = identity
 
-  protected def convertRaw(record: RawRecord): AValidated[AmexTransaction] = {
+  def convertRaw(record: RawRecord): AValidated[AmexTransaction] = {
     val converter = new RecordConverter[AmexTransaction] {}
     converter.convertRecord(record) {
       val date        = sParse[LocalDate](r => r(0))("dd/MM/yyyy")
@@ -44,4 +44,11 @@ class AmexCsvInput
     Transaction(input.date, input.amount, input.description, InputName("Amex"), "", "", "")
   }
 
+}
+
+/**
+ * Amex CSV data processor
+ */
+class AmexCsvInput extends AmexApiInput {
+  override def filterInput: RawInputFilter = dropEmptyRows
 }

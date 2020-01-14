@@ -12,16 +12,16 @@ import com.colofabrix.scala.accounting.utils.validation._
 import shapeless._
 
 /**
- * Halifax CSV data processor
+ * Halifax API data processor
  */
-class HalifaxCsvInput
+class HalifaxApiInput
     extends InputProcessor[HalifaxTransaction]
     with Cleaner[HalifaxTransaction]
     with Normalizer[HalifaxTransaction] {
 
-  protected def filterInput: RawInputFilter = dropHeader andThen dropEmptyRows
+  def filterInput: RawInputFilter = identity
 
-  protected def convertRaw(record: RawRecord): AValidated[HalifaxTransaction] = {
+  def convertRaw(record: RawRecord): AValidated[HalifaxTransaction] = {
     val converter = new RecordConverter[HalifaxTransaction] {}
     converter.convertRecord(record) {
       val date        = sParse[LocalDate](r => r(0))("dd/MM/yyyy")
@@ -44,4 +44,11 @@ class HalifaxCsvInput
     Transaction(input.date, input.amount, input.description, InputName("Halifax"), "", "", "")
   }
 
+}
+
+/**
+ * Halifax CSV data processor
+ */
+class HalifaxCsvInput extends HalifaxApiInput {
+  override def filterInput: RawInputFilter = dropHeader andThen dropEmptyRows
 }
