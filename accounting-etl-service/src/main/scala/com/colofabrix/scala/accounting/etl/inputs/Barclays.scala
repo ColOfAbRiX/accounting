@@ -43,7 +43,7 @@ class BarclaysApiInput
   }
 
   def toTransaction(input: BarclaysTransaction): Transaction = {
-    Transaction(input.date, input.amount, input.memo, InputName("Barclays"), "", "", "")
+    Transaction(input.date, input.amount, input.memo, "Barclays", "", "", "")
   }
 
 }

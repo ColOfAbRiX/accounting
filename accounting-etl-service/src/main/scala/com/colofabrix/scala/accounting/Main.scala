@@ -3,8 +3,8 @@ package com.colofabrix.scala.accounting
 import cats.effect._
 import cats.implicits._
 import org.http4s.HttpRoutes
-import org.http4s.server.Router
 import org.http4s.server.blaze.BlazeServerBuilder
+import org.http4s.server.Router
 import org.http4s.syntax.kleisli._
 import sttp.tapir.server.http4s._
 
@@ -23,13 +23,13 @@ object MultipleEndpointsDocumentationHttp4sServer extends App {
   implicit val contextShift: ContextShift[IO] = IO.contextShift(ec)
   implicit val timer: Timer[IO]               = IO.timer(ec)
 
-  val listSupportedInputsRoutes: HttpRoutes[IO] = EtlApiEndpoints
+  val listSupportedInputsRoutes: HttpRoutes[IO] = Endpoints
     .listSupportedInputs
     .toRoutes { _ =>
-      IO("listSupportedInputsRoutes is working!".asRight[EtlApiEndpoints.ErrorOutput])
+      IO("listSupportedInputsRoutes is working!".asRight[Endpoints.ErrorOutput])
     }
 
-  val convertRecordRoutes: HttpRoutes[IO] = EtlApiEndpoints
+  val convertRecordRoutes: HttpRoutes[IO] = Endpoints
     .convertRecord
     .toRoutes {
       case (inputType, body) =>
@@ -40,11 +40,11 @@ object MultipleEndpointsDocumentationHttp4sServer extends App {
           case AmexInputType     => Pipeline.fromCsv[String, AmexTransaction](body).head
         }
         IO {
-          converted.compile.toList.unsafeRunSync.toString.asRight[EtlApiEndpoints.ErrorOutput]
+          converted.compile.toList.unsafeRunSync.toString.asRight[Endpoints.ErrorOutput]
         }
     }
 
-  val convertRecordsRoutes: HttpRoutes[IO] = EtlApiEndpoints
+  val convertRecordsRoutes: HttpRoutes[IO] = Endpoints
     .convertRecords
     .toRoutes {
       case (inputType, body) =>
@@ -56,11 +56,16 @@ object MultipleEndpointsDocumentationHttp4sServer extends App {
           case AmexInputType     => Pipeline.fromStream[IO, AmexTransaction](record)
         }
         IO {
-          converted.compile.toList.unsafeRunSync.toString.asRight[EtlApiEndpoints.ErrorOutput]
+          converted.compile.toList.unsafeRunSync.toString.asRight[Endpoints.ErrorOutput]
         }
     }
 
-  val routes: HttpRoutes[IO] = listSupportedInputsRoutes <+> convertRecordRoutes <+> convertRecordsRoutes
+  val routes = List(
+    listSupportedInputsRoutes,
+    convertRecordRoutes,
+    convertRecordsRoutes,
+    Routes.redocRoute.routes[IO],
+  ).reduce(_ <+> _)
 
   // starting the server
   BlazeServerBuilder[IO]
@@ -74,35 +79,3 @@ object MultipleEndpointsDocumentationHttp4sServer extends App {
     }
     .unsafeRunSync()
 }
-
-// import cats.effect._
-// import com.colofabrix.scala.accounting.etl.pipeline._
-// import com.colofabrix.scala.accounting.etl.pipeline.Normalizer._
-// import com.colofabrix.scala.accounting.model._
-
-// object Main extends IOApp {
-
-//   def run(args: List[String]): IO[ExitCode] = IO.pure {
-//     // The "samples" directory is omitted on purpose from the repo to use it as dirty working directory
-//     val barclays = Pipeline.fromCsvPath[BarclaysTransaction]("samples/sample_barclays.csv")
-//     val halifax  = Pipeline.fromCsvPath[HalifaxTransaction]("samples/sample_halifax.csv")
-//     val starling = Pipeline.fromCsvPath[StarlingTransaction]("samples/sample_starling.csv")
-//     val amex     = Pipeline.fromCsvPath[AmexTransaction]("samples/sample_amex.csv")
-
-//     val result = for {
-//       inputsV     <- barclays append halifax append starling append amex
-//       transaction <- inputsV.fold(_ => fs2.Stream.empty, fs2.Stream(_))
-//     } yield {
-//       transaction
-//     }
-
-//     result
-//       .compile
-//       .toList
-//       .unsafeRunSync()
-//       .foreach(println)
-
-//     ExitCode.Success
-//   }
-
-// }

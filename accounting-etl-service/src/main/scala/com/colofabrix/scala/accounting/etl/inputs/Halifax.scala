@@ -41,7 +41,7 @@ class HalifaxApiInput
   }
 
   def toTransaction(input: HalifaxTransaction): Transaction = {
-    Transaction(input.date, input.amount, input.description, InputName("Halifax"), "", "", "")
+    Transaction(input.date, input.amount, input.description, "Halifax", "", "", "")
   }
 
 }

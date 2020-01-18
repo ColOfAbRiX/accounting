@@ -41,7 +41,7 @@ class AmexApiInput
   }
 
   def toTransaction(input: AmexTransaction): Transaction = {
-    Transaction(input.date, input.amount, input.description, InputName("Amex"), "", "", "")
+    Transaction(input.date, input.amount, input.description, "Amex", "", "", "")
   }
 
 }

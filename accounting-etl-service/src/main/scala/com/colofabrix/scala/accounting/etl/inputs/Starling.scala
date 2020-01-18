@@ -42,7 +42,7 @@ class StarlingApiInput
   }
 
   def toTransaction(input: StarlingTransaction): Transaction = {
-    Transaction(input.date, input.amount, input.reference, InputName("Starling"), "", "", "")
+    Transaction(input.date, input.amount, input.reference, "Starling", "", "", "")
   }
 
 }

@@ -3,7 +3,6 @@ package com.colofabrix.scala.accounting.utils
 import scala.util.Try
 import scala.util.matching.Regex
 import cats.data._
-import cats.data.Validated.{ Invalid, Valid }
 import cats.implicits._
 import cats.kernel.Semigroup
 import cats.Show
@@ -57,15 +56,6 @@ object validation {
         .toEither
         .leftMap(_.toString)
         .toValidatedNec
-    }
-  }
-
-  /** Enrichment for AValidated */
-  @deprecated("Replace this with x andThen y")
-  implicit class AValidatedOps[A](private val avObject: AValidated[A]) extends AnyVal {
-    def flatMapV[B](f: A => AValidated[B]): AValidated[B] = avObject match {
-      case i @ Invalid(_) => i
-      case Valid(a)       => f(a)
     }
   }
 

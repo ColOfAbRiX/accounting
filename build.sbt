@@ -10,7 +10,12 @@ scalacOptions in ThisBuild ++= TpolecatOptions
 
 // Wartremover
 wartremoverExcluded in ThisBuild ++= (baseDirectory.value * "**" / "src" / "test").get
-wartremoverErrors in ThisBuild ++= Warts.allBut(Wart.Any, Wart.Nothing, Wart.ToString)
+wartremoverErrors in ThisBuild ++= Warts.allBut(
+  Wart.Any,
+  Wart.Nothing,
+  Wart.Overloading,
+  Wart.ToString
+)
 
 // Standardize formatting
 scalafmtOnCompile in ThisBuild := true
@@ -97,5 +102,8 @@ lazy val etlService = project
       TapirCoreDep,
       TapirHttp4sServerDep,
       TapirJsonCirceDep,
+      TapirOpenAPICirceYamlDep,
+      TapirOpenAPIDocsDep,
+      TapirRedocHttp4s,
     ),
   )
