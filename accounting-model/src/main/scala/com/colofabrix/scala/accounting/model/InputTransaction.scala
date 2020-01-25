@@ -1,6 +1,7 @@
 package com.colofabrix.scala.accounting.model
 
 import java.time.LocalDate
+import com.colofabrix.scala.accounting.model.newtypes.InAmount
 
 sealed trait InputType
 final case object BarclaysInputType extends InputType
@@ -18,7 +19,7 @@ final case class BarclaysTransaction(
     number: Option[Int],
     date: LocalDate,
     account: String,
-    amount: BigDecimal,
+    amount: InAmount,
     subcategory: String,
     memo: String,
 ) extends InputTransaction

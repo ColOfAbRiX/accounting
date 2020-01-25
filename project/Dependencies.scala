@@ -13,6 +13,7 @@ object Dependencies {
   lazy val KittensVersion    = "2.0.0"
   lazy val Log4sVersion      = "1.8.2"
   lazy val LogbackVersion    = "1.2.3"
+  lazy val NewtypeVersion    = "0.4.3"
   lazy val PureconfigVersion = "0.12.1"
   lazy val ScalatestVersion  = "3.1.0"
   lazy val ShapelessVersion  = "2.3.3"
@@ -37,6 +38,7 @@ object Dependencies {
   lazy val KittensDep            = "org.typelevel"               %% "kittens"             % KittensVersion
   lazy val Log4sDep              = "org.log4s"                   %% "log4s"               % Log4sVersion
   lazy val LogbackClassicDep     = "ch.qos.logback"              %  "logback-classic"     % LogbackVersion
+  lazy val NewtypeDep            = "io.estatico"                 %% "newtype"             % NewtypeVersion
   lazy val PureconfigDep         = "com.github.pureconfig"       %% "pureconfig"          % PureconfigVersion
   lazy val ScalatestDep          = "org.scalatest"               %% "scalatest"           % ScalatestVersion % "test"
   lazy val ShapelessDep          = "com.chuusai"                 %% "shapeless"           % ShapelessVersion

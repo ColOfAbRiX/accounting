@@ -3,6 +3,7 @@ package com.colofabrix.scala.accounting.etl.pipeline
 import cats.data.Nested
 import cats.implicits._
 import com.colofabrix.scala.accounting.model._
+import com.colofabrix.scala.accounting.model.newtypes._
 import com.colofabrix.scala.accounting.utils.validation._
 import java.time.LocalDate
 import shapeless._
@@ -30,10 +31,11 @@ object CleanerUtils {
 
   @SuppressWarnings(Array("org.wartremover.warts.ExplicitImplicitTypes", "org.wartremover.warts.PublicInference"))
   object defaultCleaner extends Poly1 {
-    implicit def caseString     = at[String](trim andThen toLowercase andThen removeRedundantSpaces)
-    implicit def caseBigDecimal = at[BigDecimal](identity)
-    implicit def caseLocalDate  = at[LocalDate](identity)
-    implicit def caseOptionA[A] = at[Option[A]](identity)
+    implicit def caseString      = at[String](trim andThen toLowercase andThen removeRedundantSpaces)
+    implicit def caseBigDecimal  = at[BigDecimal](identity)
+    implicit def caseLocalDate   = at[LocalDate](identity)
+    implicit def caseOptionA[A]  = at[Option[A]](identity)
+    implicit def caseInAmount[A] = at[InAmount](identity)
   }
 
   /** Transforms a string field into lowercase */

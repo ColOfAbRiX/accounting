@@ -7,6 +7,7 @@ import com.colofabrix.scala.accounting.utils.validation._
 import java.time.format.DateTimeFormatter
 import java.time.LocalDate
 import scala.annotation.implicitNotFound
+import shapeless._
 
 /**
  * Parser to transform record fields into JVM types
@@ -20,7 +21,9 @@ object FieldConverter {
   /** A composable parser of fields to type A: given a input record it produces an validated A */
   type FieldBuilder[-I, O] = Kleisli[AValidated, List[I], O]
 
-  /** Type-safe method to parse a value given a function that extracts what to parse from an input value */
+  /**
+   * Type-safe method to parse a value given a function that extracts what to parse from an input value
+   */
   @implicitNotFound("Couldn't find FieldConverter for type FieldConverter[${I}, ${O}]")
   def iParseO[I, O](extract: List[I] => I)(implicit P: FieldConverter[I, O]): FieldBuilder[I, O] =
     Kleisli { record =>
@@ -32,13 +35,17 @@ object FieldConverter {
       extracted andThen P.parseField _
     }
 
-  /** Type-safe method to parse a value given a function that extracts what to parse from a String value */
+  /**
+   * Type-safe method to parse a value given a function that extracts what to parse from a String value
+   */
   @implicitNotFound("Couldn't find FieldConverter for type FieldConverter[String, ${O}]")
   def sParse[O](e: List[String] => String)(implicit P: FieldConverter[String, O]): FieldBuilder[String, O] = {
     iParseO[String, O](e)(P)
   }
 
-  /** Method to create the default parser for the given type */
+  /**
+   * Method to create the default parser for the given type
+   */
   def apply[I, O](f: I => O)(implicit S: Show[I]): FieldConverter[I, O] = new FieldConverter[I, O] {
     def parseField(field: I): AValidated[O] = {
       TryE(f(field)).leftMap { ex =>
@@ -47,6 +54,8 @@ object FieldConverter {
       }.toAValidated
     }
   }
+
+  //  PRIMITIVE TYPES PARSERS  //
 
   /** Parser for result type "String" */
   implicit val stringParser: FieldConverter[String, String] = FieldConverter[String, String] {
@@ -73,6 +82,19 @@ object FieldConverter {
   implicit def localDateParser(dateFormat: String): FieldConverter[String, LocalDate] = {
     FieldConverter[String, LocalDate] { cell =>
       LocalDate.parse(cell.trim, DateTimeFormatter.ofPattern(dateFormat))
+    }
+  }
+
+  //  COMPOUND VALUES  //
+
+  /** Parser for newtype case classes */
+  implicit def newtypeParser[Wrapped, Newtype](
+      implicit
+      G: Generic.Aux[Newtype, Wrapped :: HNil],
+      WC: Lazy[FieldConverter[String, Wrapped]],
+  ): FieldConverter[String, Newtype] = { cell: String =>
+    WC.value.parseField(cell).map { wrap =>
+      G.from(wrap :: HNil)
     }
   }
 

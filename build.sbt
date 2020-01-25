@@ -14,6 +14,7 @@ wartremoverErrors in ThisBuild ++= Warts.allBut(
   Wart.Any,
   Wart.Nothing,
   Wart.Overloading,
+  Wart.ImplicitParameter,
   Wart.ToString
 )
 
@@ -70,7 +71,9 @@ lazy val model = project
     name := "accounting-model",
     version := AccountingVersion,
     scalaVersion := ScalaVersion,
-    libraryDependencies ++= Seq(),
+    libraryDependencies ++= Seq(
+      NewtypeDep
+    ),
   )
 
 // ETL Service project
