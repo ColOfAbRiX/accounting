@@ -26,7 +26,6 @@ object validation {
 
   //  TYPECLASSES  //
 
-  @SuppressWarnings(Array("org.wartremover.warts.ImplicitParameter"))
   implicit def avalidatedShow[A](
       implicit
       se: Show[NonEmptyChain[ErrorDesc]],

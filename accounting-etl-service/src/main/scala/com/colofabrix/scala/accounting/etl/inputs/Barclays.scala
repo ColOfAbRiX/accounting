@@ -1,5 +1,6 @@
 package com.colofabrix.scala.accounting.etl.inputs
 
+import cats.implicits._
 import java.time.LocalDate
 import com.colofabrix.scala.accounting.etl._
 import com.colofabrix.scala.accounting.etl.definitions._
@@ -23,7 +24,7 @@ class BarclaysApiInput
 
   def convertRaw(record: RawRecord): AValidated[BarclaysTransaction] = {
     val converter = new RecordConverter[BarclaysTransaction] {}
-    val result = converter.convertRecord(record) {
+    converter.convertRecord(record) {
       val number      = sParse[Option[Int]](r => r(0))
       val date        = sParse[LocalDate](r => r(1))("dd/MM/yyyy")
       val account     = sParse[String](r => r(2))
@@ -32,7 +33,6 @@ class BarclaysApiInput
       val memo        = sParse[String](r => r(5))
       number :: date :: account :: amount :: subcategory :: memo :: HNil
     }
-    result
   }
 
   def cleanInputTransaction(transactions: BarclaysTransaction): BarclaysTransaction = {

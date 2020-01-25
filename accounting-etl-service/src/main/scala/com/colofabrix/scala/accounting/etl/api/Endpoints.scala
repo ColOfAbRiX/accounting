@@ -61,4 +61,5 @@ object Endpoints {
 
   val openApiDocsEndpoint: OpenAPI = allEndpoints
     .toOpenAPI("Accounting ETL Service", "1.0.0")
+
 }
