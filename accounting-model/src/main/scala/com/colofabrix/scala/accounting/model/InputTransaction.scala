@@ -3,6 +3,9 @@ package com.colofabrix.scala.accounting.model
 import java.time.LocalDate
 
 sealed trait InputType
+object InputType {
+  val all: List[String] = List("barclays", "halifax", "starling", "amex")
+}
 final case object BarclaysInputType extends InputType
 final case object HalifaxInputType  extends InputType
 final case object StarlingInputType extends InputType

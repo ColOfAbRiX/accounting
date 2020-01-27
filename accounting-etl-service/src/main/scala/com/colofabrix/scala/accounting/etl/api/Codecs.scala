@@ -8,6 +8,9 @@ import com.colofabrix.scala.accounting.model._
  */
 object Codecs {
 
+  /**
+   * Codec for the type of input that can be decoded
+   */
   implicit val inputTypeCodec: PlainCodec[InputType] = {
     val code: PartialFunction[String, InputType] = {
       case "barclays" => BarclaysInputType

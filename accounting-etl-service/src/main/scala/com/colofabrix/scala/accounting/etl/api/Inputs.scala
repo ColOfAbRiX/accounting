@@ -9,6 +9,9 @@ import sttp.tapir._
  */
 object Inputs {
 
+  /**
+   * An input representing the type of record
+   */
   val recordTypeQuery: EndpointInput[InputType] =
     query[InputType]("recordType")
       .description("Type of record to convert")

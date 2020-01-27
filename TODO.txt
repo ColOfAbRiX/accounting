@@ -1,6 +1,5 @@
+Add configuration for server
+Apply http4s best practices
 Manage validation results -> Not in the translator project, that should only read and convert
 Load the default CsvReader as global singleton -> This should work for streamed data from the web
-Make the choice of InputReader configurable via properties
 Test the different execution contexts
-Define the endpoints of the service using Tapir
-Implement the endpoints to perform the operations

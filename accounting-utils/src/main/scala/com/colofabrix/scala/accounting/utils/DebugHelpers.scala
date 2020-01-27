@@ -1,7 +1,6 @@
 package com.colofabrix.scala.accounting.utils
 
 import cats._
-import cats.data.Validated.{ Invalid, Valid }
 import cats.effect._
 import cats.implicits._
 import com.colofabrix.scala.accounting.utils.validation._
@@ -36,23 +35,23 @@ object StreamDebugHelpers {
 /**
  * Helpers to print debugging values
  */
-@SuppressWarnings(Array("org.wartremover.warts.All"))
 trait DebugHelpers {
 
-  implicit def showIterable[A] = new Show[A] {
+  implicit def showIterable[A]: Show[A] = new Show[A] {
     def show(t: A): String = t.toString()
   }
 
-  implicit def showIterable[A](implicit aShow: Show[A]) = new Show[Iterable[A]] {
+  implicit def showIterable[A](implicit aShow: Show[A]): Show[Iterable[A]] = new Show[Iterable[A]] {
     def show(t: Iterable[A]): String = t.map(aShow.show).mkString("", "\n", "\n")
   }
 
-  implicit def showAValidatedA[A](implicit aShow: Show[A], listStrShow: Show[Iterable[String]]) =
+  @SuppressWarnings(Array("org.wartremover.warts.ImplicitParameter"))
+  implicit def showAValidatedA[A](implicit aShow: Show[A], listStrShow: Show[Iterable[String]]): Show[AValidated[A]] =
     new Show[AValidated[A]] {
-      def show(t: AValidated[A]): String = t match {
-        case Valid(a)   => s"VALID\n${aShow.show(a)}\n"
-        case Invalid(e) => s"INVALID\n${listStrShow.show(e.toNonEmptyList.toList)}\n"
-      }
+      def show(t: AValidated[A]): String = t.fold(
+        e => s"INVALID\n${listStrShow.show(e.toNonEmptyList.toList)}\n",
+        a => s"VALID\n${aShow.show(a)}\n",
+      )
     }
 
   /** Prints an iterable value */
@@ -60,6 +59,7 @@ trait DebugHelpers {
   /** Prints a AValidated value */
   def printV[A](input: AValidated[A])(implicit show: Show[AValidated[A]]): Unit = println(show.show(input))
   /** Prints two iterables to compare */
+  @SuppressWarnings(Array("org.wartremover.warts.Equals"))
   def printC[A](computed: Iterable[A], expected: Iterable[A]): Unit = {
     computed.zip(expected).foreach {
       case (exp, comp) =>

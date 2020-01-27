@@ -26,13 +26,17 @@ object validation {
 
   //  TYPECLASSES  //
 
+  @SuppressWarnings(Array("org.wartremover.warts.ImplicitParameter"))
   implicit def avalidatedShow[A](
       implicit
       se: Show[NonEmptyChain[ErrorDesc]],
       sa: Show[A],
   ): Show[AValidated[A]] = {
     new Show[AValidated[A]] {
-      def show(t: AValidated[A]): String = t.fold(e => s"Invalid(${se.show(e)})", a => s"Valid(${sa.show(a)})")
+      def show(t: AValidated[A]): String = t.fold(
+        e => s"Invalid(${se.show(e)})",
+        a => s"Valid(${sa.show(a)})",
+      )
     }
   }
 

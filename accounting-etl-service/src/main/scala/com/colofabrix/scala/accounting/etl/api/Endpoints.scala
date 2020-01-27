@@ -17,49 +17,70 @@ object Endpoints {
   type ErrorInfo   = String
   type ErrorOutput = (StatusCode, ErrorInfo)
 
-  val baseEndpoint: Endpoint[Unit, ErrorOutput, Unit, Nothing] = endpoint
-    .in("api" / "1.0.0")
-    .errorOut(statusCode and jsonBody[ErrorInfo])
+  val apiVersion: String = "v1.0"
 
-  val listSupportedInputs: Endpoint[Unit, ErrorOutput, String, Nothing] =
-    baseEndpoint
+  val apiBaseEndpoint: Endpoint[Unit, ErrorOutput, Unit, Nothing] = {
+    endpoint
+      .in("api" / apiVersion)
+      .errorOut(statusCode and jsonBody[ErrorInfo])
+  }
+
+  /**
+   * Returns the list of supported input types
+   */
+  val listSupportedInputs: Endpoint[Unit, ErrorOutput, String, Nothing] = {
+    apiBaseEndpoint
       .get
-      .in("supported-inputs")
+      .in("supportedInputs")
       .out(stringBody)
+  }
 
-  val convertStream: Endpoint[(InputType, String), ErrorOutput, String, Nothing] =
-    baseEndpoint
+  /**
+   * Converts a stream of records
+   */
+  val convertStream: Endpoint[(InputType, String), ErrorOutput, String, Nothing] = {
+    apiBaseEndpoint
       .get
-      .in("convert-stream")
+      .in("convertStream")
       .in(recordTypeQuery)
       .in(stringBody)
       .out(stringBody)
+  }
 
-  val convertRecord: Endpoint[(InputType, String), ErrorOutput, String, Nothing] =
-    baseEndpoint
+  /**
+   * Converts one single input record into one output transaction
+   */
+  val convertRecord: Endpoint[(InputType, String), ErrorOutput, String, Nothing] = {
+    apiBaseEndpoint
       .get
-      .in("convert-record")
+      .in("convertRecord")
       .in(recordTypeQuery)
       .in(stringBody)
       .out(stringBody)
+  }
 
-  val convertRecords: Endpoint[(InputType, String), ErrorOutput, String, Nothing] =
-    baseEndpoint
+  /**
+   * Converts a list of inputs records into output transactions
+   */
+  val convertRecords: Endpoint[(InputType, String), ErrorOutput, String, Nothing] = {
+    apiBaseEndpoint
       .get
-      .in("convert-records")
+      .in("convertRecords")
       .in(recordTypeQuery)
       .in(stringBody)
       .out(stringBody)
+  }
 
-  @SuppressWarnings(Array("org.wartremover.warts.PublicInference"))
-  val allEndpoints = List(
-    listSupportedInputs,
-    convertStream,
-    convertRecord,
-    convertRecords,
-  )
-
-  val openApiDocsEndpoint: OpenAPI = allEndpoints
-    .toOpenAPI("Accounting ETL Service", "1.0.0")
+  /**
+   * The API documentation endpoint
+   */
+  val openApiDocsEndpoint: OpenAPI = {
+    List(
+      listSupportedInputs,
+      convertStream,
+      convertRecord,
+      convertRecords,
+    ).toOpenAPI("Accounting ETL Service", apiVersion)
+  }
 
 }
