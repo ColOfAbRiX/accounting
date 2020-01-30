@@ -97,6 +97,7 @@ lazy val etlService = project
       KantanCatsCsvDep,
       KantanCsvDep,
       KittensDep,
+      PureconfigDep,
       ScalatestDep,
       ShapelessDep,
       TapirCoreDep,

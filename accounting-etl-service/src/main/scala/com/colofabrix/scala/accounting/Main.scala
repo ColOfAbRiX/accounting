@@ -7,6 +7,7 @@ import org.http4s.server.blaze.BlazeServerBuilder
 import org.http4s.server.Router
 import org.http4s.syntax.kleisli._
 import org.http4s._
+import com.colofabrix.scala.accounting.etl.config.EtlConfig
 
 object MultipleEndpointsDocumentationHttp4sServer extends IOApp {
 
@@ -18,7 +19,7 @@ object MultipleEndpointsDocumentationHttp4sServer extends IOApp {
 
   override def run(args: List[String]): IO[ExitCode] = {
     BlazeServerBuilder[IO]
-      .bindHttp(8080, "localhost")
+      .bindHttp(EtlConfig.config.server.port, EtlConfig.config.server.host)
       .withHttpApp(httpApp)
       .resource
       .use(_ => IO(scala.io.StdIn.readLine()))
