@@ -1,8 +1,8 @@
 package com.colofabrix.scala.accounting.etl
 
 import com.colofabrix.scala.accounting.etl.inputs._
+import com.colofabrix.scala.accounting.etl.model._
 import com.colofabrix.scala.accounting.etl.pipeline._
-import com.colofabrix.scala.accounting.model._
 
 /**
  * Pipeline instances to process an API input

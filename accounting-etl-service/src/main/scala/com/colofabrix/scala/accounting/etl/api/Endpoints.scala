@@ -1,7 +1,7 @@
 package com.colofabrix.scala.accounting.etl.api
 
 import com.colofabrix.scala.accounting.etl.api.Inputs._
-import com.colofabrix.scala.accounting.model._
+import com.colofabrix.scala.accounting.etl.model.Config._
 import sttp.model.StatusCode
 import sttp.tapir._
 import sttp.tapir._
@@ -31,7 +31,7 @@ object Endpoints {
   val listSupportedInputs: Endpoint[Unit, ErrorOutput, String, Nothing] = {
     apiBaseEndpoint
       .get
-      .in("supportedInputs")
+      .in("supported-inputs")
       .out(stringBody)
   }
 
@@ -41,7 +41,7 @@ object Endpoints {
   val convertStream: Endpoint[(InputType, String), ErrorOutput, String, Nothing] = {
     apiBaseEndpoint
       .get
-      .in("convertStream")
+      .in("convert-stream")
       .in(recordTypeQuery)
       .in(stringBody)
       .out(stringBody)
@@ -53,7 +53,7 @@ object Endpoints {
   val convertRecord: Endpoint[(InputType, String), ErrorOutput, String, Nothing] = {
     apiBaseEndpoint
       .get
-      .in("convertRecord")
+      .in("convert-record")
       .in(recordTypeQuery)
       .in(stringBody)
       .out(stringBody)
@@ -65,7 +65,7 @@ object Endpoints {
   val convertRecords: Endpoint[(InputType, String), ErrorOutput, String, Nothing] = {
     apiBaseEndpoint
       .get
-      .in("convertRecords")
+      .in("convert-records")
       .in(recordTypeQuery)
       .in(stringBody)
       .out(stringBody)

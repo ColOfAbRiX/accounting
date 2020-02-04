@@ -3,7 +3,7 @@ package com.colofabrix.scala.accounting.etl
 import cats.data.Kleisli
 import cats.implicits._
 import com.colofabrix.scala.accounting.etl.definitions._
-import com.colofabrix.scala.accounting.model.InputTransaction
+import com.colofabrix.scala.accounting.etl.model.InputTransaction
 import com.colofabrix.scala.accounting.utils.validation._
 import shapeless.{ Generic, HList, HNil, Poly2 }
 import shapeless.ops.hlist.RightFolder

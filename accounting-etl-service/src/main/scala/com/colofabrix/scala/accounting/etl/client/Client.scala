@@ -5,8 +5,10 @@ import cats.implicits._
 import com.colofabrix.scala.accounting.etl.api.Endpoints.ErrorOutput
 import com.colofabrix.scala.accounting.etl.ApiPipelineInstances._
 import com.colofabrix.scala.accounting.etl.definitions._
+import com.colofabrix.scala.accounting.etl.model._
+import com.colofabrix.scala.accounting.etl.model.Config._
+import com.colofabrix.scala.accounting.etl.config._
 import com.colofabrix.scala.accounting.etl.pipeline._
-import com.colofabrix.scala.accounting.model._
 
 object Client {
 
@@ -14,8 +16,9 @@ object Client {
    * Returns the list of supported input types
    */
   def listSupportedInputs: IO[Either[ErrorOutput, String]] = IO {
-    InputType
-      .all
+    etlConfig
+      .inputTypes
+      .map(_.description)
       .mkString(",")
       .asRight[ErrorOutput]
   }
@@ -23,12 +26,12 @@ object Client {
   /**
    * Converts one single input record into one output transaction
    */
-  def convertRecord(inputType: InputType, body: String): IO[Either[ErrorOutput, String]] = IO {
+  def convertRecord(inputType: InputType, record: String): IO[Either[ErrorOutput, String]] = IO {
     val converted = inputType match {
-      case BarclaysInputType => Pipeline.fromCsv[String, BarclaysTransaction](body).head
-      case HalifaxInputType  => Pipeline.fromCsv[String, HalifaxTransaction](body).head
-      case StarlingInputType => Pipeline.fromCsv[String, StarlingTransaction](body).head
-      case AmexInputType     => Pipeline.fromCsv[String, AmexTransaction](body).head
+      case BarclaysInputType => Pipeline.fromCsv[String, BarclaysTransaction](record).head
+      case HalifaxInputType  => Pipeline.fromCsv[String, HalifaxTransaction](record).head
+      case StarlingInputType => Pipeline.fromCsv[String, StarlingTransaction](record).head
+      case AmexInputType     => Pipeline.fromCsv[String, AmexTransaction](record).head
     }
     // TODO: Don't unsafeRun here. Probably using a stream to emit an IO is wrong
     converted.compile.toList.unsafeRunSync.toString.asRight[ErrorOutput]

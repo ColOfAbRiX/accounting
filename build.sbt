@@ -20,12 +20,13 @@ wartremoverErrors in ThisBuild ++= Warts.allBut(
 // Standardize formatting
 scalafmtOnCompile in ThisBuild := true
 
-// Global compiler plugins
+// Global dependencies and compiler plugins
 libraryDependencies in ThisBuild ++= Seq(
   BetterMonadicForPlugin,
   KindProjectorPlugin,
   Log4sDep,
   LogbackClassicDep,
+  PPrintDep,
   SilencerPlugin, SilencerDep,
   WartremoverPlugin,
 )

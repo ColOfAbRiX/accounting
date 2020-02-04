@@ -1,7 +1,7 @@
 package com.colofabrix.scala.accounting.etl.api
 
+import com.colofabrix.scala.accounting.etl.model.Config._
 import sttp.tapir.Codec._
-import com.colofabrix.scala.accounting.model._
 
 /**
  * Codecs convert to and from wire values
@@ -13,16 +13,16 @@ object Codecs {
    */
   implicit val inputTypeCodec: PlainCodec[InputType] = {
     val code: PartialFunction[String, InputType] = {
-      case "barclays" => BarclaysInputType
-      case "halifax"  => HalifaxInputType
-      case "starling" => StarlingInputType
-      case "amex"     => AmexInputType
+      case BarclaysInputType.description => BarclaysInputType
+      case HalifaxInputType.description  => HalifaxInputType
+      case StarlingInputType.description => StarlingInputType
+      case AmexInputType.description     => AmexInputType
     }
     val decode: PartialFunction[InputType, String] = {
-      case BarclaysInputType => "barclays"
-      case HalifaxInputType  => "halifax"
-      case StarlingInputType => "starling"
-      case AmexInputType     => "amex"
+      case BarclaysInputType => BarclaysInputType.description
+      case HalifaxInputType  => HalifaxInputType.description
+      case StarlingInputType => StarlingInputType.description
+      case AmexInputType     => AmexInputType.description
     }
     implicitly[PlainCodec[String]].map(code)(decode)
   }

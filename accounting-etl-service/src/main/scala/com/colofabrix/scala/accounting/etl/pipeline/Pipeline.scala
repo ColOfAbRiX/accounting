@@ -3,9 +3,9 @@ package com.colofabrix.scala.accounting.etl.pipeline
 import cats.effect.IO
 import com.colofabrix.scala.accounting.etl._
 import com.colofabrix.scala.accounting.etl.definitions._
+import com.colofabrix.scala.accounting.etl.model._
 import com.colofabrix.scala.accounting.model._
 import com.colofabrix.scala.accounting.utils.validation._
-import java.io.File
 import kantan.csv.CsvSource
 
 /**
@@ -57,14 +57,6 @@ object Pipeline {
       input: A,
   ): VStream[IO, Transaction] = {
     fromReader[T](new CsvReader(input))
-  }
-
-  /** Converts a given path interpreted as CSV file into transactions */
-  @deprecated("This was useful only while developing")
-  def fromCsvPath[T <: InputTransaction: InputProcessor: Cleaner: Normalizer](
-      path: String,
-  ): VStream[IO, Transaction] = {
-    fromCsv[File, T](new File(path))
   }
 
 }

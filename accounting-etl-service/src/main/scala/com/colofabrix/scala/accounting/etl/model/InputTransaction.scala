@@ -1,20 +1,11 @@
-package com.colofabrix.scala.accounting.model
+package com.colofabrix.scala.accounting.etl.model
 
 import java.time.LocalDate
-
-sealed trait InputType
-object InputType {
-  val all: List[String] = List("barclays", "halifax", "starling", "amex")
-}
-final case object BarclaysInputType extends InputType
-final case object HalifaxInputType  extends InputType
-final case object StarlingInputType extends InputType
-final case object AmexInputType     extends InputType
 
 /**
  * Transaction in a specific Bank's format
  */
-sealed trait InputTransaction
+sealed trait InputTransaction extends Product with Serializable
 
 /** Transaction on a Barclays CSV file */
 final case class BarclaysTransaction(

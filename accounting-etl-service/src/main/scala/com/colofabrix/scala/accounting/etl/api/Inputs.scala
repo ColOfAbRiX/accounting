@@ -1,7 +1,7 @@
 package com.colofabrix.scala.accounting.etl.api
 
 import com.colofabrix.scala.accounting.etl.api.Codecs._
-import com.colofabrix.scala.accounting.model._
+import com.colofabrix.scala.accounting.etl.model.Config._
 import sttp.tapir._
 
 /**

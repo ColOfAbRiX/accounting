@@ -2,7 +2,7 @@ package com.colofabrix.scala.accounting.etl.pipeline
 
 import cats.data.Nested
 import cats.implicits._
-import com.colofabrix.scala.accounting.model._
+import com.colofabrix.scala.accounting.etl.model._
 import com.colofabrix.scala.accounting.utils.validation._
 import java.time.LocalDate
 import shapeless._

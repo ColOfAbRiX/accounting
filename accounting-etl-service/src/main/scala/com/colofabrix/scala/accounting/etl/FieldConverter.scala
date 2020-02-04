@@ -48,6 +48,8 @@ object FieldConverter {
     }
   }
 
+  //  TYPECLASS INSTANCES  //
+
   /** Parser for result type "String" */
   implicit val stringParser: FieldConverter[String, String] = FieldConverter[String, String] {
     _.toString // Using .toString to raise an exception when the input is null
