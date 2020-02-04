@@ -1,11 +1,12 @@
 package com.colofabrix.scala.accounting.etl.model
 
+import com.colofabrix.scala.accounting.utils.ADT
 import java.time.LocalDate
 
 /**
  * Transaction in a specific Bank's format
  */
-sealed trait InputTransaction extends Product with Serializable
+sealed trait InputTransaction extends ADT
 
 /** Transaction on a Barclays CSV file */
 final case class BarclaysTransaction(

@@ -7,18 +7,6 @@ import com.colofabrix.scala.accounting.utils.ADT
  */
 object Config {
 
-  //  CONFIG  //
-
-  final case class EtlConfig(
-      server: ServerConfig,
-      inputTypes: Set[InputType],
-  ) extends ADT
-
-  final case class ServerConfig(
-      port: Int,
-      host: String,
-  ) extends ADT
-
   //  INPUT TYPE  //
 
   sealed trait InputType extends ADT {

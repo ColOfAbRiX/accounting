@@ -2,6 +2,7 @@ package com.colofabrix.scala.accounting.etl
 
 import cats.Show
 import com.colofabrix.scala.accounting.etl.model.Config._
+import com.colofabrix.scala.accounting.utils.ADT
 import org.log4s._
 import pureconfig._
 import pureconfig.generic.auto._
@@ -11,16 +12,21 @@ object config {
 
   private[this] val logger = getLogger
 
-  //  TYPECLASS INSTANCES  //
-
-  @SuppressWarnings(Array("org.wartremover.warts.Equals"))
-  implicit val inputTypeReader: ConfigReader[InputType] = {
-    deriveEnumerationReader[InputType](ConfigFieldMapping(PascalCase, PascalCase))
-  }
-
   //  CONFIG  //
 
-  // The configuration has to fail on startup if something is wrong
+  final case class EtlConfig(
+      server: ServerConfig,
+      inputTypes: Set[InputType],
+  ) extends ADT
+
+  final case class ServerConfig(
+      port: Int,
+      host: String,
+  ) extends ADT
+
+  /**
+   * Main application configuration
+   */
   val etlConfig: EtlConfig =
     ConfigSource
       .default
@@ -28,5 +34,12 @@ object config {
       .loadOrThrow[EtlConfig]
 
   logger.info(s"Loaded configuration: ${Show[EtlConfig].show(etlConfig)}")
+
+  //  TYPECLASS INSTANCES  //
+
+  @SuppressWarnings(Array("org.wartremover.warts.Equals"))
+  implicit val inputTypeReader: ConfigReader[InputType] = {
+    deriveEnumerationReader[InputType](ConfigFieldMapping(PascalCase, PascalCase))
+  }
 
 }

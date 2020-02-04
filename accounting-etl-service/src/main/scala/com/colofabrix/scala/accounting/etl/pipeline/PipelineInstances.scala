@@ -1,8 +1,12 @@
 package com.colofabrix.scala.accounting.etl
 
+import com.colofabrix.scala.accounting.etl.definitions._
 import com.colofabrix.scala.accounting.etl.inputs._
 import com.colofabrix.scala.accounting.etl.model._
+import com.colofabrix.scala.accounting.etl.model.Config._
 import com.colofabrix.scala.accounting.etl.pipeline._
+import com.colofabrix.scala.accounting.utils.validation._
+import com.colofabrix.scala.accounting.model._
 
 /**
  * Pipeline instances to process an API input
@@ -28,6 +32,14 @@ object ApiPipelineInstances {
   implicit val halifaxNormalizer: Normalizer[HalifaxTransaction]   = halifaxInput
   implicit val starlingNormalizer: Normalizer[StarlingTransaction] = starlingInput
   implicit val amexNormalizer: Normalizer[AmexTransaction]         = amexInput
+
+  def pipelineForType[T <: InputTransaction](inputType: InputType): VPipe[fs2.Pure, RawRecord, Transaction] =
+    inputType match {
+      case BarclaysInputType => Pipeline[BarclaysTransaction]
+      case HalifaxInputType  => Pipeline[HalifaxTransaction]
+      case StarlingInputType => Pipeline[StarlingTransaction]
+      case AmexInputType     => Pipeline[AmexTransaction]
+    }
 
 }
 
@@ -55,5 +67,13 @@ object CsvPipelineInstances {
   implicit val halifaxNormalizer: Normalizer[HalifaxTransaction]   = halifaxInput
   implicit val starlingNormalizer: Normalizer[StarlingTransaction] = starlingInput
   implicit val amexNormalizer: Normalizer[AmexTransaction]         = amexInput
+
+  def pipelineForType[T <: InputTransaction](inputType: InputType): VPipe[fs2.Pure, RawRecord, Transaction] =
+    inputType match {
+      case BarclaysInputType => Pipeline[BarclaysTransaction]
+      case HalifaxInputType  => Pipeline[HalifaxTransaction]
+      case StarlingInputType => Pipeline[StarlingTransaction]
+      case AmexInputType     => Pipeline[AmexTransaction]
+    }
 
 }

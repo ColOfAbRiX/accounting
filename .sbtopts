@@ -1,7 +1,6 @@
 -J-Xss4m
--J-Xss256M
+-J-Xms128M
 -J-Xmx512M
 -J-XX:MaxHeapSize=512M
 -J-XX:+UseConcMarkSweepGC
--J-XX:+CMSClassUnloadingEnabled
 -Duser.timezone=UTC
