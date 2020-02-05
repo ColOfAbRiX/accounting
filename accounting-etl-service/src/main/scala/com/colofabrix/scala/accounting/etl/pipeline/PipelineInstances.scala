@@ -44,9 +44,9 @@ object ApiPipelineInstances {
 }
 
 /**
- * Pipeline instances to process a CSV input
+ * Pipeline instances to process a CSV file input
  */
-object CsvPipelineInstances {
+object CsvFilePipelineInstances {
 
   private val barclaysInput: BarclaysCsvInput = new BarclaysCsvInput()
   private val halifaxInput: HalifaxCsvInput   = new HalifaxCsvInput()

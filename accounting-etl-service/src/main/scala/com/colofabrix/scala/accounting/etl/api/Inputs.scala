@@ -12,8 +12,8 @@ object Inputs {
   /**
    * An input representing the type of record
    */
-  val recordTypeQuery: EndpointInput[InputType] =
-    query[InputType]("recordType")
+  val inputTypeQuery: EndpointInput[InputType] =
+    query[InputType]("inputType")
       .description("Type of record to convert")
       .example(BarclaysInputType)
 

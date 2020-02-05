@@ -5,10 +5,10 @@ object Dependencies {
   //  VERSIONS  //
 
   lazy val CatsScalaTestVersion = "3.0.4"
-  lazy val CatsVersion       = "2.0.0"
-  lazy val CirceVersion      = "0.12.3"
-  lazy val FS2Version        = "2.1.0"
-  lazy val Http4sVersion     = "0.21.0-M5"
+  lazy val CatsVersion       = "2.1.0"
+  lazy val CirceVersion      = "0.13.0-RC1"
+  lazy val FS2Version        = "2.2.1"
+  lazy val Http4sVersion     = "0.21.0-RC1"
   lazy val KantanCsvVersion  = "0.6.0"
   lazy val KittensVersion    = "2.0.0"
   lazy val Log4sVersion      = "1.8.2"
@@ -18,7 +18,7 @@ object Dependencies {
   lazy val ScalatestVersion  = "3.1.0"
   lazy val ShapelessVersion  = "2.3.3"
   lazy val SilencerVersion   = "1.4.3"
-  lazy val TapirVersion      = "0.12.0"
+  lazy val TapirVersion      = "0.12.16"
 
   //  COMPILER PLUGINS VERSIONS  //
 

@@ -9,7 +9,7 @@ import org.http4s.syntax.kleisli._
 import org.http4s._
 import com.colofabrix.scala.accounting.etl.config._
 
-object MultipleEndpointsDocumentationHttp4sServer extends IOApp {
+object AccountingEtlService extends IOApp {
 
   def httpApp: HttpApp[IO] =
     Router(

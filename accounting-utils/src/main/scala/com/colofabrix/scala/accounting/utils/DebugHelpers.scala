@@ -16,7 +16,7 @@ trait StreamHelpers {
   }
   /** Runs a function for all the elements of a stream */
   def withStream[E[_]: Effect, F[_]: Functor, O](input: fs2.Stream[E, F[O]])(f: List[F[O]] => Unit): E[Unit] = {
-    input.compile.to[List].map(f)
+    input.compile.toList.map(f)
   }
 }
 

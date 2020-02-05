@@ -38,7 +38,7 @@ object config {
   //  TYPECLASS INSTANCES  //
 
   @SuppressWarnings(Array("org.wartremover.warts.Equals"))
-  implicit val inputTypeReader: ConfigReader[InputType] = {
+  implicit lazy val inputTypeReader: ConfigReader[InputType] = {
     deriveEnumerationReader[InputType](ConfigFieldMapping(PascalCase, PascalCase))
   }
 

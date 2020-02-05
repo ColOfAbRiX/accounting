@@ -2,7 +2,7 @@ package com.colofabrix.scala.accounting.etl.inputs
 
 import com.colofabrix.scala.accounting.etl._
 import com.colofabrix.scala.accounting.etl.definitions._
-import com.colofabrix.scala.accounting.etl.FieldConverter._
+import com.colofabrix.scala.accounting.etl.conversion.FieldConverter._
 import com.colofabrix.scala.accounting.etl.model._
 import com.colofabrix.scala.accounting.etl.pipeline._
 import com.colofabrix.scala.accounting.etl.pipeline.CleanerUtils._

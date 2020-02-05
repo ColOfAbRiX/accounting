@@ -1,4 +1,4 @@
-package com.colofabrix.scala.accounting.etl
+package com.colofabrix.scala.accounting.etl.conversion
 
 import cats.effect._
 import com.colofabrix.scala.accounting.etl.definitions._

@@ -3,7 +3,7 @@ package com.colofabrix.scala.accounting.utils
 import cats.Show
 
 /**
- * Base type for Algebraic Data Types
+ * Base type for Algebraic Data Types as per Scala best practice
  */
 trait ADT extends Product with Serializable
 

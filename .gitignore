@@ -8,9 +8,10 @@
 *.ipr
 *.iws
 *.log
+metals.sbt
 out
 target
 
-# Temporary
+# Temporary files
 *.csv
 /samples

@@ -1,4 +1,4 @@
-package com.colofabrix.scala.accounting.etl
+package com.colofabrix.scala.accounting.etl.conversion
 
 import cats.data.Kleisli
 import cats.implicits._
