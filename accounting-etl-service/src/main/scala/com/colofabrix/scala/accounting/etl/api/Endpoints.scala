@@ -1,8 +1,10 @@
 package com.colofabrix.scala.accounting.etl.api
 
 import com.colofabrix.scala.accounting.etl.api.Inputs._
+import com.colofabrix.scala.accounting.etl.api.JsonCodecs._
 import com.colofabrix.scala.accounting.etl.model.Api._
 import com.colofabrix.scala.accounting.etl.model.Config._
+import com.colofabrix.scala.accounting.model.Transaction
 import io.circe.generic.auto._
 import sttp.tapir._
 import sttp.tapir.docs.openapi._
@@ -22,29 +24,40 @@ object Endpoints {
   val apiBaseEndpoint: EtlEndpoint[Unit, Unit] = {
     endpoint
       .in("api" / apiVersion)
-      .errorOut(statusCode and jsonBody[ErrorInfo])
+      .errorOut(jsonBody[ErrorInfo])
+    // .errorOut(statusCode and jsonBody[ErrorInfo])
   }
 
   /**
    * Returns the list of supported input types
    */
-  val listSupportedInputs: EtlEndpoint[Unit, String] = {
+  val listSupportedInputs: EtlEndpoint[Unit, Set[InputType]] = {
     apiBaseEndpoint
       .get
       .in("supported-inputs")
-      .out(stringBody)
+      .out(jsonBody[Set[InputType]])
+      .name("supported-inputs")
+      .description(
+        """Lists the type of inputs supported by the service.
+          |The list of enabled inputs can be set in the application configuration file.""".stripMargin,
+      )
   }
 
   /**
    * Converts one single input record into one output transaction
    */
-  val convertRecord: EtlEndpoint[(InputType, String), String] = {
+  val convertRecord: EtlEndpoint[(InputType, String), Transaction] = {
     apiBaseEndpoint
       .get
       .in("convert-record")
       .in(inputTypeQuery)
       .in(stringBody)
-      .out(stringBody)
+      .out(jsonBody[Transaction])
+      .name("convert-record")
+      .description(
+        """Validated and converts one single input record, interpreted as a CSV row
+          |into one output transaction.""".stripMargin,
+      )
   }
 
   /**
@@ -57,6 +70,8 @@ object Endpoints {
       .in(inputTypeQuery)
       .in(stringBody)
       .out(stringBody)
+      .name("convert-records")
+      .description("Converts a list of inputs records into output transactions.")
   }
 
   /**

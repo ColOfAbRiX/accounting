@@ -13,27 +13,17 @@ object Routes {
 
   def listSupportedInputsRoute(cs: ContextShift[IO]): HttpRoutes[IO] = {
     implicit val ics: ContextShift[IO] = cs
-    Endpoints
-      .listSupportedInputs
-      .toRoutes(_ => Client.listSupportedInputs)
+    Endpoints.listSupportedInputs.toRoutes(_ => Client.listSupportedInputs)
   }
 
   def convertRecordRoute(cs: ContextShift[IO]): HttpRoutes[IO] = {
     implicit val ics: ContextShift[IO] = cs
-    Endpoints
-      .convertRecord
-      .toRoutes {
-        case (inputType, body) => Client.convertRecord(inputType, body)
-      }
+    Endpoints.convertRecord.toRoutes((Client.convertRecord _).tupled)
   }
 
   def convertRecordsRoute(cs: ContextShift[IO]): HttpRoutes[IO] = {
     implicit val ics: ContextShift[IO] = cs
-    Endpoints
-      .convertRecords
-      .toRoutes {
-        case (inputType, body) => Client.convertRecords(inputType, body)
-      }
+    Endpoints.convertRecords.toRoutes((Client.convertRecords _).tupled)
   }
 
   def redocDocsRoute(cs: ContextShift[IO]): HttpRoutes[IO] = {
