@@ -5,6 +5,7 @@ import com.colofabrix.scala.accounting.etl.api.JsonCodecs._
 import com.colofabrix.scala.accounting.etl.model.Api._
 import com.colofabrix.scala.accounting.etl.model.Config._
 import com.colofabrix.scala.accounting.model.Transaction
+import com.colofabrix.scala.accounting.utils.validation.{ ValidationError => VError }
 import io.circe.generic.auto._
 import sttp.tapir._
 import sttp.tapir.docs.openapi._
@@ -46,13 +47,13 @@ object Endpoints {
   /**
    * Converts one single input record into one output transaction
    */
-  val convertRecord: EtlEndpoint[(InputType, String), Transaction] = {
+  val convertRecord: EtlEndpoint[(InputType, String), Either[List[VError], Transaction]] = {
     apiBaseEndpoint
       .get
       .in("convert-record")
       .in(inputTypeQuery)
       .in(stringBody)
-      .out(jsonBody[Transaction])
+      .out(jsonBody[Either[List[VError], Transaction]])
       .name("convert-record")
       .description(
         """Validated and converts one single input record, interpreted as a CSV row
@@ -82,7 +83,10 @@ object Endpoints {
       listSupportedInputs,
       convertRecord,
       convertRecords,
-    ).toOpenAPI("Accounting ETL Service", apiVersion)
+    ).toOpenAPI(
+      "Accounting ETL Service",
+      apiVersion,
+    )
   }
 
 }
