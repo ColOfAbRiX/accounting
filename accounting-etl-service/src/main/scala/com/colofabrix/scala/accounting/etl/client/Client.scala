@@ -23,11 +23,10 @@ object Client {
    * Converts one single input record into one output transaction
    */
   @SuppressWarnings(Array("org.wartremover.warts.All"))
-  def convertRecord(inputType: InputType, record: String): ClientOutput[Either[List[ValidationError], Transaction]] = {
+  def convertRecord(inputType: InputType, record: String): ClientOutput[AValidated[Transaction]] = {
     new CsvReader(record)
       .read
       .through(pipelineForType(inputType))
-      .map(x => x.toEither.leftMap(_.toList))
       .compile
       .toList
       .map(_.head.asRight)
