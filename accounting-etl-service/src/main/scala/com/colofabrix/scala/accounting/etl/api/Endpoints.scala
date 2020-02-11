@@ -1,7 +1,8 @@
 package com.colofabrix.scala.accounting.etl.api
 
 import com.colofabrix.scala.accounting.etl.api.Inputs._
-import com.colofabrix.scala.accounting.etl.api.JsonCodecs._
+import com.colofabrix.scala.accounting.etl.api.CirceCodecs._
+import com.colofabrix.scala.accounting.etl.api.TapirCodecs._
 import com.colofabrix.scala.accounting.etl.model.Api._
 import com.colofabrix.scala.accounting.etl.model.Config._
 import com.colofabrix.scala.accounting.model.Transaction
@@ -12,6 +13,7 @@ import sttp.tapir._
 import sttp.tapir.docs.openapi._
 import sttp.tapir.json.circe._
 import sttp.tapir.openapi.OpenAPI
+import cats.data._
 
 /**
  * Endpoints describe what's exposed
@@ -45,13 +47,10 @@ object Endpoints {
       )
   }
 
-  import sttp.tapir.codec.cats.{ schemaForNec, validatorNec }
-
   /**
    * Converts one single input record into one output transaction
    */
   val convertRecord: EtlEndpoint[(InputType, String), AValidated[Transaction]] = {
-    import cats.data._
     apiBaseEndpoint
       .get
       .in("convert-record")

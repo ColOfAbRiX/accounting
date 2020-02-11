@@ -11,8 +11,8 @@ object Config {
 
   sealed trait InputType extends ADT {
     val description: String = this
-      .getClass()
-      .getSimpleName()
+      .getClass
+      .getSimpleName
       .replaceAll("InputType.*$", "")
       .toLowerCase()
   }

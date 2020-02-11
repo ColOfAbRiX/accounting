@@ -29,7 +29,7 @@ object FieldConverter {
         s"Exception on converting record $r: ${ex.toString}"
       }.toAValidated
 
-      extracted andThen P.parseField _
+      extracted andThen P.parseField
     }
 
   /** Type-safe method to parse a value given a function that extracts what to parse from a String value */

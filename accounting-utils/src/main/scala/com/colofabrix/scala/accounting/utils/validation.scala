@@ -139,12 +139,12 @@ object validation {
 
   /** Validates that String contains an Int value */
   def intStringValue(name: => String, value: String): AValidated[String] = {
-    matchRegex("""^\d+$""".r, false)(name, value)
+    matchRegex("""^\d+$""".r, reverse = false)(name, value)
   }
 
   /** Validates that String contains a Double value */
   def doubleStringValue(name: => String, value: String): AValidated[String] = {
-    matchRegex("""[-+]?[0-9]*\\.?[0-9]+([eE][-+]?[0-9]+)?""".r, false)(name, value)
+    matchRegex("""[-+]?[0-9]*\\.?[0-9]+([eE][-+]?[0-9]+)?""".r, reverse = false)(name, value)
   }
 
 }

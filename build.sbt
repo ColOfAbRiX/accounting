@@ -14,7 +14,7 @@ wartremoverErrors in ThisBuild ++= Warts.allBut(
   Wart.Any,
   Wart.Nothing,
   Wart.Overloading,
-  Wart.ToString
+  Wart.ToString,
 )
 
 // Standardize formatting
@@ -24,12 +24,12 @@ scalafmtOnCompile in ThisBuild := true
 libraryDependencies in ThisBuild ++= Seq(
   BetterMonadicForPlugin,
   KindProjectorPlugin,
-  Log4sDep,
-  LogbackClassicDep,
   PPrintDep,
-  SilencerPlugin, SilencerDep,
   WartremoverPlugin,
-)
+) ++ Seq(
+  LoggingBundle,
+  SilencerBundle,
+).flatten
 
 //  - - - - - - - - - - - - - - - - - //
 
@@ -44,7 +44,7 @@ lazy val accountingRoot: Project = project
     libraryDependencies ++= Seq(),
   )
   .aggregate(
-    etlService
+    etlService,
   )
 
 // Utils project
@@ -79,7 +79,7 @@ lazy val etlService = project
   .in(file("accounting-etl-service"))
   .dependsOn(
     utils,
-    model
+    model,
   )
   .settings(
     organization := "com.colofabrix.scala.accounting",
@@ -87,25 +87,15 @@ lazy val etlService = project
     version := AccountingVersion,
     scalaVersion := ScalaVersion,
     libraryDependencies ++= Seq(
-      CatsCoreDep,
-      CatsEffectsDep,
-      CatsScalaTestDep,
       CirceGenericDep,
       FS2CoreDep,
-      Http4sBlazeServerDep,
-      Http4sCirceDep,
-      Http4sDslDep,
-      KantanCatsCsvDep,
-      KantanCsvDep,
-      KittensDep,
       PureconfigDep,
       ScalatestDep,
       ShapelessDep,
-      TapirCoreDep,
-      TapirHttp4sServerDep,
-      TapirJsonCirceDep,
-      TapirOpenAPICirceYamlDep,
-      TapirOpenAPIDocsDep,
-      TapirRedocHttp4s,
-    ),
+    ) ++ Seq(
+      CatsBundle,
+      KantanCsvBundle,
+      Http4sBundle,
+      TapirBundle,
+    ).flatten,
   )

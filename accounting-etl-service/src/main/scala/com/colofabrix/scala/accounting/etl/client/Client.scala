@@ -2,7 +2,7 @@ package com.colofabrix.scala.accounting.etl.client
 
 import cats.effect._
 import cats.implicits._
-import com.colofabrix.scala.accounting.etl.ApiPipelineInstances._
+import com.colofabrix.scala.accounting.etl.pipeline.ApiPipelineInstances._
 import com.colofabrix.scala.accounting.etl.config._
 import com.colofabrix.scala.accounting.etl.conversion.CsvReader
 import com.colofabrix.scala.accounting.etl.model.Api._

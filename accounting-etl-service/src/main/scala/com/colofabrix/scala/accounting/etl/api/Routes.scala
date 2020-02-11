@@ -32,11 +32,12 @@ object Routes {
   }
 
   def allRoutes(cs: ContextShift[IO]): HttpRoutes[IO] = {
-    List[HttpRoutes[IO]](
+    val allRoutes = List[HttpRoutes[IO]](
       listSupportedInputsRoute(cs),
       convertRecordRoute(cs),
       convertRecordsRoute(cs),
-    ).foldLeft(HttpRoutes.empty[IO])(_ <+> _)
+    )
+    allRoutes.foldLeft(HttpRoutes.empty[IO])(_ <+> _)
   }
 
 }
