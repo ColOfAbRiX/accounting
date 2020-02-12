@@ -1,5 +1,6 @@
 package com.colofabrix.scala.accounting.etl.api
 
+import cats.data._
 import com.colofabrix.scala.accounting.etl.model.Config._
 import shapeless._
 
@@ -7,7 +8,6 @@ import shapeless._
  * Codecs convert to and from wire values
  */
 object TapirCodecs {
-  import cats.data._
   import sttp.tapir._
   import sttp.tapir.Codec._
 
@@ -27,23 +27,29 @@ object TapirCodecs {
     implicitly[PlainCodec[String]].mapDecode(decode)(encode)
   }
 
-  // From https://github.com/softwaremill/tapir/blob/master/integrations/cats/src/main/scala/sttp/tapir/codec/cats/TapirCodecCats.scala
+  //  From sttp.tapir.codec.cats.TapirCodecCats.scala  //
+
   private def nonEmptyValidator[T]: Validator[List[T]] = Validator.minSize[T, List](1)
 
   implicit def validatorNec[T](implicit v: Validator[T]): Validator[NonEmptyChain[T]] = {
-    v.asIterableElements.and(nonEmptyValidator[T]).contramap(_.toChain.toList)
+    v.asIterableElements
+      .and(nonEmptyValidator[T])
+      .contramap(_.toChain.toList)
   }
 
   implicit def schemaForNec[T: Schema]: Schema[NonEmptyChain[T]] = {
-    Schema[NonEmptyChain[T]](SchemaType.SArray(implicitly[Schema[T]])).copy(isOptional = false)
+    Schema[NonEmptyChain[T]](
+      SchemaType.SArray(implicitly[Schema[T]]),
+    ).copy(isOptional = false)
   }
 
 }
 
 object CirceCodecs {
-  import io.circe.HCursor
-  import io.circe.Json
+  import io.circe.{ HCursor, Json }
   import io.circe.{ Decoder, Encoder }
+  import cats.data.Validated._
+  import com.colofabrix.scala.accounting.utils.validation.{ ValidationError => VError }
 
   /**
    * Encoder for InputType -> JSON
@@ -53,29 +59,26 @@ object CirceCodecs {
     Encoder[String].contramap(_.description)
   }
 
-  // implicit def eitherEncoder[E, A](implicit ee: Encoder[E], ae: Encoder[A]): Encoder[Either[E, A]] =
-  //   new Encoder[Either[E, A]] {
-  //     def apply(a: Either[E, A]): Json = a match {
-  //       case Left(value)  => Json.obj(("left", ee.apply(value)))
-  //       case Right(value) => Json.obj(("right", ae.apply(value)))
-  //     }
-  //   }
+  /** Circe encoder for Validated */
+  @SuppressWarnings(Array("org.wartremover.warts.ImplicitParameter"))
+  implicit def validatedEncoder[A](
+      implicit
+      necEncoder: Encoder[NonEmptyChain[VError]],
+      aEncoder: Encoder[A],
+  ): Encoder[Validated[NonEmptyChain[VError], A]] = new Encoder[Validated[NonEmptyChain[VError], A]] {
+    def apply(a: Validated[NonEmptyChain[VError], A]): Json = a match {
+      case Invalid(e) => Json.obj(("invalid", necEncoder.apply(e)))
+      case Valid(a)   => Json.obj(("valid", aEncoder.apply(a)))
+    }
+  }
 
-  //implicit def eitherEncoder[E, A](implicit ee: Encoder[E], ae: Encoder[A]): Encoder[Either[E, A]] =
-  //  new Encoder[Either[E, A]] {
-  //    def apply(a: Either[E, A]): Json = a match {
-  //      case Left(value)  => Json.obj(("left", ee.apply(value)))
-  //      case Right(value) => Json.obj(("right", ae.apply(value)))
-  //    }
-  //  }
-
-  /** JSON encoder for newtype case classes (case classes with only one member) */
+  /** Circe encoder for newtype case classes (case classes with only one member) */
   implicit def newtypeCirceEncoder[W, NT](implicit G: Generic.Aux[NT, W :: HNil], E: Encoder[W]): Encoder[NT] =
     new Encoder[NT] {
       def apply(n: NT): Json = E.apply(G.to(n).head)
     }
 
-  /** JSON decoder for newtype case classes (case classes with only one member) */
+  /** Circe decoder for newtype case classes (case classes with only one member) */
   implicit def newtypeCirceDecoder[W, NT](implicit G: Generic.Aux[NT, W :: HNil], D: Decoder[W]): Decoder[NT] =
     new Decoder[NT] {
       def apply(c: HCursor): Decoder.Result[NT] = D.apply(c).map(x => G.from(x :: HNil))
