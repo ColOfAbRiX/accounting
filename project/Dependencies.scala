@@ -49,6 +49,7 @@ object Dependencies {
   lazy val Http4sBlazeServerDep     = "org.http4s"                  %% "http4s-blaze-server"      % Http4sVersion
   lazy val Http4sCirceDep           = "org.http4s"                  %% "http4s-circe"             % Http4sVersion
   lazy val Http4sDslDep             = "org.http4s"                  %% "http4s-dsl"               % Http4sVersion
+  lazy val TapirCatsDep             = "com.softwaremill.sttp.tapir" %% "tapir-cats"               % TapirVersion
   lazy val TapirCoreDep             = "com.softwaremill.sttp.tapir" %% "tapir-core"               % TapirVersion
   lazy val TapirHttp4sServerDep     = "com.softwaremill.sttp.tapir" %% "tapir-http4s-server"      % TapirVersion
   lazy val TapirJsonCirceDep        = "com.softwaremill.sttp.tapir" %% "tapir-json-circe"         % TapirVersion
@@ -75,6 +76,7 @@ object Dependencies {
   lazy val LoggingBundle   = Seq(Log4sDep, LogbackClassicDep)
   lazy val SilencerBundle  = Seq(SilencerDep, SilencerPlugin)
   lazy val TapirBundle = Seq(
+    TapirCatsDep,
     TapirCoreDep,
     TapirHttp4sServerDep,
     TapirJsonCirceDep,

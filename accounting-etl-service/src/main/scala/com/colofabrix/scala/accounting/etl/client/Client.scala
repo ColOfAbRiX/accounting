@@ -22,7 +22,7 @@ object Client {
   /**
    * Converts one single input record into one output transaction
    */
-  @SuppressWarnings(Array("org.wartremover.warts.All"))
+  @SuppressWarnings(Array("org.wartremover.warts.TraversableOps"))
   def convertRecord(inputType: InputType, record: String): ClientOutput[AValidated[Transaction]] = {
     new CsvReader(record)
       .read

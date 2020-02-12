@@ -1,8 +1,8 @@
 package com.colofabrix.scala.accounting.etl.api
 
-import com.colofabrix.scala.accounting.etl.api.Inputs._
+import cats.data._
 import com.colofabrix.scala.accounting.etl.api.CirceCodecs._
-import com.colofabrix.scala.accounting.etl.api.TapirCodecs._
+import com.colofabrix.scala.accounting.etl.api.Inputs._
 import com.colofabrix.scala.accounting.etl.model.Api._
 import com.colofabrix.scala.accounting.etl.model.Config._
 import com.colofabrix.scala.accounting.model.Transaction
@@ -10,10 +10,10 @@ import com.colofabrix.scala.accounting.utils.validation._
 import com.colofabrix.scala.accounting.utils.validation.{ ValidationError => VError }
 import io.circe.generic.auto._
 import sttp.tapir._
+import sttp.tapir.codec.cats._
 import sttp.tapir.docs.openapi._
 import sttp.tapir.json.circe._
 import sttp.tapir.openapi.OpenAPI
-import cats.data._
 
 /**
  * Endpoints describe what's exposed
@@ -59,7 +59,7 @@ object Endpoints {
       .out(jsonBody[Validated[NonEmptyChain[VError], Transaction]])
       .name("convert-record")
       .description(
-        """Validated and converts one single input record, interpreted as a CSV row
+        """Validates and converts one single input record, interpreted as a CSV row
           |into one output transaction.""".stripMargin,
       )
   }
