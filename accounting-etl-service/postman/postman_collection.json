@@ -69,7 +69,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "bad, bad, bad, bad"
+							"raw": "bad-1, bad-2, bad-3, bad-4, bad-5"
 						},
 						"url": {
 							"raw": "{{etlServiceUrl}}/api/{{apiVersion}}/convert-record?inputType=barclays",
@@ -80,6 +80,70 @@
 								"api",
 								"{{apiVersion}}",
 								"convert-record"
+							],
+							"query": [
+								{
+									"key": "inputType",
+									"value": "barclays"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Convert list of valid records",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "\t ,08/11/2019,20-32-06 13152170,-235.00,FT,BRIAN CUMMING         TUNNEL D4          FT\r\n\t ,08/11/2019,20-32-06 13152170,-23.63,FT,CLAIRE DELLE LUCHE    GROCERY            FT\r\n\t ,08/11/2019,20-32-06 13152170,-2.00,PAYMENT,CRV*BEST FOOD CENT    ON 07 NOV          BCC\r\n\t ,07/11/2019,20-32-06 13152170,-5.70,PAYMENT,CRV*EASY RUSTY BAR    ON 06 NOV          BCC\r\n\t ,07/11/2019,20-32-06 13152170,-4.86,PAYMENT,CRV*BEST FOOD CENT    ON 06 NOV          BCC\r\n\t ,05/11/2019,20-32-06 13152170,-430.00,PAYMENT,HALIFAX CLARITY MA    5253030006544290   BBP\r\n\t ,05/11/2019,20-32-06 13152170,-4.95,PAYMENT,CRV*WEWORK (1219)     ON 04 NOV          BCC\r\n\t ,04/11/2019,20-32-06 13152170,-100.00,FT,TOHUR ALI             E3 5QD - ROOM 1    FT\r\n\t ,04/11/2019,20-32-06 13152170,-20.00,FT,RICHARD OWEN          LIFT               FT\r\n\t ,04/11/2019,20-32-06 13152170,-10.00,FT,204583 20502731       SAVINGS            FT\r\n\t ,04/11/2019,20-32-06 13152170,-9.77,PAYMENT,CRV*BEST FOOD CENT    ON 01 NOV          BCC"
+						},
+						"url": {
+							"raw": "{{etlServiceUrl}}/api/{{apiVersion}}/convert-records?inputType=barclays",
+							"host": [
+								"{{etlServiceUrl}}"
+							],
+							"path": [
+								"api",
+								"{{apiVersion}}",
+								"convert-records"
+							],
+							"query": [
+								{
+									"key": "inputType",
+									"value": "barclays"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Convert list of valid  and invalid records",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "\t ,08/11/2019,20-32-06 13152170,-235.00,FT,BRIAN CUMMING         TUNNEL D4          FT\r\nbad-1, bad-2, bad-3, bad-4, bad-5\r\n\t ,08/11/2019,20-32-06 13152170,-2.00,PAYMENT,CRV*BEST FOOD CENT    ON 07 NOV          BCC\r\n\t ,07/11/2019,20-32-06 13152170,-5.70,PAYMENT,CRV*EASY RUSTY BAR    ON 06 NOV          BCC\r\n\t ,07/11/2019,20-32-06 13152170,-4.86,PAYMENT,CRV*BEST FOOD CENT    ON 06 NOV          BCC\r\nbad-1, bad-2, bad-3, bad-4, bad-5\r\nbad-1, bad-2, bad-3, bad-4, bad-5\r\n\t ,04/11/2019,20-32-06 13152170,-100.00,FT,TOHUR ALI             E3 5QD - ROOM 1    FT\r\nbad-1, bad-2, bad-3, bad-4, bad-5\r\n\t ,04/11/2019,20-32-06 13152170,-10.00,FT,204583 20502731       SAVINGS            FT\r\n\t ,04/11/2019,20-32-06 13152170,-9.77,PAYMENT,CRV*BEST FOOD CENT    ON 01 NOV          BCC"
+						},
+						"url": {
+							"raw": "{{etlServiceUrl}}/api/{{apiVersion}}/convert-records?inputType=barclays",
+							"host": [
+								"{{etlServiceUrl}}"
+							],
+							"path": [
+								"api",
+								"{{apiVersion}}",
+								"convert-records"
 							],
 							"query": [
 								{

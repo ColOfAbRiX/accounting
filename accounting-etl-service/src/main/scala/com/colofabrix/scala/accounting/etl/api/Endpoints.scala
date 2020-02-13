@@ -67,15 +67,18 @@ object Endpoints {
   /**
    * Converts a list of inputs records into output transactions
    */
-  val convertRecords: EtlEndpoint[(InputType, String), String] = {
+  val convertRecords: EtlEndpoint[(InputType, String), List[AValidated[Transaction]]] = {
     apiBaseEndpoint
       .get
       .in("convert-records")
       .in(inputTypeQuery)
       .in(stringBody)
-      .out(stringBody)
+      .out(jsonBody[List[Validated[NonEmptyChain[VError], Transaction]]])
       .name("convert-records")
-      .description("Converts a list of inputs records into output transactions.")
+      .description(
+        """Validates and converts a list of input records, interpreted as CSV data
+          |into a list of output transaction.""".stripMargin,
+      )
   }
 
   /**

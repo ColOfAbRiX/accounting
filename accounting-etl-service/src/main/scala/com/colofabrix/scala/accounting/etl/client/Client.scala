@@ -9,14 +9,18 @@ import com.colofabrix.scala.accounting.etl.model.Api._
 import com.colofabrix.scala.accounting.etl.model.Config._
 import com.colofabrix.scala.accounting.model.Transaction
 import com.colofabrix.scala.accounting.utils.validation._
+import com.colofabrix.scala.accounting.utils.ExecutionContexts
 
 object Client {
 
   /**
    * Returns the list of supported input types
    */
-  def listSupportedInputs: ClientOutput[Set[InputType]] = IO.delay {
-    etlConfig.inputTypes.asRight
+  def listSupportedInputs: ClientOutput[Set[InputType]] = {
+    IO.shift(ExecutionContexts.computePool) *>
+    IO.delay {
+      etlConfig.inputTypes.asRight
+    }
   }
 
   /**
@@ -36,8 +40,13 @@ object Client {
    * Converts a list of inputs records into output transactions
    */
   @SuppressWarnings(Array("org.wartremover.warts.All"))
-  def convertRecords(inputType: InputType, body: String): ClientOutput[String] = {
-    ???
+  def convertRecords(inputType: InputType, body: String): ClientOutput[List[AValidated[Transaction]]] = {
+    new CsvReader(body)
+      .read
+      .through(pipelineForType(inputType))
+      .compile
+      .toList
+      .map(_.asRight)
   }
 
 }
