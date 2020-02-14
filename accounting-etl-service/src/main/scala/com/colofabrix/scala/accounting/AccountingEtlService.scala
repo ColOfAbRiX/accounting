@@ -3,18 +3,19 @@ package com.colofabrix.scala.accounting
 import cats.effect._
 import cats.implicits._
 import com.colofabrix.scala.accounting.etl.api._
+import com.colofabrix.scala.accounting.etl.config._
+import org.http4s._
 import org.http4s.server.blaze.BlazeServerBuilder
 import org.http4s.server.Router
 import org.http4s.syntax.kleisli._
-import org.http4s._
-import com.colofabrix.scala.accounting.etl.config._
+import com.colofabrix.scala.accounting.utils.ThreadPools
 
 object AccountingEtlService extends IOApp {
 
-  def httpApp: HttpApp[IO] =
+  private def httpApp: HttpApp[IO] =
     Router(
-      "/"     -> Routes.allRoutes(contextShift),
-      "/docs" -> Routes.redocDocsRoute(contextShift),
+      "/"     -> Routes.allRoutes(ThreadPools.computeCs),
+      "/docs" -> Routes.redocDocsRoute(ThreadPools.computeCs),
     ).orNotFound
 
   override def run(args: List[String]): IO[ExitCode] = {

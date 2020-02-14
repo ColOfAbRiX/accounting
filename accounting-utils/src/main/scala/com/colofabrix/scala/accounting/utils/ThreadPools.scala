@@ -3,8 +3,10 @@ package com.colofabrix.scala.accounting.utils
 import java.util.concurrent._
 import java.util.concurrent.atomic.AtomicLong
 import scala.concurrent._
+import cats.effect.ContextShift
+import cats.effect.IO
 
-object ExecutionContexts {
+object ThreadPools {
 
   // See: https://blog.jessitron.com/2014/01/29/choosing-an-executorservice/
 
@@ -27,26 +29,29 @@ object ExecutionContexts {
   /**
    * Default scala global context
    * */
-  val global: ExecutionContextExecutor = ExecutionContext.global
+  lazy val global: ExecutionContextExecutor = ExecutionContext.global
 
   /**
    * CPU-bound pool, fixed to the number of CPUs dedicated to computations
    */
-  val computePool: ExecutionContextExecutor = ExecutionContext.fromExecutor(
+  lazy val computeCs: ContextShift[IO] = IO.contextShift(compute)
+  lazy val compute: ExecutionContextExecutor = ExecutionContext.fromExecutor(
     Executors.newFixedThreadPool(coresCount, threadFactory("compute", Thread.NORM_PRIORITY)),
   )
 
   /**
    * Blocking IO pool, unbounded and dedicated to blocking I/O operations
    */
-  val ioPool: ExecutionContextExecutor = ExecutionContext.fromExecutor(
-    Executors.newCachedThreadPool(threadFactory("AAA", Thread.NORM_PRIORITY)),
+  lazy val ioCs: ContextShift[IO] = IO.contextShift(io)
+  lazy val io: ExecutionContextExecutor = ExecutionContext.fromExecutor(
+    Executors.newCachedThreadPool(threadFactory("io", Thread.NORM_PRIORITY)),
   )
 
   /**
    * Non-blocking IO polling pool, high priority for I/O notifications
    */
-  val eventsPool: ExecutionContextExecutor = ExecutionContext.fromExecutor(
+  lazy val eventsCs: ContextShift[IO] = IO.contextShift(events)
+  lazy val events: ExecutionContextExecutor = ExecutionContext.fromExecutor(
     Executors.newFixedThreadPool(1, threadFactory("event", Thread.MAX_PRIORITY)),
   )
 

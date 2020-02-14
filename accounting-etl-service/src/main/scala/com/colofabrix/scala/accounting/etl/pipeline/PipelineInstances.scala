@@ -34,7 +34,6 @@ object ApiPipelineInstances {
   implicit val amexNormalizer: Normalizer[AmexTransaction]         = amexInput
 
   def pipelineForType[T <: InputTransaction](inputType: InputType): VPipe[fs2.Pure, RawRecord, Transaction] = {
-    println(s"convertRecord - Thread name: ${Thread.currentThread.getName}")
     inputType match {
       case BarclaysInputType => Pipeline[BarclaysTransaction]
       case HalifaxInputType  => Pipeline[HalifaxTransaction]

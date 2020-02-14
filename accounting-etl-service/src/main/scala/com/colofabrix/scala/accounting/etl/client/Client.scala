@@ -9,15 +9,18 @@ import com.colofabrix.scala.accounting.etl.model.Api._
 import com.colofabrix.scala.accounting.etl.model.Config._
 import com.colofabrix.scala.accounting.model.Transaction
 import com.colofabrix.scala.accounting.utils.validation._
-import com.colofabrix.scala.accounting.utils.ExecutionContexts
+import org.log4s._
 
 object Client {
+
+  private[this] val logger = getLogger
 
   /**
    * Returns the list of supported input types
    */
   def listSupportedInputs: ClientOutput[Set[InputType]] = {
-    IO.shift(ExecutionContexts.computePool) *>
+    logger.info("Requested listSupportedInputs")
+
     IO.delay {
       etlConfig.inputTypes.asRight
     }
@@ -28,9 +31,20 @@ object Client {
    */
   @SuppressWarnings(Array("org.wartremover.warts.TraversableOps"))
   def convertRecord(inputType: InputType, record: String): ClientOutput[AValidated[Transaction]] = {
+    logger.info("Requested convertRecord")
+    logger.debug(s"inputType=${inputType.description}, record=${record}")
+
     new CsvReader(record)
       .read
+      .map { x =>
+        println(s"csvPipeline - Thread name: ${Thread.currentThread.getName}")
+        x
+      }
       .through(pipelineForType(inputType))
+      .map { x =>
+        println(s"csvPipeline2 - Thread name: ${Thread.currentThread.getName}")
+        x
+      }
       .compile
       .toList
       .map(_.head.asRight)
@@ -39,9 +53,11 @@ object Client {
   /**
    * Converts a list of inputs records into output transactions
    */
-  @SuppressWarnings(Array("org.wartremover.warts.All"))
-  def convertRecords(inputType: InputType, body: String): ClientOutput[List[AValidated[Transaction]]] = {
-    new CsvReader(body)
+  def convertRecords(inputType: InputType, records: String): ClientOutput[List[AValidated[Transaction]]] = {
+    logger.info("Requested convertRecords")
+    logger.debug(s"inputType=${inputType.description}, records=${records}")
+
+    new CsvReader(records)
       .read
       .through(pipelineForType(inputType))
       .compile
