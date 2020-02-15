@@ -5,6 +5,8 @@ import cats.implicits._
 import com.colofabrix.scala.accounting.etl.definitions._
 import com.colofabrix.scala.accounting.etl.model._
 import com.colofabrix.scala.accounting.utils.validation._
+import fs2.Pure
+import org.log4s._
 
 /**
  * Converts an input source into transactions
@@ -14,12 +16,14 @@ trait InputProcessor[T <: InputTransaction] {
   def convertRaw(record: RawRecord): AValidated[T]
 
   /** Filter an input to adapt it for processing, like removing head, empty rows and so on */
-  def filterInput: VPipe[fs2.Pure, RawRecord, RawRecord]
+  def filterInput: VPipe[Pure, RawRecord, RawRecord]
 }
 
 object InputProcessor {
+  private[this] val logger = getLogger
+
   /** Converts a stream of RawRecord into InputTransaction */
-  def apply[T <: InputTransaction](implicit L: InputProcessor[T]): VPipe[fs2.Pure, RawRecord, T] = {
+  def apply[T <: InputTransaction](implicit L: InputProcessor[T]): VPipe[Pure, RawRecord, T] = {
     L.filterInput andThen {
       _.map(_ andThen L.convertRaw)
     }
@@ -32,7 +36,7 @@ object InputProcessor {
 object InputProcessorUtils {
 
   /** Represents a processor of a raw input */
-  type RawInputFilter = VPipe[fs2.Pure, RawRecord, RawRecord]
+  type RawInputFilter = VPipe[Pure, RawRecord, RawRecord]
 
   /** Drops records based on a condition on Valid data */
   private def validDropOnCondition[A](f: RawRecord => Boolean): RawInputFilter = { input =>

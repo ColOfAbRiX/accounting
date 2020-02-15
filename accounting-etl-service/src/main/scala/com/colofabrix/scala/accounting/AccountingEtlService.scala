@@ -8,14 +8,13 @@ import org.http4s._
 import org.http4s.server.blaze.BlazeServerBuilder
 import org.http4s.server.Router
 import org.http4s.syntax.kleisli._
-import com.colofabrix.scala.accounting.utils.ThreadPools
 
 object AccountingEtlService extends IOApp {
 
   private def httpApp: HttpApp[IO] =
     Router(
-      "/"     -> Routes.allRoutes(ThreadPools.computeCs),
-      "/docs" -> Routes.redocDocsRoute(ThreadPools.computeCs),
+      "/"     -> Routes.allRoutes,
+      "/docs" -> Routes.redocDocsRoute,
     ).orNotFound
 
   override def run(args: List[String]): IO[ExitCode] = {

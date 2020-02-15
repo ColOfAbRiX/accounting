@@ -4,6 +4,7 @@ import cats.data.Nested
 import cats.implicits._
 import com.colofabrix.scala.accounting.etl.model._
 import com.colofabrix.scala.accounting.utils.validation._
+import fs2.Pure
 import java.time.LocalDate
 import shapeless._
 
@@ -16,7 +17,7 @@ trait Cleaner[T <: InputTransaction] {
 
 object Cleaner {
   /** Cleans a stream of InputTransaction */
-  def apply[T <: InputTransaction](implicit C: Cleaner[T]): VPipe[fs2.Pure, T, T] = { input =>
+  def apply[T <: InputTransaction](implicit C: Cleaner[T]): VPipe[Pure, T, T] = { input =>
     Nested(input)
       .map(C.cleanInputTransaction)
       .value

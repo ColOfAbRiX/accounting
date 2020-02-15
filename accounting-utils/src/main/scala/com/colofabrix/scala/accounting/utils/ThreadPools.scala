@@ -29,6 +29,7 @@ object ThreadPools {
   /**
    * Default scala global context
    * */
+  lazy val globalCs: ContextShift[IO]       = IO.contextShift(global)
   lazy val global: ExecutionContextExecutor = ExecutionContext.global
 
   /**
@@ -52,7 +53,7 @@ object ThreadPools {
    */
   lazy val eventsCs: ContextShift[IO] = IO.contextShift(events)
   lazy val events: ExecutionContextExecutor = ExecutionContext.fromExecutor(
-    Executors.newFixedThreadPool(1, threadFactory("event", Thread.MAX_PRIORITY)),
+    Executors.newSingleThreadExecutor(threadFactory("event", Thread.MAX_PRIORITY)),
   )
 
 }

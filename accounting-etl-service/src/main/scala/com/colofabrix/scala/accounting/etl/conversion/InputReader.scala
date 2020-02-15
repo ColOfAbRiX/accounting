@@ -2,7 +2,10 @@ package com.colofabrix.scala.accounting.etl.conversion
 
 import cats.effect._
 import com.colofabrix.scala.accounting.etl.definitions._
+import com.colofabrix.scala.accounting.utils._
 import com.colofabrix.scala.accounting.utils.validation._
+import fs2.Stream
+import org.log4s._
 
 /**
  * Interface for a generic reader that reads raw data
@@ -15,8 +18,10 @@ trait InputReader {
  * Reader from Iterable
  */
 class IterableReader(input: Iterable[RawRecord]) extends InputReader {
+  private[this] val logger = getLogger
   def read: VRawInput[IO] = {
-    fs2.Stream.unfold(input.iterator)(i => if (i.hasNext) Some((i.next.aValid, i)) else None)
+    logger.debug("Reading input from Iterable reader")
+    Stream.unfold(input.iterator)(i => if (i.hasNext) Some((i.next.aValid, i)) else None)
   }
 }
 
@@ -27,15 +32,19 @@ class CsvReader[A: kantan.csv.CsvSource](input: A) extends InputReader {
   import kantan.csv._
   import kantan.csv.ops._
 
-  private type KantanReader = kantan.csv.CsvReader[ReadResult[List[String]]]
+  private[this] type KantanReader = kantan.csv.CsvReader[ReadResult[List[String]]]
+  private[this] val logger = getLogger
 
   def read: VRawInput[IO] = {
     val openReader  = IO(input.asCsvReader[List[String]](rfc))
     val closeReader = (r: KantanReader) => IO(r.close())
     val reader      = Resource.make(openReader)(closeReader)
     for {
-      iterator <- fs2.Stream.resource(reader)
-      result   <- fs2.Stream.unfold(iterator)(unfoldCsv)
+      _        <- Stream.eval(IO.shift(ThreadPools.io))
+      _        <- Stream.eval(IO(logger.debug("Reading input from CSV reader")))
+      iterator <- Stream.resource(reader)
+      _        <- Stream.eval(IO.shift(ThreadPools.compute))
+      result   <- Stream.unfold(iterator)(unfoldCsv)
     } yield {
       result
     }
