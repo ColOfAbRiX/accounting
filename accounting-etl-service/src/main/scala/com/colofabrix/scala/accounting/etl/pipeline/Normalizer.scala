@@ -16,9 +16,9 @@ trait Normalizer[T <: InputTransaction] {
 
 object Normalizer {
   /** Converts a given stream of InputTransaction into a stream of Transaction */
-  def apply[T <: InputTransaction](implicit T: Normalizer[T]): VPipe[Pure, T, Transaction] = { input =>
+  def apply[T <: InputTransaction](implicit n: Normalizer[T]): VPipe[Pure, T, Transaction] = { input =>
     Nested(input)
-      .map(T.toTransaction)
+      .map(n.toTransaction)
       .value
   }
 }

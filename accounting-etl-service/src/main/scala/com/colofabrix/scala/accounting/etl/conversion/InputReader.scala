@@ -19,6 +19,7 @@ trait InputReader {
  */
 class IterableReader(input: Iterable[RawRecord]) extends InputReader {
   private[this] val logger = getLogger
+
   def read: VRawInput[IO] = {
     logger.debug("Reading input from Iterable reader")
     Stream.unfold(input.iterator)(i => if (i.hasNext) Some((i.next.aValid, i)) else None)
@@ -40,10 +41,10 @@ class CsvReader[A: kantan.csv.CsvSource](input: A) extends InputReader {
     val closeReader = (r: KantanReader) => IO(r.close())
     val reader      = Resource.make(openReader)(closeReader)
     for {
-      _        <- Stream.eval(IO.shift(ThreadPools.io))
+      _        <- Stream.eval(ThreadPools.ioCs.shift)
       _        <- Stream.eval(IO(logger.debug("Reading input from CSV reader")))
       iterator <- Stream.resource(reader)
-      _        <- Stream.eval(IO.shift(ThreadPools.compute))
+      _        <- Stream.eval(ThreadPools.computeCs.shift)
       result   <- Stream.unfold(iterator)(unfoldCsv)
     } yield {
       result

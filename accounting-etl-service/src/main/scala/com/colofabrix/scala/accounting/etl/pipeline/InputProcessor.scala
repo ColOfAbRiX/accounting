@@ -6,7 +6,6 @@ import com.colofabrix.scala.accounting.etl.definitions._
 import com.colofabrix.scala.accounting.etl.model._
 import com.colofabrix.scala.accounting.utils.validation._
 import fs2.Pure
-import org.log4s._
 
 /**
  * Converts an input source into transactions
@@ -20,12 +19,10 @@ trait InputProcessor[T <: InputTransaction] {
 }
 
 object InputProcessor {
-  private[this] val logger = getLogger
-
   /** Converts a stream of RawRecord into InputTransaction */
-  def apply[T <: InputTransaction](implicit L: InputProcessor[T]): VPipe[Pure, RawRecord, T] = {
-    L.filterInput andThen {
-      _.map(_ andThen L.convertRaw)
+  def apply[T <: InputTransaction](implicit ip: InputProcessor[T]): VPipe[Pure, RawRecord, T] = {
+    ip.filterInput andThen {
+      _.map(_ andThen ip.convertRaw)
     }
   }
 }

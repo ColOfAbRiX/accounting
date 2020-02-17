@@ -28,7 +28,7 @@ object ThreadPools {
 
   /**
    * Default scala global context
-   * */
+   */
   lazy val globalCs: ContextShift[IO]       = IO.contextShift(global)
   lazy val global: ExecutionContextExecutor = ExecutionContext.global
 

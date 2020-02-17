@@ -17,9 +17,9 @@ trait Cleaner[T <: InputTransaction] {
 
 object Cleaner {
   /** Cleans a stream of InputTransaction */
-  def apply[T <: InputTransaction](implicit C: Cleaner[T]): VPipe[Pure, T, T] = { input =>
+  def apply[T <: InputTransaction](implicit c: Cleaner[T]): VPipe[Pure, T, T] = { input =>
     Nested(input)
-      .map(C.cleanInputTransaction)
+      .map(c.cleanInputTransaction)
       .value
   }
 }

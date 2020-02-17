@@ -3,7 +3,7 @@ package com.colofabrix.scala.accounting.etl
 import cats.data._
 import cats.data.Validated._
 import com.colofabrix.scala.accounting.etl.definitions._
-import com.colofabrix.scala.accounting.model._
+import com.colofabrix.scala.accounting.etl.model._
 import java.time.LocalDate
 
 /**

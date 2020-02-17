@@ -6,6 +6,7 @@ import cats.data._
 import cats.implicits._
 import cats.kernel.Semigroup
 import cats.Show
+import fs2.{ Pipe, Stream }
 
 /**
  * Accounting Validation (AValidation) module
@@ -19,10 +20,10 @@ object validation {
   type AValidated[+A] = Validated[NonEmptyChain[ValidationError], A]
 
   /** Validated Stream */
-  type VStream[+F[_], +A] = fs2.Stream[F, AValidated[A]]
+  type VStream[+F[_], +A] = Stream[F, AValidated[A]]
 
   /** Validated Pipe */
-  type VPipe[F[_], -I, +O] = fs2.Pipe[F, AValidated[I], AValidated[O]]
+  type VPipe[F[_], -I, +O] = Pipe[F, AValidated[I], AValidated[O]]
 
   //  TYPECLASSES  //
 

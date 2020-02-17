@@ -1,16 +1,17 @@
 package com.colofabrix.scala.accounting.etl
 
+import cats.effect._
 import cats.implicits._
 import cats.scalatest._
-import cats.effect._
+import com.colofabrix.scala.accounting.etl.conversion._
 import com.colofabrix.scala.accounting.etl.definitions._
+import com.colofabrix.scala.accounting.etl.model._
 import com.colofabrix.scala.accounting.etl.pipeline._
-import com.colofabrix.scala.accounting.model._
 import com.colofabrix.scala.accounting.utils.StreamHelpers
 import com.colofabrix.scala.accounting.utils.validation._
 import org.scalatest._
-import org.scalatest.wordspec._
 import org.scalatest.matchers.should._
+import org.scalatest.wordspec._
 
 /**
  * Defines the tests for all input conversions

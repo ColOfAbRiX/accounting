@@ -3,7 +3,7 @@ import Compiler._
 
 // General
 val ScalaVersion      = "2.13.0"
-val AccountingVersion = "0.1.0-SNAPSHOT"
+val AccountingVersion = "0.8.0-SNAPSHOT"
 
 // Compiler options
 scalacOptions in ThisBuild ++= TpolecatOptions
