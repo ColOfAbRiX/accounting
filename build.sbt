@@ -1,12 +1,16 @@
-import Dependencies._
 import Compiler._
+import Dependencies._
 
 // General
-val ScalaVersion      = "2.13.0"
-val AccountingVersion = "0.8.0-SNAPSHOT"
+lazy val ScalaVersion      = "2.13.0"
+lazy val AccountingVersion = "0.8.0-SNAPSHOT"
+lazy val ProjectNamespace  = "com.colofabrix.scala.sample"
 
 // Compiler options
 scalacOptions in ThisBuild ++= TpolecatOptions
+
+// GIT versioning
+enablePlugins(GitVersioning)
 
 // Wartremover
 wartremoverExcluded in ThisBuild ++= (baseDirectory.value * "**" / "src" / "test").get
@@ -28,33 +32,35 @@ libraryDependencies in ThisBuild ++= Seq(
   WartremoverPlugin,
 ) ++ Seq(
   LoggingBundle,
-  SilencerBundle,
 ).flatten
 
-//  - - - - - - - - - - - - - - - - - //
+//  PROJECTS  //
+
+// Shared projects settings
+lazy val sharedSettings = Seq(
+  organization := ProjectNamespace,
+  version := AccountingVersion,
+  scalaVersion := ScalaVersion,
+)
 
 // Root project
 lazy val accountingRoot: Project = project
   .in(file("."))
   .settings(
-    organization := "com.colofabrix.scala.accounting",
     name := "accounting",
-    version := AccountingVersion,
-    scalaVersion := ScalaVersion,
+    sharedSettings,
     libraryDependencies ++= Seq(),
   )
   .aggregate(
-    etlService,
+    etlService, transactionsDbService
   )
 
 // Utils project
 lazy val utils = project
   .in(file("accounting-utils"))
   .settings(
-    organization := "com.colofabrix.scala.accounting",
-    name := "accounting-utils",
-    version := AccountingVersion,
-    scalaVersion := ScalaVersion,
+    name := "utils",
+    sharedSettings,
     libraryDependencies ++= Seq(
       CatsCoreDep,
       CatsScalaTestDep,
@@ -67,10 +73,8 @@ lazy val utils = project
 lazy val model = project
   .in(file("accounting-model"))
   .settings(
-    organization := "com.colofabrix.scala.accounting",
-    name := "accounting-model",
-    version := AccountingVersion,
-    scalaVersion := ScalaVersion,
+    name := "model",
+    sharedSettings,
     libraryDependencies ++= Seq(),
   )
 
@@ -81,21 +85,39 @@ lazy val etlService = project
     utils,
     model,
   )
+  .enablePlugins(BuildInfoPlugin)
   .settings(
-    organization := "com.colofabrix.scala.accounting",
-    name := "accounting-etl-service",
-    version := AccountingVersion,
-    scalaVersion := ScalaVersion,
+    name := "etl-service",
+    sharedSettings,
+    buildInfoKeys := Seq[BuildInfoKey](name, version, scalaVersion, sbtVersion),
+    buildInfoPackage := organization.value,
     libraryDependencies ++= Seq(
-      CirceGenericDep,
-      FS2CoreDep,
-      PureconfigDep,
+      HttpServiceBundle,
+      KantanCsvBundle,
+    ).flatten ++ Seq(
       ScalatestDep,
       ShapelessDep,
-    ) ++ Seq(
-      CatsBundle,
+    ),
+  )
+
+// Transactions DB service
+lazy val transactionsDbService = project
+  .in(file("accounting-trnxs-db-service"))
+  .dependsOn(
+    utils,
+    model,
+  )
+  .enablePlugins(BuildInfoPlugin)
+  .settings(
+    name := "transactions-db-service",
+    sharedSettings,
+    buildInfoKeys := Seq[BuildInfoKey](name, version, scalaVersion, sbtVersion),
+    buildInfoPackage := organization.value,
+    libraryDependencies ++= Seq(
+      HttpServiceBundle,
       KantanCsvBundle,
-      Http4sBundle,
-      TapirBundle,
-    ).flatten,
+    ).flatten ++ Seq(
+      ScalatestDep,
+      ShapelessDep,
+    ),
   )

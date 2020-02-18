@@ -12,6 +12,9 @@ import com.colofabrix.scala.accounting.utils.ThreadPools
 import com.colofabrix.scala.accounting.utils.validation._
 import org.log4s._
 
+/**
+ * Client interface
+ */
 object Client {
 
   private[this] val logger = getLogger

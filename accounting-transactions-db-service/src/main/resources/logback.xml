@@ -1,0 +1,17 @@
+<configuration>
+
+  <appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
+    <withJansi>true</withJansi>
+    <encoder>
+      <pattern>%d{yyyy-MM-dd} %d{HH:mm:ss.SSS} | %green(%thread) | %highlight(%5p) | %cyan(%logger{30}) | %msg%n</pattern>
+      <charset>utf8</charset>
+    </encoder>
+  </appender>
+
+  <logger name="com.colofabrix.scala.accounting" level="TRACE"/>
+
+  <root level="INFO">
+    <appender-ref ref="STDOUT" />
+  </root>
+
+</configuration>

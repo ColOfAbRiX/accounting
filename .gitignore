@@ -11,6 +11,7 @@
 metals.sbt
 out
 target
+TODO*
 
 # Temporary files
 *.csv

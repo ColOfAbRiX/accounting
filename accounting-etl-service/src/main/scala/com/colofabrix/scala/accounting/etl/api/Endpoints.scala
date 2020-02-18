@@ -20,6 +20,7 @@ import sttp.tapir.openapi.OpenAPI
  */
 object Endpoints {
 
+  /** The version of the API */
   val apiVersion: String = "v1.0"
 
   /**

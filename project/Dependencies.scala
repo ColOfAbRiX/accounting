@@ -17,7 +17,6 @@ object Dependencies {
   lazy val PureconfigVersion    = "0.12.2"
   lazy val ScalatestVersion     = "3.1.0"
   lazy val ShapelessVersion     = "2.3.3"
-  lazy val SilencerVersion      = "1.4.3"
   lazy val TapirVersion         = "0.12.16"
 
   //  COMPILER PLUGINS VERSIONS  //
@@ -42,7 +41,6 @@ object Dependencies {
   lazy val PureconfigDep     = "com.github.pureconfig" %% "pureconfig"      % PureconfigVersion
   lazy val ScalatestDep      = "org.scalatest"         %% "scalatest"       % ScalatestVersion % "test"
   lazy val ShapelessDep      = "com.chuusai"           %% "shapeless"       % ShapelessVersion
-  lazy val SilencerDep       = "com.github.ghik"       % "silencer-lib"     % SilencerVersion % Provided cross CrossVersion.full
 
   //  WEB SERVICE  //
 
@@ -64,17 +62,19 @@ object Dependencies {
   lazy val WartremoverPlugin = compilerPlugin(
     "org.wartremover" %% "wartremover" % WartRemoverVersion cross CrossVersion.full,
   )
-  lazy val SilencerPlugin = compilerPlugin(
-    "com.github.ghik" % "silencer-plugin" % SilencerVersion cross CrossVersion.full,
-  )
 
-  //  AGGREGATED  //
+  //  AGGREGATED BUNDLES  //
 
   lazy val CatsBundle      = Seq(CatsCoreDep, CatsEffectsDep, CatsScalaTestDep, KittensDep)
   lazy val Http4sBundle    = Seq(Http4sBlazeServerDep, Http4sCirceDep, Http4sDslDep)
   lazy val KantanCsvBundle = Seq(KantanCatsCsvDep, KantanCsvDep)
   lazy val LoggingBundle   = Seq(Log4sDep, LogbackClassicDep)
-  lazy val SilencerBundle  = Seq(SilencerDep, SilencerPlugin)
+  lazy val HttpServiceBundle =
+    Seq(CirceGenericDep, FS2CoreDep, FS2CoreDep, PureconfigDep) ++
+    Http4sBundle ++
+    TapirBundle ++
+    CatsBundle ++
+    LoggingBundle
   lazy val TapirBundle = Seq(
     TapirCatsDep,
     TapirCoreDep,
