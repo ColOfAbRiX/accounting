@@ -5,7 +5,6 @@ import com.colofabrix.scala.accounting.utils.ADT
 import org.log4s._
 import pureconfig._
 import pureconfig.generic.auto._
-import pureconfig.generic.semiauto._
 
 object config {
 
@@ -14,12 +13,13 @@ object config {
   //  CONFIG  //
 
   final case class ServiceConfig(
-      server: ServerConfig
+      server: ServerConfig,
   ) extends ADT
 
   final case class ServerConfig(
       port: Int,
       host: String,
+      debugMode: Boolean,
   ) extends ADT
 
   /**

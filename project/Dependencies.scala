@@ -53,7 +53,7 @@ object Dependencies {
   lazy val TapirJsonCirceDep        = "com.softwaremill.sttp.tapir" %% "tapir-json-circe"         % TapirVersion
   lazy val TapirOpenAPICirceYamlDep = "com.softwaremill.sttp.tapir" %% "tapir-openapi-circe-yaml" % TapirVersion
   lazy val TapirOpenAPIDocsDep      = "com.softwaremill.sttp.tapir" %% "tapir-openapi-docs"       % TapirVersion
-  lazy val TapirRedocHttp4s         = "com.softwaremill.sttp.tapir" %% "tapir-redoc-http4s"       % TapirVersion
+  lazy val TapirRedocHttp4sDep      = "com.softwaremill.sttp.tapir" %% "tapir-redoc-http4s"       % TapirVersion
 
   //  COMPILER PLUGIN LIBRARIES  //
 
@@ -82,7 +82,7 @@ object Dependencies {
     TapirJsonCirceDep,
     TapirOpenAPICirceYamlDep,
     TapirOpenAPIDocsDep,
-    TapirRedocHttp4s,
+    TapirRedocHttp4sDep,
   )
 
 }

@@ -22,18 +22,19 @@ object config {
   final case class ServerConfig(
       port: Int,
       host: String,
+      debugMode: Boolean,
   ) extends ADT
 
   /**
    * Main application configuration
    */
-  val etlConfig: EtlConfig =
+  val serviceConfig: EtlConfig =
     ConfigSource
       .default
       .at("com.colofabrix.scala.accounting.etl")
       .loadOrThrow[EtlConfig]
 
-  logger.info(s"Loaded configuration: ${Show[EtlConfig].show(etlConfig)}")
+  logger.info(s"Loaded configuration: ${Show[EtlConfig].show(serviceConfig)}")
 
   //  TYPECLASS INSTANCES  //
 

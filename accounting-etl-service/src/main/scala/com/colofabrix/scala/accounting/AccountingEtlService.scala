@@ -8,6 +8,7 @@ import org.http4s._
 import org.http4s.server.blaze.BlazeServerBuilder
 import org.http4s.server.Router
 import org.http4s.syntax.kleisli._
+import scala.io.StdIn
 
 object AccountingEtlService extends IOApp {
 
@@ -19,10 +20,10 @@ object AccountingEtlService extends IOApp {
 
   override def run(args: List[String]): IO[ExitCode] = {
     BlazeServerBuilder[IO]
-      .bindHttp(etlConfig.server.port, etlConfig.server.host)
+      .bindHttp(serviceConfig.server.port, serviceConfig.server.host)
       .withHttpApp(httpApp)
       .resource
-      .use(_ => IO(scala.io.StdIn.readLine()))
+      .use(_ => if (serviceConfig.server.debugMode) IO(StdIn.readLine()) else IO.never)
       .as(ExitCode.Success)
   }
 

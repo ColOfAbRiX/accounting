@@ -1,7 +1,6 @@
 package com.colofabrix.scala.accounting.trnxdb.client
 
 /**
-  * Client interface
-  */
-object Client {
-}
+ * Client interface
+ */
+object Client {}

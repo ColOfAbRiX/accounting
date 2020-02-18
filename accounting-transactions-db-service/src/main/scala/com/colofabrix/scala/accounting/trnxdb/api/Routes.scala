@@ -5,7 +5,6 @@ import cats.implicits._
 import org.http4s.HttpRoutes
 import sttp.tapir.openapi.circe.yaml._
 import sttp.tapir.redoc.http4s.RedocHttp4s
-import sttp.tapir.server.http4s._
 import com.colofabrix.scala.accounting.utils.ThreadPools
 
 /**

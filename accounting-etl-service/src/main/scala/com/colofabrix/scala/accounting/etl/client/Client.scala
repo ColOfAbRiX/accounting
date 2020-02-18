@@ -26,7 +26,7 @@ object Client {
     IO.shift(ThreadPools.compute) *>
     IO {
       logger.info("Requested listSupportedInputs")
-      etlConfig.inputTypes.asRight
+      serviceConfig.inputTypes.asRight
     }
   }
 

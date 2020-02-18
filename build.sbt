@@ -1,31 +1,40 @@
 import Compiler._
 import Dependencies._
 
+lazy val ProjectName      = "accounting"
+lazy val ScalaLangVersion = "2.13.0"
+
 // General
-lazy val ScalaVersion      = "2.13.0"
-lazy val AccountingVersion = "0.8.0-SNAPSHOT"
-lazy val ProjectNamespace  = "com.colofabrix.scala.sample"
+ThisBuild / organization := s"com.colofabrix.scala.${ProjectName.toLowerCase}"
+ThisBuild / scalaVersion := ScalaLangVersion
 
 // Compiler options
-scalacOptions in ThisBuild ++= TpolecatOptions
+ThisBuild / scalacOptions ++= TpolecatOptions
+ThisBuild / developers := List(
+  Developer("ColOfAbRiX", "Fabrizio Colonna", "@ColOfAbRiX", url("http://github.com/ColOfAbRiX")),
+)
 
-// GIT versioning
+// GIT versioning information
 enablePlugins(GitVersioning)
+ThisBuild / git.useGitDescribe := true
+ThisBuild / git.gitTagToVersionNumber := { tag: String =>
+  if (tag matches "[0-9]+\\..*") Some(tag) else None
+}
 
 // Wartremover
-wartremoverExcluded in ThisBuild ++= (baseDirectory.value * "**" / "src" / "test").get
-wartremoverErrors in ThisBuild ++= Warts.allBut(
+ThisBuild / wartremoverExcluded ++= (baseDirectory.value * "**" / "src" / "test").get
+ThisBuild / wartremoverErrors ++= Warts.allBut(
   Wart.Any,
   Wart.Nothing,
   Wart.Overloading,
   Wart.ToString,
 )
 
-// Standardize formatting
-scalafmtOnCompile in ThisBuild := true
+// Scalafmt
+ThisBuild / scalafmtOnCompile := true
 
 // Global dependencies and compiler plugins
-libraryDependencies in ThisBuild ++= Seq(
+ThisBuild / libraryDependencies ++= Seq(
   BetterMonadicForPlugin,
   KindProjectorPlugin,
   PPrintDep,
@@ -36,23 +45,15 @@ libraryDependencies in ThisBuild ++= Seq(
 
 //  PROJECTS  //
 
-// Shared projects settings
-lazy val sharedSettings = Seq(
-  organization := ProjectNamespace,
-  version := AccountingVersion,
-  scalaVersion := ScalaVersion,
-)
-
 // Root project
-lazy val accountingRoot: Project = project
+lazy val rootProject: Project = project
   .in(file("."))
   .settings(
-    name := "accounting",
-    sharedSettings,
-    libraryDependencies ++= Seq(),
+    name := ProjectName,
   )
   .aggregate(
-    etlService, transactionsDbService
+    etlService,
+    transactionsDbService,
   )
 
 // Utils project
@@ -60,7 +61,6 @@ lazy val utils = project
   .in(file("accounting-utils"))
   .settings(
     name := "utils",
-    sharedSettings,
     libraryDependencies ++= Seq(
       CatsCoreDep,
       CatsScalaTestDep,
@@ -74,7 +74,6 @@ lazy val model = project
   .in(file("accounting-model"))
   .settings(
     name := "model",
-    sharedSettings,
     libraryDependencies ++= Seq(),
   )
 
@@ -88,7 +87,7 @@ lazy val etlService = project
   .enablePlugins(BuildInfoPlugin)
   .settings(
     name := "etl-service",
-    sharedSettings,
+    description := "Accounting ETL Service",
     buildInfoKeys := Seq[BuildInfoKey](name, version, scalaVersion, sbtVersion),
     buildInfoPackage := organization.value,
     libraryDependencies ++= Seq(
@@ -102,7 +101,7 @@ lazy val etlService = project
 
 // Transactions DB service
 lazy val transactionsDbService = project
-  .in(file("accounting-trnxs-db-service"))
+  .in(file("accounting-transactions-db-service"))
   .dependsOn(
     utils,
     model,
@@ -110,7 +109,7 @@ lazy val transactionsDbService = project
   .enablePlugins(BuildInfoPlugin)
   .settings(
     name := "transactions-db-service",
-    sharedSettings,
+    description := "Accounting Transactions DB Service",
     buildInfoKeys := Seq[BuildInfoKey](name, version, scalaVersion, sbtVersion),
     buildInfoPackage := organization.value,
     libraryDependencies ++= Seq(
