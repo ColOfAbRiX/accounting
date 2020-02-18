@@ -8,6 +8,7 @@ import com.colofabrix.scala.accounting.etl.model.Config._
 import com.colofabrix.scala.accounting.model.Transaction
 import com.colofabrix.scala.accounting.utils.validation._
 import com.colofabrix.scala.accounting.utils.validation.{ ValidationError => VError }
+import com.colofabrix.scala.accounting.BuildInfo
 import io.circe.generic.auto._
 import sttp.tapir._
 import sttp.tapir.codec.cats._
@@ -91,7 +92,7 @@ object Endpoints {
       convertRecord,
       convertRecords,
     ).toOpenAPI(
-      "Accounting ETL Service",
+      BuildInfo.description,
       apiVersion,
     )
   }

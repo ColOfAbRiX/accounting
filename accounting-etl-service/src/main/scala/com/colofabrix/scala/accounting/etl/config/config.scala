@@ -3,6 +3,7 @@ package com.colofabrix.scala.accounting.etl
 import cats.Show
 import com.colofabrix.scala.accounting.etl.model.Config._
 import com.colofabrix.scala.accounting.utils.ADT
+import com.colofabrix.scala.accounting.BuildInfo
 import org.log4s._
 import pureconfig._
 import pureconfig.generic.auto._
@@ -31,7 +32,7 @@ object config {
   val serviceConfig: EtlConfig =
     ConfigSource
       .default
-      .at("com.colofabrix.scala.accounting.etl")
+      .at(BuildInfo.projectPackage)
       .loadOrThrow[EtlConfig]
 
   logger.info(s"Loaded configuration: ${Show[EtlConfig].show(serviceConfig)}")

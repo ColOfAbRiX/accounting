@@ -9,6 +9,7 @@ import sttp.tapir.openapi.circe.yaml._
 import sttp.tapir.redoc.http4s.RedocHttp4s
 import sttp.tapir.server.http4s._
 import com.colofabrix.scala.accounting.utils.ThreadPools
+import com.colofabrix.scala.accounting.BuildInfo
 
 object Routes {
 
@@ -18,7 +19,7 @@ object Routes {
   val convertRecordRoute: HttpRoutes[IO]       = Endpoints.convertRecord.toRoutes((Client.convertRecord _).tupled)
   val convertRecordsRoute: HttpRoutes[IO]      = Endpoints.convertRecords.toRoutes((Client.convertRecords _).tupled)
   val redocDocsRoute: HttpRoutes[IO] = {
-    new RedocHttp4s("Accounting ETL API", Endpoints.openApiDocsEndpoint.toYaml).routes
+    new RedocHttp4s(BuildInfo.description, Endpoints.openApiDocsEndpoint.toYaml).routes
   }
 
   def allRoutes: HttpRoutes[IO] = {

@@ -1,7 +1,8 @@
-package com.colofabrix.scala.accounting.trnxdb
+package com.colofabrix.scala.accounting.transactionsdb
 
 import cats.Show
 import com.colofabrix.scala.accounting.utils.ADT
+import com.colofabrix.scala.accounting.BuildInfo
 import org.log4s._
 import pureconfig._
 import pureconfig.generic.auto._
@@ -28,7 +29,7 @@ object config {
   val serviceConfig: ServiceConfig =
     ConfigSource
       .default
-      .at("com.colofabrix.scala.accounting.trnxdb")
+      .at(BuildInfo.projectPackage)
       .loadOrThrow[ServiceConfig]
 
   logger.info(s"Loaded configuration: ${Show[ServiceConfig].show(serviceConfig)}")

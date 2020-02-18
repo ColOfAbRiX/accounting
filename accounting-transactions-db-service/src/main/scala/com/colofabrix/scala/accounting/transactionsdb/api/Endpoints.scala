@@ -1,5 +1,6 @@
-package com.colofabrix.scala.accounting.trnxdb.api
+package com.colofabrix.scala.accounting.transactionsdb.api
 
+import com.colofabrix.scala.accounting.BuildInfo
 import sttp.tapir._
 import sttp.tapir.docs.openapi._
 import sttp.tapir.openapi.OpenAPI
@@ -17,7 +18,7 @@ object Endpoints {
    */
   val openApiDocsEndpoint: OpenAPI = {
     List[Endpoint[_, _, _, _]]().toOpenAPI(
-      "Accounting Transactions DB Service",
+      BuildInfo.description,
       apiVersion,
     )
   }

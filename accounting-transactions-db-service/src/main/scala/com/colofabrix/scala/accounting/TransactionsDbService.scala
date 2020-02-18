@@ -2,8 +2,8 @@ package com.colofabrix.scala.accounting
 
 import cats.effect._
 import cats.implicits._
-import com.colofabrix.scala.accounting.trnxdb.config._
-import com.colofabrix.scala.accounting.trnxdb.api.Routes
+import com.colofabrix.scala.accounting.transactionsdb.config._
+import com.colofabrix.scala.accounting.transactionsdb.api.Routes
 import org.http4s._
 import org.http4s.server.blaze.BlazeServerBuilder
 import org.http4s.server.Router

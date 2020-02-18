@@ -33,6 +33,19 @@ ThisBuild / wartremoverErrors ++= Warts.allBut(
 // Scalafmt
 ThisBuild / scalafmtOnCompile := true
 
+// Settings for BuildInfo
+lazy val buildInfoSettings = List(
+  buildInfoPackage := organization.value,
+  buildInfoKeys ++= Seq[BuildInfoKey](
+    "organization"   -> organization.value,
+    "description"    -> description.value,
+    "projectPackage" -> {
+      val subPackage = name.value.replaceAll("-service$", "").replaceAll("-", "")
+      if (subPackage.nonEmpty) s"${organization.value}.$subPackage" else organization.value
+    },
+  )
+)
+
 // Global dependencies and compiler plugins
 ThisBuild / libraryDependencies ++= Seq(
   BetterMonadicForPlugin,
@@ -88,8 +101,7 @@ lazy val etlService = project
   .settings(
     name := "etl-service",
     description := "Accounting ETL Service",
-    buildInfoKeys := Seq[BuildInfoKey](name, version, scalaVersion, sbtVersion),
-    buildInfoPackage := organization.value,
+    buildInfoSettings,
     libraryDependencies ++= Seq(
       HttpServiceBundle,
       KantanCsvBundle,
@@ -110,8 +122,7 @@ lazy val transactionsDbService = project
   .settings(
     name := "transactions-db-service",
     description := "Accounting Transactions DB Service",
-    buildInfoKeys := Seq[BuildInfoKey](name, version, scalaVersion, sbtVersion),
-    buildInfoPackage := organization.value,
+    buildInfoSettings,
     libraryDependencies ++= Seq(
       HttpServiceBundle,
       KantanCsvBundle,
