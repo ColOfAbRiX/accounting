@@ -53,17 +53,44 @@ ThisBuild / libraryDependencies ++= Seq(
 
 //  PROJECTS  //
 
+// Discpver projects from directories
+lazy val modules: Seq[Project] = (file(".") * "module-*" filter (_.isDirectory))
+  .get
+  .map { dir =>
+    val projectName = dir.name.replaceAll("^module-", "")
+    val projectNameCamel = """-([a-z\d])""".r.replaceAllIn(projectName, {m =>
+      m.group(1).toUpperCase()
+    })
+    Project(projectNameCamel, dir)
+      .enablePlugins(BuildInfoPlugin)
+      .settings(
+        name := dir.name,
+        buildInfoSettings
+      )
+  }
+
 // Root project
-lazy val rootProject: Project = project
+lazy val rootProject = project
   .in(file("."))
   .settings(
-    name := "root",
+    name := "accounting",
     description := "Accounting",
   )
-  .aggregate(
-    etlService,
-    transactionsDbService,
-  )
+  .aggregate(modules.map(m => m: ProjectReference): _*)
+  .dependsOn(modules.map(m => m: ClasspathDependency): _*)
+
+//// Root project
+//lazy val rootProject: Project = project
+//  .in(file("."))
+//  .settings(
+//    name := "accounting",
+//    description := "Accounting",
+//  )
+//  .aggregate(
+//    etlService,
+//    transactionsDbService,
+//  )
+
 
 // Utils project
 lazy val utils = project
@@ -98,7 +125,6 @@ lazy val etlService = project
   .settings(
     name := "etl-service",
     description := "Accounting ETL Service",
-    buildInfoSettings,
     libraryDependencies ++= Seq(
       HttpServiceBundle,
       KantanCsvBundle,
@@ -119,7 +145,6 @@ lazy val transactionsDbService = project
   .settings(
     name := "transactions-db-service",
     description := "Accounting Transactions DB Service",
-    buildInfoSettings,
     libraryDependencies ++= Seq(
       HttpServiceBundle,
       KantanCsvBundle,
@@ -128,21 +153,3 @@ lazy val transactionsDbService = project
       ShapelessDep,
     ),
   )
-
-//lazy val modules = (file("module-") * DirectoryFilter)
-//  .get
-//  .map { dir =>
-//    Project(dir.getName, dir)
-//      .enablePlugins(BuildInfoPlugin)
-//      .settings(buildInfoSettings: _*)
-//  }
-//
-//lazy val root = (project in file("."))
-//  .enablePlugins(BuildInfoPlugin)
-//  .settings(buildInfoSettings: _*)
-//  .dependsOn(modules.map(m => m: ClasspathDependency): _*)
-//  .aggregate(modules.map(m => m: ProjectReference): _*)
-//  .settings(
-//    name := "mysite",
-//    version := "1.0"
-//  )
