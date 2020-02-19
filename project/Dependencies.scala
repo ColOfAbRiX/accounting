@@ -10,7 +10,6 @@ object Dependencies {
   lazy val FS2Version           = "2.2.1"
   lazy val Http4sVersion        = "0.21.0-RC1"
   lazy val KantanCsvVersion     = "0.6.0"
-  lazy val KittensVersion       = "2.0.0"
   lazy val Log4sVersion         = "1.8.2"
   lazy val LogbackVersion       = "1.2.3"
   lazy val PPrintVersion        = "0.5.8"
@@ -34,7 +33,6 @@ object Dependencies {
   lazy val FS2CoreDep        = "co.fs2"                %% "fs2-core"        % FS2Version
   lazy val KantanCatsCsvDep  = "com.nrinaudo"          %% "kantan.csv-cats" % KantanCsvVersion
   lazy val KantanCsvDep      = "com.nrinaudo"          %% "kantan.csv"      % KantanCsvVersion
-  lazy val KittensDep        = "org.typelevel"         %% "kittens"         % KittensVersion
   lazy val Log4sDep          = "org.log4s"             %% "log4s"           % Log4sVersion
   lazy val LogbackClassicDep = "ch.qos.logback"        % "logback-classic"  % LogbackVersion
   lazy val PPrintDep         = "com.lihaoyi"           %% "pprint"          % PPrintVersion
@@ -63,14 +61,14 @@ object Dependencies {
     "org.wartremover" %% "wartremover" % WartRemoverVersion cross CrossVersion.full,
   )
 
-  //  AGGREGATED BUNDLES  //
+  //  DEPENDENCY BUNDLES  //
 
-  lazy val CatsBundle      = Seq(CatsCoreDep, CatsEffectsDep, CatsScalaTestDep, KittensDep)
+  lazy val CatsBundle      = Seq(CatsCoreDep, CatsEffectsDep, CatsScalaTestDep)
   lazy val Http4sBundle    = Seq(Http4sBlazeServerDep, Http4sCirceDep, Http4sDslDep)
   lazy val KantanCsvBundle = Seq(KantanCatsCsvDep, KantanCsvDep)
   lazy val LoggingBundle   = Seq(Log4sDep, LogbackClassicDep)
   lazy val HttpServiceBundle =
-    Seq(CirceGenericDep, FS2CoreDep, FS2CoreDep, PureconfigDep) ++
+    Seq(CirceGenericDep, FS2CoreDep, PureconfigDep) ++
     Http4sBundle ++
     TapirBundle ++
     CatsBundle ++

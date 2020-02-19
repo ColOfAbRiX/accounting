@@ -1,6 +1,6 @@
 object Compiler {
 
-  lazy val cores = java.lang.Runtime.getRuntime.availableProcessors
+  private lazy val cores = java.lang.Runtime.getRuntime.availableProcessors
 
   // Compiler options
   // https://nathankleyn.com/2019/05/13/recommended-scalac-flags-for-2-13/
@@ -40,7 +40,7 @@ object Compiler {
     "-Ywarn-unused:patvars",                     // Warn if a variable bound in a pattern is unused.
     "-Ywarn-unused:privates",                    // Warn if a private member is unused.
     "-Ywarn-value-discard",                      // Warn when non-Unit expression results are unused.
-    "-Ybackend-parallelism", cores.toString,     // Enable paralellisation — change to desired number!
+    "-Ybackend-parallelism", cores.toString,     // Enable paralellisation
     "-Ycache-plugin-class-loader:last-modified", // Enables caching of classloaders for compiler plugins
     "-Ycache-macro-class-loader:last-modified",  // and macro definitions. This can lead to performance improvements.
   )

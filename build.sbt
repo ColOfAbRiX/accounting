@@ -1,25 +1,20 @@
-import Compiler._
 import Dependencies._
 
-lazy val ProjectName      = "accounting"
 lazy val ScalaLangVersion = "2.13.0"
 
 // General
-ThisBuild / organization := s"com.colofabrix.scala.${ProjectName.toLowerCase}"
+ThisBuild / organization := s"com.colofabrix.scala.accounting"
 ThisBuild / scalaVersion := ScalaLangVersion
 
 // Compiler options
-ThisBuild / scalacOptions ++= TpolecatOptions
+ThisBuild / scalacOptions ++= Compiler.TpolecatOptions
 ThisBuild / developers := List(
   Developer("ColOfAbRiX", "Fabrizio Colonna", "@ColOfAbRiX", url("http://github.com/ColOfAbRiX")),
 )
 
-// GIT versioning information
-enablePlugins(GitVersioning)
-ThisBuild / git.useGitDescribe := true
-ThisBuild / git.gitTagToVersionNumber := { tag: String =>
-  if (tag matches "[0-9]+\\..*") Some(tag) else None
-}
+// GIT version information
+ThisBuild / dynverSeparator := "-"
+ThisBuild / dynverVTagPrefix := false
 
 // Wartremover
 ThisBuild / wartremoverExcluded ++= (baseDirectory.value * "**" / "src" / "test").get
@@ -33,7 +28,7 @@ ThisBuild / wartremoverErrors ++= Warts.allBut(
 // Scalafmt
 ThisBuild / scalafmtOnCompile := true
 
-// Settings for BuildInfo
+// BuildInfo settings
 lazy val buildInfoSettings = List(
   buildInfoPackage := organization.value,
   buildInfoKeys ++= Seq[BuildInfoKey](
@@ -62,7 +57,8 @@ ThisBuild / libraryDependencies ++= Seq(
 lazy val rootProject: Project = project
   .in(file("."))
   .settings(
-    name := ProjectName,
+    name := "root",
+    description := "Accounting",
   )
   .aggregate(
     etlService,
@@ -71,9 +67,10 @@ lazy val rootProject: Project = project
 
 // Utils project
 lazy val utils = project
-  .in(file("accounting-utils"))
+  .in(file("module-utils"))
   .settings(
     name := "utils",
+    description := "Global Utilities",
     libraryDependencies ++= Seq(
       CatsCoreDep,
       CatsScalaTestDep,
@@ -84,7 +81,7 @@ lazy val utils = project
 
 // Business Model project
 lazy val model = project
-  .in(file("accounting-model"))
+  .in(file("module-model"))
   .settings(
     name := "model",
     libraryDependencies ++= Seq(),
@@ -92,7 +89,7 @@ lazy val model = project
 
 // ETL Service project
 lazy val etlService = project
-  .in(file("accounting-etl-service"))
+  .in(file("module-etl-service"))
   .dependsOn(
     utils,
     model,
@@ -113,7 +110,7 @@ lazy val etlService = project
 
 // Transactions DB service
 lazy val transactionsDbService = project
-  .in(file("accounting-transactions-db-service"))
+  .in(file("module-transactions-db-service"))
   .dependsOn(
     utils,
     model,
@@ -131,3 +128,21 @@ lazy val transactionsDbService = project
       ShapelessDep,
     ),
   )
+
+//lazy val modules = (file("module-") * DirectoryFilter)
+//  .get
+//  .map { dir =>
+//    Project(dir.getName, dir)
+//      .enablePlugins(BuildInfoPlugin)
+//      .settings(buildInfoSettings: _*)
+//  }
+//
+//lazy val root = (project in file("."))
+//  .enablePlugins(BuildInfoPlugin)
+//  .settings(buildInfoSettings: _*)
+//  .dependsOn(modules.map(m => m: ClasspathDependency): _*)
+//  .aggregate(modules.map(m => m: ProjectReference): _*)
+//  .settings(
+//    name := "mysite",
+//    version := "1.0"
+//  )
