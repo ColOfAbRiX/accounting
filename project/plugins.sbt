@@ -1,8 +1,8 @@
-
 //  VERSIONS  //
 
 lazy val AssemblyVersion       = "0.14.6"
 lazy val BuildinfoVesion       = "0.9.0"
+lazy val ErrorsSummaryVersion  = "0.6.3"
 lazy val GitVersion            = "1.0.0"
 lazy val NativePackagerVersion = "1.3.25"
 lazy val RevolverVersion       = "0.9.1"
@@ -20,5 +20,6 @@ addSbtPlugin("com.orrsella"     % "sbt-stats"           % SbtStatsVersion)
 addSbtPlugin("com.typesafe.sbt" % "sbt-git"             % GitVersion)
 addSbtPlugin("com.typesafe.sbt" % "sbt-native-packager" % NativePackagerVersion)
 addSbtPlugin("io.spray"         % "sbt-revolver"        % RevolverVersion)
+addSbtPlugin("org.duhemm"       % "sbt-errors-summary"  % ErrorsSummaryVersion)
 addSbtPlugin("org.scalameta"    % "sbt-scalafmt"        % ScalafmtVersion)
 addSbtPlugin("org.wartremover"  % "sbt-wartremover"     % WartremoverVersion)
