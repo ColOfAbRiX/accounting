@@ -3,7 +3,6 @@ package com.colofabrix.scala.accounting.etl
 import cats.Show
 import com.colofabrix.scala.accounting.etl.model.Config._
 import com.colofabrix.scala.accounting.utils.ADT
-import com.colofabrix.scala.accounting.BuildInfo
 import org.log4s._
 import pureconfig._
 import pureconfig.generic.auto._

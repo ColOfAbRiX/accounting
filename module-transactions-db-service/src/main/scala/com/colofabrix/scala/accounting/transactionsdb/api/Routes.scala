@@ -2,11 +2,11 @@ package com.colofabrix.scala.accounting.transactionsdb.api
 
 import cats.effect._
 import cats.implicits._
+import com.colofabrix.scala.accounting.transactionsdb.BuildInfo
+import com.colofabrix.scala.accounting.utils.ThreadPools
 import org.http4s.HttpRoutes
 import sttp.tapir.openapi.circe.yaml._
 import sttp.tapir.redoc.http4s.RedocHttp4s
-import com.colofabrix.scala.accounting.utils.ThreadPools
-import com.colofabrix.scala.accounting.BuildInfo
 
 /**
  * Routes receive requests and compute responses

@@ -2,7 +2,6 @@ package com.colofabrix.scala.accounting.transactionsdb
 
 import cats.Show
 import com.colofabrix.scala.accounting.utils.ADT
-import com.colofabrix.scala.accounting.BuildInfo
 import org.log4s._
 import pureconfig._
 import pureconfig.generic.auto._

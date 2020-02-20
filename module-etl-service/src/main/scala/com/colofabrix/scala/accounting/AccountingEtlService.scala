@@ -2,13 +2,13 @@ package com.colofabrix.scala.accounting
 
 import cats.effect._
 import cats.implicits._
+import com.colofabrix.scala.accounting.etl.Server
 import com.colofabrix.scala.accounting.etl.api._
 import com.colofabrix.scala.accounting.etl.config._
-import org.http4s._
-import org.http4s.server.blaze.BlazeServerBuilder
+import org.http4s.HttpApp
 import org.http4s.server.Router
+import org.http4s.server.blaze.BlazeServerBuilder
 import org.http4s.syntax.kleisli._
-import scala.io.StdIn
 
 object AccountingEtlService extends IOApp {
 
@@ -23,7 +23,7 @@ object AccountingEtlService extends IOApp {
       .bindHttp(serviceConfig.server.port, serviceConfig.server.host)
       .withHttpApp(httpApp)
       .resource
-      .use(_ => if (serviceConfig.server.debugMode) IO(StdIn.readLine()) else IO.never)
+      .use(Server.main)
       .as(ExitCode.Success)
   }
 

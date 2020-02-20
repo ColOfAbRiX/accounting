@@ -20,9 +20,10 @@ object Dependencies {
 
   //  COMPILER PLUGINS VERSIONS  //
 
-  lazy val WartRemoverVersion      = "2.4.3"
-  lazy val KindProjectorVersion    = "0.10.3"
   lazy val BetterMonadicForVersion = "0.3.0"
+  lazy val KindProjectorVersion    = "0.10.3"
+  lazy val SlainVersion            = "0.4.1"
+  lazy val WartRemoverVersion      = "2.4.3"
 
   //  LIBRARIES  //
 
@@ -57,6 +58,7 @@ object Dependencies {
 
   lazy val BetterMonadicForPlugin = compilerPlugin("com.olegpy"    %% "better-monadic-for" % BetterMonadicForVersion)
   lazy val KindProjectorPlugin    = compilerPlugin("org.typelevel" %% "kind-projector"     % KindProjectorVersion)
+  lazy val SlainPlugin            = compilerPlugin("io.tryp"       % "splain"              % SlainVersion cross CrossVersion.patch)
   lazy val WartremoverPlugin = compilerPlugin(
     "org.wartremover" %% "wartremover" % WartRemoverVersion cross CrossVersion.full,
   )

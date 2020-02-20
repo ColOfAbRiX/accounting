@@ -2,13 +2,13 @@ package com.colofabrix.scala.accounting
 
 import cats.effect._
 import cats.implicits._
-import com.colofabrix.scala.accounting.transactionsdb.config._
+import com.colofabrix.scala.accounting.transactionsdb.Server
 import com.colofabrix.scala.accounting.transactionsdb.api.Routes
-import org.http4s._
-import org.http4s.server.blaze.BlazeServerBuilder
+import com.colofabrix.scala.accounting.transactionsdb.config._
+import org.http4s.HttpApp
 import org.http4s.server.Router
+import org.http4s.server.blaze.BlazeServerBuilder
 import org.http4s.syntax.kleisli._
-import scala.io.StdIn
 
 object TransactionsDbService extends IOApp {
 
@@ -23,7 +23,7 @@ object TransactionsDbService extends IOApp {
       .bindHttp(serviceConfig.server.port, serviceConfig.server.host)
       .withHttpApp(httpApp)
       .resource
-      .use(_ => IO(if (serviceConfig.server.debugMode) StdIn.readLine() else ()))
+      .use(Server.main)
       .as(ExitCode.Success)
   }
 

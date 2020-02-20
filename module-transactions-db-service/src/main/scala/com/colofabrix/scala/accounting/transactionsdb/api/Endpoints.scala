@@ -1,6 +1,6 @@
 package com.colofabrix.scala.accounting.transactionsdb.api
 
-import com.colofabrix.scala.accounting.BuildInfo
+import com.colofabrix.scala.accounting.transactionsdb.BuildInfo
 import sttp.tapir._
 import sttp.tapir.docs.openapi._
 import sttp.tapir.openapi.OpenAPI

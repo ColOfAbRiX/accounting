@@ -1,19 +1,19 @@
 import Dependencies._
+import AllProjectsKeys.autoImport._
 
 lazy val ScalaLangVersion = "2.13.0"
 
 // General
-ThisBuild / organization := s"com.colofabrix.scala.accounting"
+ThisBuild / organization := "com.colofabrix.scala.accounting"
 ThisBuild / scalaVersion := ScalaLangVersion
 
 // Compiler options
-ThisBuild / scalacOptions ++= Compiler.TpolecatOptions
+ThisBuild / scalacOptions ++= Compiler.TpolecatOptions ++ Seq("-P:splain:all")
 ThisBuild / developers := List(
   Developer("ColOfAbRiX", "Fabrizio Colonna", "@ColOfAbRiX", url("http://github.com/ColOfAbRiX")),
 )
 
 // GIT version information
-ThisBuild / dynverSeparator := "-"
 ThisBuild / dynverVTagPrefix := false
 
 // Wartremover
@@ -28,24 +28,12 @@ ThisBuild / wartremoverErrors ++= Warts.allBut(
 // Scalafmt
 ThisBuild / scalafmtOnCompile := true
 
-// BuildInfo settings
-lazy val buildInfoSettings = List(
-  buildInfoPackage := organization.value,
-  buildInfoKeys ++= Seq[BuildInfoKey](
-    "organization"   -> organization.value,
-    "description"    -> description.value,
-    "projectPackage" -> {
-      val subPackage = name.value.replaceAll("-service$", "").replaceAll("-", "")
-      if (subPackage.nonEmpty) s"${organization.value}.$subPackage" else organization.value
-    },
-  )
-)
-
 // Global dependencies and compiler plugins
 ThisBuild / libraryDependencies ++= Seq(
   BetterMonadicForPlugin,
   KindProjectorPlugin,
   PPrintDep,
+  SlainPlugin,
   WartremoverPlugin,
 ) ++ Seq(
   LoggingBundle,
@@ -53,44 +41,17 @@ ThisBuild / libraryDependencies ++= Seq(
 
 //  PROJECTS  //
 
-// Discpver projects from directories
-lazy val modules: Seq[Project] = (file(".") * "module-*" filter (_.isDirectory))
-  .get
-  .map { dir =>
-    val projectName = dir.name.replaceAll("^module-", "")
-    val projectNameCamel = """-([a-z\d])""".r.replaceAllIn(projectName, {m =>
-      m.group(1).toUpperCase()
-    })
-    Project(projectNameCamel, dir)
-      .enablePlugins(BuildInfoPlugin)
-      .settings(
-        name := dir.name,
-        buildInfoSettings
-      )
-  }
-
 // Root project
-lazy val rootProject = project
+lazy val rootProject: Project = project
   .in(file("."))
   .settings(
     name := "accounting",
     description := "Accounting",
   )
-  .aggregate(modules.map(m => m: ProjectReference): _*)
-  .dependsOn(modules.map(m => m: ClasspathDependency): _*)
-
-//// Root project
-//lazy val rootProject: Project = project
-//  .in(file("."))
-//  .settings(
-//    name := "accounting",
-//    description := "Accounting",
-//  )
-//  .aggregate(
-//    etlService,
-//    transactionsDbService,
-//  )
-
+  .aggregate(
+    etlService,
+    transactionsDbService,
+  )
 
 // Utils project
 lazy val utils = project
@@ -125,6 +86,8 @@ lazy val etlService = project
   .settings(
     name := "etl-service",
     description := "Accounting ETL Service",
+    buildInfoPackage := projectPackage.value,
+    buildInfoKeys ++= projectBuildInfo.value,
     libraryDependencies ++= Seq(
       HttpServiceBundle,
       KantanCsvBundle,
@@ -145,6 +108,8 @@ lazy val transactionsDbService = project
   .settings(
     name := "transactions-db-service",
     description := "Accounting Transactions DB Service",
+    buildInfoPackage := projectPackage.value,
+    buildInfoKeys ++= projectBuildInfo.value,
     libraryDependencies ++= Seq(
       HttpServiceBundle,
       KantanCsvBundle,
