@@ -2,7 +2,6 @@
 
 lazy val AssemblyVersion       = "0.14.6"
 lazy val BuildinfoVesion       = "0.9.0"
-lazy val CoursierVersion       = "2.0.0-RC6"
 lazy val DynverVersion         = "4.0.0"
 lazy val ErrorsSummaryVersion  = "0.6.3"
 lazy val NativePackagerVersion = "1.3.25"
@@ -19,7 +18,6 @@ addSbtPlugin("com.eed3si9n"     % "sbt-assembly"        % AssemblyVersion)
 addSbtPlugin("com.eed3si9n"     % "sbt-buildinfo"       % BuildinfoVesion)
 addSbtPlugin("com.orrsella"     % "sbt-stats"           % SbtStatsVersion)
 addSbtPlugin("com.typesafe.sbt" % "sbt-native-packager" % NativePackagerVersion)
-addSbtPlugin("io.get-coursier"  % "sbt-coursier"        % CoursierVersion)
 addSbtPlugin("org.duhemm"       % "sbt-errors-summary"  % ErrorsSummaryVersion)
 addSbtPlugin("org.scalameta"    % "sbt-scalafmt"        % ScalafmtVersion)
 addSbtPlugin("org.wartremover"  % "sbt-wartremover"     % WartremoverVersion)

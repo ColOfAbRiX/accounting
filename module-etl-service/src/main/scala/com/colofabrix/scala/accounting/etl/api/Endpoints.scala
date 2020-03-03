@@ -31,7 +31,6 @@ object Endpoints {
     endpoint
       .in("api" / apiVersion)
       .errorOut(jsonBody[ErrorInfo])
-    // .errorOut(statusCode and jsonBody[ErrorInfo])
   }
 
   /**

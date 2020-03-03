@@ -1,4 +1,4 @@
-package com.colofabrix.scala.accounting.transactionsdb.api
+package com.colofabrix.scala.accounting.transactions.api
 
 /**
  * Tapir codecs to convert to and from wire values

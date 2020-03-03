@@ -12,7 +12,7 @@ object TapirCodecs {
 
   /** Tapir I/O codec for the type of input that can be decoded */
   implicit val inputTypeEndpointTapirCodec: PlainCodec[InputType] = {
-    implicitly[PlainCodec[String]].map(InputType(_))(_.description)
+    implicitly[PlainCodec[String]].map(InputType(_))(_.entryName)
   }
 
   //  NEWTYPE  //
@@ -40,7 +40,7 @@ object CirceCodecs {
    * Encoder for InputType -> JSON
    * See https://stackoverflow.com/a/59089128/1215156
    */
-  implicit val inputTypeJsonEnc: Enc[InputType] = Enc[String].contramap(_.description)
+  implicit val inputTypeJsonEnc: Enc[InputType] = Enc[String].contramap(_.entryName)
 
   /** Circe encoder for Validated */
   implicit def validatedEnc[E, A](implicit necEnc: Enc[NEC[E]], aEnc: Enc[A]): Enc[Validated[NEC[E], A]] =

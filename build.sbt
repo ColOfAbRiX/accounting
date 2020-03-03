@@ -89,6 +89,7 @@ lazy val etlService = project
     buildInfoPackage := projectPackage.value,
     buildInfoKeys ++= projectBuildInfo.value,
     libraryDependencies ++= Seq(
+      EnumeratumBundle,
       HttpServiceBundle,
       KantanCsvBundle,
     ).flatten ++ Seq(
@@ -99,18 +100,19 @@ lazy val etlService = project
 
 // Transactions DB service
 lazy val transactionsDbService = project
-  .in(file("module-transactions-db-service"))
+  .in(file("module-transactions-service"))
   .dependsOn(
     utils,
     model,
   )
   .enablePlugins(BuildInfoPlugin)
   .settings(
-    name := "transactions-db-service",
+    name := "transactions-service",
     description := "Accounting Transactions DB Service",
     buildInfoPackage := projectPackage.value,
     buildInfoKeys ++= projectBuildInfo.value,
     libraryDependencies ++= Seq(
+      EnumeratumBundle,
       HttpServiceBundle,
       KantanCsvBundle,
     ).flatten ++ Seq(

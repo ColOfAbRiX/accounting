@@ -2,15 +2,15 @@ package com.colofabrix.scala.accounting
 
 import cats.effect._
 import cats.implicits._
-import com.colofabrix.scala.accounting.transactionsdb.Server
-import com.colofabrix.scala.accounting.transactionsdb.api.Routes
-import com.colofabrix.scala.accounting.transactionsdb.config._
+import com.colofabrix.scala.accounting.transactions.Server
+import com.colofabrix.scala.accounting.transactions.api.Routes
+import com.colofabrix.scala.accounting.transactions.config._
 import org.http4s.HttpApp
 import org.http4s.server.Router
 import org.http4s.server.blaze.BlazeServerBuilder
 import org.http4s.syntax.kleisli._
 
-object TransactionsDbService extends IOApp {
+object TransactionsService extends IOApp {
 
   private[this] def httpApp: HttpApp[IO] =
     Router(

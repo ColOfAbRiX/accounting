@@ -11,6 +11,7 @@ import com.colofabrix.scala.accounting.model._
 import com.colofabrix.scala.accounting.utils.validation._
 import java.time.LocalDate
 import shapeless._
+import java.{ util => ju }
 
 /**
  * Halifax API data processor
@@ -42,7 +43,7 @@ class HalifaxApiInput
   }
 
   def toTransaction(input: HalifaxTransaction): Transaction = {
-    Transaction(input.date, input.amount, input.description, "Halifax", "", "", "")
+    Transaction(ju.UUID.randomUUID, input.date, input.amount, input.description, "Halifax", "", "", "")
   }
 
 }

@@ -1,8 +1,8 @@
-package com.colofabrix.scala.accounting.transactionsdb.api
+package com.colofabrix.scala.accounting.transactions.api
 
 import cats.effect._
 import cats.implicits._
-import com.colofabrix.scala.accounting.transactionsdb.BuildInfo
+import com.colofabrix.scala.accounting.transactions.BuildInfo
 import com.colofabrix.scala.accounting.utils.ThreadPools
 import org.http4s.HttpRoutes
 import sttp.tapir.openapi.circe.yaml._

@@ -2,6 +2,7 @@ package com.colofabrix.scala.accounting.etl.api
 
 import com.colofabrix.scala.accounting.etl.api.TapirCodecs._
 import com.colofabrix.scala.accounting.etl.model.Config._
+import com.colofabrix.scala.accounting.etl.model.Config.InputType.BarclaysInputType
 import sttp.tapir._
 
 /**

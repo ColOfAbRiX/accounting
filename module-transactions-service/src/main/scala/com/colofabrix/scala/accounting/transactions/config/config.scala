@@ -1,4 +1,4 @@
-package com.colofabrix.scala.accounting.transactionsdb
+package com.colofabrix.scala.accounting.transactions
 
 import cats.Show
 import com.colofabrix.scala.accounting.utils.ADT

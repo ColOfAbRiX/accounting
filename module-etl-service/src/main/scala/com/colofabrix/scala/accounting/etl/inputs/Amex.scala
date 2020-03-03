@@ -11,6 +11,7 @@ import com.colofabrix.scala.accounting.model._
 import com.colofabrix.scala.accounting.utils.validation._
 import java.time.LocalDate
 import shapeless._
+import java.{ util => ju }
 
 /**
  * Amex API data processor
@@ -42,7 +43,7 @@ class AmexApiInput
   }
 
   def toTransaction(input: AmexTransaction): Transaction = {
-    Transaction(input.date, input.amount, input.description, "Amex", "", "", "")
+    Transaction(ju.UUID.randomUUID, input.date, input.amount, input.description, "Amex", "", "", "")
   }
 
 }

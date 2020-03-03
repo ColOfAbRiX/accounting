@@ -35,7 +35,7 @@ object Client {
    */
   @SuppressWarnings(Array("org.wartremover.warts.TraversableOps"))
   def convertRecord(inputType: InputType, record: String): ClientOutput[AValidated[Transaction]] = {
-    logger.info(s"Requested convertRecord with input type ${inputType.description}")
+    logger.info(s"Requested convertRecord with input type ${inputType.entryName}")
 
     new CsvReader(record)
       .read
@@ -49,7 +49,7 @@ object Client {
    * Converts a list of inputs records into output transactions
    */
   def convertRecords(inputType: InputType, records: String): ClientOutput[List[AValidated[Transaction]]] = {
-    logger.info(s"Requested convertRecords with input type ${inputType.description}")
+    logger.info(s"Requested convertRecords with input type ${inputType.entryName}")
 
     new CsvReader(records)
       .read

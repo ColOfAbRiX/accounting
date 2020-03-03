@@ -1,7 +1,7 @@
-package com.colofabrix.scala.accounting.transactionsdb
+package com.colofabrix.scala.accounting.transactions
 
 import cats.effect.IO
-import com.colofabrix.scala.accounting.transactionsdb.config._
+import com.colofabrix.scala.accounting.transactions.config._
 import org.http4s.server.{ Server => Http4sServer }
 import org.log4s.getLogger
 import scala.io.StdIn
