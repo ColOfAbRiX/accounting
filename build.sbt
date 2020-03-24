@@ -1,11 +1,12 @@
 import Dependencies._
 import AllProjectsKeys.autoImport._
 
+// Scala version
 lazy val ScalaLangVersion = "2.13.0"
+Global / scalaVersion := ScalaLangVersion
 
 // General
 ThisBuild / organization := "com.colofabrix.scala.accounting"
-ThisBuild / scalaVersion := ScalaLangVersion
 
 // Compiler options
 ThisBuild / scalacOptions ++= Compiler.TpolecatOptions ++ Seq("-P:splain:all")
@@ -50,7 +51,7 @@ lazy val rootProject: Project = project
   )
   .aggregate(
     etlService,
-    transactionsDbService,
+    transactionsService,
   )
 
 // Utils project
@@ -98,8 +99,8 @@ lazy val etlService = project
     ),
   )
 
-// Transactions DB service
-lazy val transactionsDbService = project
+// Transactions service
+lazy val transactionsService = project
   .in(file("module-transactions-service"))
   .dependsOn(
     utils,
@@ -108,7 +109,7 @@ lazy val transactionsDbService = project
   .enablePlugins(BuildInfoPlugin)
   .settings(
     name := "transactions-service",
-    description := "Accounting Transactions DB Service",
+    description := "Accounting Transactions Service",
     buildInfoPackage := projectPackage.value,
     buildInfoKeys ++= projectBuildInfo.value,
     libraryDependencies ++= Seq(

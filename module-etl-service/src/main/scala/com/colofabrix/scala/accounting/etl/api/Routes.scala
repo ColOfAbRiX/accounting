@@ -9,11 +9,11 @@ import org.http4s.HttpRoutes
 import sttp.tapir.openapi.circe.yaml._
 import sttp.tapir.redoc.http4s.RedocHttp4s
 import sttp.tapir.server.http4s._
-import com.colofabrix.scala.accounting.utils.ThreadPools
+import com.colofabrix.scala.accounting.utils.ContextShiftManager
 
 object Routes {
 
-  implicit private[this] val ics: ContextShift[IO] = ThreadPools.globalCs
+  implicit private[this] val ics: ContextShift[IO] = ContextShiftManager.global
 
   val listSupportedInputsRoute: HttpRoutes[IO] = Endpoints.listSupportedInputs.toRoutes(_ => Client.listSupportedInputs)
   val convertRecordRoute: HttpRoutes[IO]       = Endpoints.convertRecord.toRoutes((Client.convertRecord _).tupled)

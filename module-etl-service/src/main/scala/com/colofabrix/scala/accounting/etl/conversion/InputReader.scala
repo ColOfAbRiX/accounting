@@ -27,7 +27,7 @@ class IterableReader(input: Iterable[RawRecord]) extends InputReader {
 }
 
 /**
- * Generic CSV
+ * Reader of generic CSV
  */
 class CsvReader[A: kantan.csv.CsvSource](input: A) extends InputReader {
   import kantan.csv._
@@ -37,23 +37,40 @@ class CsvReader[A: kantan.csv.CsvSource](input: A) extends InputReader {
   private[this] val logger = getLogger
 
   def read: VRawInput[IO] = {
-    val openReader  = IO(input.asCsvReader[List[String]](rfc))
-    val closeReader = (r: KantanReader) => IO(r.close())
-    val reader      = Resource.make(openReader)(closeReader)
+    val openReader = for {
+      _      <- ContextShiftManager.io.shift
+      reader <- IO(input.asCsvReader[List[String]](rfc))
+      _      <- IO(logger.trace(s"Opened CSV reader ${reader.toString}"))
+    } yield reader
+
+    val closeReader = (r: KantanReader) =>
+      for {
+        _ <- ContextShiftManager.io.shift
+        _ <- IO(logger.trace(s"Closing CSV reader ${r.toString}"))
+        _ <- IO(r.close())
+      } yield ()
+
+    val reader = Resource.make(openReader)(closeReader)
+
     for {
-      _        <- Stream.eval(ThreadPools.ioCs.shift)
       _        <- Stream.eval(IO(logger.debug("Reading input from CSV reader")))
       iterator <- Stream.resource(reader)
-      _        <- Stream.eval(ThreadPools.computeCs.shift)
-      result   <- Stream.unfold(iterator)(unfoldCsv)
+      _        <- Stream.eval(ContextShiftManager.io.shift)
+      records  <- Stream.unfold(iterator)(unfoldCsv)
     } yield {
-      result
+      records
     }
   }
 
   private[this] def unfoldCsv(iterator: KantanReader): Option[(AValidated[RawRecord], KantanReader)] = {
-    def onError(e: ReadError) = Some((e.toString.aInvalid, iterator))
-    def onValid(v: RawRecord) = Some((v.aValid, iterator))
+    def onError(e: ReadError) = {
+      logger.warn(s"Reading error: ${e.toString}")
+      Some((e.toString.aInvalid, iterator))
+    }
+    def onValid(v: RawRecord) = {
+      logger.trace(s"Reading record: ${v.toString}")
+      Some((v.aValid, iterator))
+    }
     if (iterator.hasNext) iterator.next.fold(onError, onValid) else None
   }
 }

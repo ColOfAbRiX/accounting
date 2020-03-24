@@ -8,7 +8,7 @@ import com.colofabrix.scala.accounting.etl.model.Api._
 import com.colofabrix.scala.accounting.etl.model.Config._
 import com.colofabrix.scala.accounting.etl.pipeline.ApiPipelineInstances._
 import com.colofabrix.scala.accounting.model.Transaction
-import com.colofabrix.scala.accounting.utils.ThreadPools
+import com.colofabrix.scala.accounting.utils.ContextShiftManager
 import com.colofabrix.scala.accounting.utils.validation._
 import org.log4s._
 
@@ -23,7 +23,7 @@ object Client {
    * Returns the list of supported input types
    */
   def listSupportedInputs: ClientOutput[Set[InputType]] = {
-    IO.shift(ThreadPools.compute) *>
+    ContextShiftManager.compute.shift *>
     IO {
       logger.info("Requested listSupportedInputs")
       serviceConfig.inputTypes.asRight

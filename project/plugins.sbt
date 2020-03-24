@@ -1,3 +1,5 @@
+scalaVersion := "2.12.11"
+
 //  VERSIONS  //
 
 lazy val AssemblyVersion       = "0.14.6"

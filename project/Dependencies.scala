@@ -9,7 +9,6 @@ object Dependencies {
   lazy val CirceVersion           = "0.13.0-RC1"
   lazy val EnumeratumVersion      = "1.5.15"
   lazy val EnumeratumCatsVersion  = "1.5.16"
-  lazy val EnumeratumCirceVersion = "1.5.23"
   lazy val FS2Version             = "2.2.1"
   lazy val Http4sVersion          = "0.21.0-RC1"
   lazy val KantanCsvVersion       = "0.6.0"
@@ -36,7 +35,6 @@ object Dependencies {
   lazy val CirceGenericDep    = "io.circe"              %% "circe-generic"    % CirceVersion
   lazy val EnumeratumDep      = "com.beachape"          %% "enumeratum"       % EnumeratumVersion
   lazy val EnumeratumCatsDep  = "com.beachape"          %% "enumeratum-cats"  % EnumeratumCatsVersion
-  lazy val EnumeratumCirceDep = "com.beachape"          %% "enumeratum-circe" % EnumeratumCirceVersion
   lazy val FS2CoreDep         = "co.fs2"                %% "fs2-core"         % FS2Version
   lazy val KantanCatsCsvDep   = "com.nrinaudo"          %% "kantan.csv-cats"  % KantanCsvVersion
   lazy val KantanCsvDep       = "com.nrinaudo"          %% "kantan.csv"       % KantanCsvVersion
@@ -72,7 +70,7 @@ object Dependencies {
   //  DEPENDENCY BUNDLES  //
 
   lazy val CatsBundle       = Seq(CatsCoreDep, CatsEffectsDep, CatsScalaTestDep)
-  lazy val EnumeratumBundle = Seq(EnumeratumDep, EnumeratumCatsDep, EnumeratumCirceDep)
+  lazy val EnumeratumBundle = Seq(EnumeratumDep, EnumeratumCatsDep)
   lazy val Http4sBundle     = Seq(Http4sBlazeServerDep, Http4sCirceDep, Http4sDslDep)
   lazy val KantanCsvBundle  = Seq(KantanCatsCsvDep, KantanCsvDep)
   lazy val LoggingBundle    = Seq(Log4sDep, LogbackClassicDep)
