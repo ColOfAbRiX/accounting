@@ -16,6 +16,4 @@ object Api {
 
   type EtlEndpoint[I, O] = Endpoint[I, ErrorInfo, O, Nothing]
 
-  type ClientOutput[A] = IO[Either[ErrorInfo, A]]
-
 }

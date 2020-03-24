@@ -4,6 +4,7 @@ import com.colofabrix.scala.accounting.etl.definitions._
 import com.colofabrix.scala.accounting.etl.model._
 import com.colofabrix.scala.accounting.model._
 import com.colofabrix.scala.accounting.utils.validation._
+import com.colofabrix.scala.accounting.utils.PipeLogging
 import fs2.Pure
 
 /**
@@ -24,9 +25,17 @@ import fs2.Pure
  */
 object Pipeline {
 
+  // private[this] val logger = org.log4s.getLogger
+
   /** Pipeline builder */
   def apply[T <: InputTransaction: InputProcessor: Cleaner: Normalizer]: VPipe[Pure, RawRecord, Transaction] = {
-    InputProcessor[T] andThen Cleaner[T] andThen Normalizer[T]
+    val inputLog: VPipe[Pure, RawRecord, RawRecord] =
+      PipeLogging.trace(x => s"Applying pipeline to record ${x.toString}")
+
+    val outputLog: VPipe[Pure, Transaction, Transaction] =
+      PipeLogging.trace(x => s"Resulting transaction from pipeline ${x.toString}")
+
+    inputLog andThen InputProcessor[T] andThen Cleaner[T] andThen Normalizer[T] andThen outputLog
   }
 
 }

@@ -10,14 +10,14 @@ import com.colofabrix.scala.accounting.etl.pipeline.ApiPipelineInstances._
 import com.colofabrix.scala.accounting.model.Transaction
 import com.colofabrix.scala.accounting.utils.ContextShiftManager
 import com.colofabrix.scala.accounting.utils.validation._
-import org.log4s._
 
 /**
  * Client interface
  */
 object Client {
+  type ClientOutput[A] = IO[Either[ErrorInfo, A]]
 
-  private[this] val logger = getLogger
+  private[this] val logger = org.log4s.getLogger
 
   /**
    * Returns the list of supported input types
@@ -58,5 +58,4 @@ object Client {
       .toList
       .map(_.asRight)
   }
-
 }

@@ -4,7 +4,6 @@ import cats._
 import cats.effect._
 import cats.implicits._
 import com.colofabrix.scala.accounting.utils.validation._
-import org.log4s._
 
 /**
  * Helpers to test streams and validated streams
@@ -17,18 +16,6 @@ trait StreamHelpers {
   /** Runs a function for all the elements of a stream */
   def withStream[E[_]: Effect, F[_]: Functor, O](input: fs2.Stream[E, F[O]])(f: List[F[O]] => Unit): E[Unit] = {
     input.compile.toList.map(f)
-  }
-}
-
-/**
- * Helpers to print debugging values for streams
- */
-object StreamDebugHelpers {
-  private[this] val logger = getLogger
-
-  def logStream[A](prefix: String): VPipe[fs2.Pure, A, A] = _.map { x =>
-    logger.trace(s"logStream($prefix)=${x.toString}")
-    x
   }
 }
 

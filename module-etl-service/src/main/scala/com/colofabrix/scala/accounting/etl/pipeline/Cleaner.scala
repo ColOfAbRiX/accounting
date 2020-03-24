@@ -16,11 +16,17 @@ trait Cleaner[T <: InputTransaction] {
 }
 
 object Cleaner {
+  private[this] val logger = org.log4s.getLogger
+
   /** Cleans a stream of InputTransaction */
-  def apply[T <: InputTransaction](implicit c: Cleaner[T]): VPipe[Pure, T, T] = { input =>
-    Nested(input)
-      .map(c.cleanInputTransaction)
-      .value
+  def apply[T <: InputTransaction](implicit c: Cleaner[T]): VPipe[Pure, T, T] = {
+    val log: VPipe[Pure, T, T] = _.debug(x => s"Cleaning input transaction ${x.toString}", logger.trace(_))
+    val clean: VPipe[Pure, T, T] =
+      Nested(_)
+        .map(c.cleanInputTransaction)
+        .value
+
+    log andThen clean
   }
 }
 

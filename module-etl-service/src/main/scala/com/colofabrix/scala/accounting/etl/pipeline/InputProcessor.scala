@@ -19,11 +19,15 @@ trait InputProcessor[T <: InputTransaction] {
 }
 
 object InputProcessor {
+  private[this] val logger = org.log4s.getLogger
+
   /** Converts a stream of RawRecord into InputTransaction */
   def apply[T <: InputTransaction](implicit ip: InputProcessor[T]): VPipe[Pure, RawRecord, T] = {
-    ip.filterInput andThen {
-      _.map(_ andThen ip.convertRaw)
-    }
+    val log: VPipe[Pure, RawRecord, RawRecord]    = _.debug(x => s"Processing record ${x.toString}", logger.trace(_))
+    val filter: VPipe[Pure, RawRecord, RawRecord] = ip.filterInput
+    val convert: VPipe[Pure, RawRecord, T]        = _.map(_ andThen ip.convertRaw)
+
+    log andThen filter andThen convert
   }
 }
 

@@ -5,7 +5,6 @@ import com.colofabrix.scala.accounting.etl.definitions._
 import com.colofabrix.scala.accounting.utils._
 import com.colofabrix.scala.accounting.utils.validation._
 import fs2.Stream
-import org.log4s._
 
 /**
  * Interface for a generic reader that reads raw data
@@ -18,7 +17,7 @@ trait InputReader {
  * Reader from Iterable
  */
 class IterableReader(input: Iterable[RawRecord]) extends InputReader {
-  private[this] val logger = getLogger
+  private[this] val logger = org.log4s.getLogger
 
   def read: VRawInput[IO] = {
     logger.debug("Reading input from Iterable reader")
@@ -34,7 +33,7 @@ class CsvReader[A: kantan.csv.CsvSource](input: A) extends InputReader {
   import kantan.csv.ops._
 
   private[this] type KantanReader = kantan.csv.CsvReader[ReadResult[List[String]]]
-  private[this] val logger = getLogger
+  private[this] val logger = org.log4s.getLogger
 
   def read: VRawInput[IO] = {
     val openReader = for {

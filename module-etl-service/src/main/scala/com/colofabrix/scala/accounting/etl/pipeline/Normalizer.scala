@@ -15,10 +15,16 @@ trait Normalizer[T <: InputTransaction] {
 }
 
 object Normalizer {
+  private[this] val logger = org.log4s.getLogger
+
   /** Converts a given stream of InputTransaction into a stream of Transaction */
-  def apply[T <: InputTransaction](implicit n: Normalizer[T]): VPipe[Pure, T, Transaction] = { input =>
-    Nested(input)
-      .map(n.toTransaction)
-      .value
+  def apply[T <: InputTransaction](implicit n: Normalizer[T]): VPipe[Pure, T, Transaction] = {
+    val log: VPipe[Pure, T, T] = _.debug(x => s"Normalizing input transaction ${x.toString}", logger.trace(_))
+    val normalize: VPipe[Pure, T, Transaction] =
+      Nested(_)
+        .map(n.toTransaction)
+        .value
+
+    log andThen normalize
   }
 }
