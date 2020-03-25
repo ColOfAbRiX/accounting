@@ -1,6 +1,7 @@
 package com.colofabrix.scala.accounting.etl.pipeline
 
 import cats.data._
+import cats.effect._
 import cats.implicits._
 import com.colofabrix.scala.accounting.etl.definitions._
 import com.colofabrix.scala.accounting.etl.model._
@@ -22,7 +23,7 @@ object InputProcessor {
   private[this] val logger = org.log4s.getLogger
 
   /** Converts a stream of RawRecord into InputTransaction */
-  def apply[T <: InputTransaction](implicit ip: InputProcessor[T]): VPipe[Pure, RawRecord, T] = {
+  def apply[F[_]: Sync, T <: InputTransaction](implicit ip: InputProcessor[T]): VPipe[Pure, RawRecord, T] = {
     val log: VPipe[Pure, RawRecord, RawRecord]    = _.debug(x => s"Processing record ${x.toString}", logger.trace(_))
     val filter: VPipe[Pure, RawRecord, RawRecord] = ip.filterInput
     val convert: VPipe[Pure, RawRecord, T]        = _.map(_ andThen ip.convertRaw)

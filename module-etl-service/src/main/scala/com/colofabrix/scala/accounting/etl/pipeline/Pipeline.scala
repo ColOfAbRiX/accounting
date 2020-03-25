@@ -5,7 +5,7 @@ import com.colofabrix.scala.accounting.etl.model._
 import com.colofabrix.scala.accounting.model._
 import com.colofabrix.scala.accounting.utils.validation._
 import com.colofabrix.scala.accounting.utils.PipeLogging
-import fs2.Pure
+import cats.effect.Sync
 
 /**
  * The ETL pipeline
@@ -20,22 +20,22 @@ import fs2.Pure
  * NOTES
  * The entire pipeline from the Reader on works on a Stream and each transaction
  * in the system is validated.
- * The main data structure is Stream[IO, AValidated[*]] and the pipeline has a
+ * The main data structure is Stream[F, AValidated[*]] and the pipeline has a
  * type of Pipe[IO, AValidated[*], AValidated[*]]
  */
 object Pipeline {
 
-  // private[this] val logger = org.log4s.getLogger
-
   /** Pipeline builder */
-  def apply[T <: InputTransaction: InputProcessor: Cleaner: Normalizer]: VPipe[Pure, RawRecord, Transaction] = {
-    val inputLog: VPipe[Pure, RawRecord, RawRecord] =
+  def apply[F[_]: Sync, T <: InputTransaction: InputProcessor: Cleaner: Normalizer]
+      : VPipe[F, RawRecord, Transaction] = {
+
+    val inputLog: VPipe[F, RawRecord, RawRecord] =
       PipeLogging.trace(x => s"Applying pipeline to record ${x.toString}")
 
-    val outputLog: VPipe[Pure, Transaction, Transaction] =
+    val outputLog: VPipe[F, Transaction, Transaction] =
       PipeLogging.trace(x => s"Resulting transaction from pipeline ${x.toString}")
 
-    inputLog andThen InputProcessor[T] andThen Cleaner[T] andThen Normalizer[T] andThen outputLog
+    inputLog andThen InputProcessor[F, T] andThen Cleaner[F, T] andThen Normalizer[F, T] andThen outputLog
   }
 
 }

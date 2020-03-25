@@ -12,7 +12,7 @@ import com.colofabrix.scala.accounting.model._
 import com.colofabrix.scala.accounting.utils.validation._
 import java.time.LocalDate
 import shapeless._
-import java.{ util => ju }
+import java.{ util => jutils }
 
 /**
  * Barclays API data processor
@@ -45,7 +45,7 @@ class BarclaysApiInput
   }
 
   def toTransaction(input: BarclaysTransaction): Transaction = {
-    Transaction(ju.UUID.randomUUID, input.date, input.amount, input.memo, "Barclays", "", "", "")
+    Transaction(jutils.UUID.randomUUID, input.date, input.amount, input.memo, "Barclays", "", "", "")
   }
 
 }

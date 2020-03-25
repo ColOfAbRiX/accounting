@@ -1,10 +1,10 @@
 package com.colofabrix.scala.accounting.etl.pipeline
 
 import cats.data.Nested
+import cats.effect._
 import cats.implicits._
 import com.colofabrix.scala.accounting.etl.model._
 import com.colofabrix.scala.accounting.utils.validation._
-import fs2.Pure
 import java.time.LocalDate
 import shapeless._
 
@@ -19,9 +19,9 @@ object Cleaner {
   private[this] val logger = org.log4s.getLogger
 
   /** Cleans a stream of InputTransaction */
-  def apply[T <: InputTransaction](implicit c: Cleaner[T]): VPipe[Pure, T, T] = {
-    val log: VPipe[Pure, T, T] = _.debug(x => s"Cleaning input transaction ${x.toString}", logger.trace(_))
-    val clean: VPipe[Pure, T, T] =
+  def apply[F[_]: Sync, T <: InputTransaction](implicit c: Cleaner[T]): VPipe[F, T, T] = {
+    val log: VPipe[F, T, T] = _.debug(x => s"Cleaning input transaction ${x.toString}", logger.trace(_))
+    val clean: VPipe[F, T, T] =
       Nested(_)
         .map(c.cleanInputTransaction)
         .value

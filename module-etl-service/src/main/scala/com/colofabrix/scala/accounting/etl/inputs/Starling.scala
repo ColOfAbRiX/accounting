@@ -11,7 +11,7 @@ import com.colofabrix.scala.accounting.model._
 import com.colofabrix.scala.accounting.utils.validation._
 import java.time.LocalDate
 import shapeless._
-import java.{ util => ju }
+import java.{ util => jutils }
 
 /**
  * Starling API data processor
@@ -44,7 +44,7 @@ class StarlingApiInput
   }
 
   def toTransaction(input: StarlingTransaction): Transaction = {
-    Transaction(ju.UUID.randomUUID, input.date, input.amount, input.reference, "Starling", "", "", "")
+    Transaction(jutils.UUID.randomUUID, input.date, input.amount, input.reference, "Starling", "", "", "")
   }
 
 }

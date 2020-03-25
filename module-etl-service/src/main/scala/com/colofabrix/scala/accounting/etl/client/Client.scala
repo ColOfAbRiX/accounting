@@ -38,7 +38,7 @@ object Client {
     logger.info(s"Requested convertRecord with input type ${inputType.entryName}")
 
     new CsvReader(record)
-      .read
+      .read(ContextShiftManager.io)
       .through(pipelineForType(inputType))
       .compile
       .toList
@@ -52,7 +52,7 @@ object Client {
     logger.info(s"Requested convertRecords with input type ${inputType.entryName}")
 
     new CsvReader(records)
-      .read
+      .read(ContextShiftManager.io)
       .through(pipelineForType(inputType))
       .compile
       .toList

@@ -1,6 +1,7 @@
 package com.colofabrix.scala.accounting.etl.pipeline
 
 import cats.data._
+import cats.effect._
 import cats.implicits._
 import com.colofabrix.scala.accounting.etl.model._
 import com.colofabrix.scala.accounting.model._
@@ -18,7 +19,7 @@ object Normalizer {
   private[this] val logger = org.log4s.getLogger
 
   /** Converts a given stream of InputTransaction into a stream of Transaction */
-  def apply[T <: InputTransaction](implicit n: Normalizer[T]): VPipe[Pure, T, Transaction] = {
+  def apply[F[_]: Sync, T <: InputTransaction](implicit n: Normalizer[T]): VPipe[Pure, T, Transaction] = {
     val log: VPipe[Pure, T, T] = _.debug(x => s"Normalizing input transaction ${x.toString}", logger.trace(_))
     val normalize: VPipe[Pure, T, Transaction] =
       Nested(_)

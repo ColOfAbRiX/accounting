@@ -1,6 +1,5 @@
 package com.colofabrix.scala.accounting.etl.model
 
-import cats.effect.IO
 import com.colofabrix.scala.accounting.utils.ADT
 import com.colofabrix.scala.accounting.utils.validation._
 import sttp.tapir.Endpoint
