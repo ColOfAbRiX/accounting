@@ -3,17 +3,20 @@ package com.colofabrix.scala.accounting.etl.api
 import cats.effect._
 import cats.implicits._
 import com.colofabrix.scala.accounting.etl.api._
-import com.colofabrix.scala.accounting.etl.client._
 import com.colofabrix.scala.accounting.etl.BuildInfo
+import com.colofabrix.scala.accounting.etl.client._
+import com.colofabrix.scala.accounting.utils.concurrency._
 import org.http4s.HttpRoutes
 import sttp.tapir.openapi.circe.yaml._
 import sttp.tapir.redoc.http4s.RedocHttp4s
 import sttp.tapir.server.http4s._
-import com.colofabrix.scala.accounting.utils.ContextShiftManager
 
+/**
+ * Http4s routes
+ */
 object Routes {
 
-  implicit private[this] val ics: ContextShift[IO] = ContextShiftManager.global
+  implicit private[this] val ics: ContextShift[IO] = IO.contextShift(DefaultEC.global)
 
   val listSupportedInputsRoute: HttpRoutes[IO] = Endpoints.listSupportedInputs.toRoutes(_ => Client.listSupportedInputs)
   val convertRecordRoute: HttpRoutes[IO]       = Endpoints.convertRecord.toRoutes((Client.convertRecord _).tupled)
@@ -23,11 +26,7 @@ object Routes {
   }
 
   def allRoutes: HttpRoutes[IO] = {
-    val allRoutes = List[HttpRoutes[IO]](
-      listSupportedInputsRoute,
-      convertRecordRoute,
-      convertRecordsRoute,
-    )
+    val allRoutes = List[HttpRoutes[IO]](listSupportedInputsRoute, convertRecordRoute, convertRecordsRoute)
     allRoutes.foldLeft(HttpRoutes.empty[IO])(_ <+> _)
   }
 

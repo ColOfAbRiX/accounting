@@ -1,59 +1,62 @@
 package com.colofabrix.scala.accounting.etl.conversion
 
-import cats._
+import cats.Monad
 import cats.effect._
 import cats.implicits._
 import com.colofabrix.scala.accounting.etl.definitions._
+import com.colofabrix.scala.accounting.utils.concurrency._
+import com.colofabrix.scala.accounting.utils.logging._
 import com.colofabrix.scala.accounting.utils.validation._
 import fs2.Stream
+import kantan.csv._
+import kantan.csv.ops._
 
 /**
  * Reader from Iterable
  */
-class IterableReader(input: Iterable[RawRecord]) {
-  private[this] val logger = org.log4s.getLogger
-
-  def read[F[_]: Monad]: VRawInput[F] = {
-    logger.debug("Reading input from Iterable reader")
-    Stream.unfold(input.iterator)(i => if (i.hasNext) Some((i.next.aValid, i)) else None)
-  }
+class IterableReader[F[_]: Monad](input: Iterable[RawRecord]) extends PureLogging[F] {
+  /**
+   * Read from the validated raw input
+   */
+  def read: VRawInput[F] =
+    for {
+      _       <- Stream.eval(pureLogger.debug("Reading input from Iterable reader"))
+      records <- Stream.unfold(input.iterator)(i => if (i.hasNext) Some((i.next.aValid, i)) else None)
+    } yield records
 }
 
 /**
  * Reader of generic CSV
  */
-class CsvReader[A: kantan.csv.CsvSource](input: A) {
-  import kantan.csv._
-  import kantan.csv.ops._
+class CsvReader[F[_]: Sync: LiftIO, A: CsvSource](input: A) extends PureLogging[F] {
 
   private[this] type KantanReader = kantan.csv.CsvReader[ReadResult[List[String]]]
-  private[this] val logger = org.log4s.getLogger
 
-  def read[F[_]](cs: ContextShift[F])(implicit S: Sync[F]): VRawInput[F] = {
-    val openReader = for {
-      _      <- cs.shift
-      reader <- S.pure(input.asCsvReader[List[String]](rfc))
-      _      <- S.pure(logger.trace(s"Opened CSV reader ${reader.toString}"))
-    } yield reader
+  private[this] val openReader = for {
+    _      <- ECManager.shift(DefaultEC.io)
+    reader <- Sync[F].delay(input.asCsvReader[List[String]](rfc))
+    _      <- pureLogger.trace(s"Opened CSV reader ${reader.toString}")
+  } yield reader
 
-    val closeReader = (r: KantanReader) =>
-      for {
-        _ <- cs.shift
-        _ <- S.pure(logger.trace(s"Closing CSV reader ${r.toString}"))
-        _ <- S.pure(r.close())
-      } yield ()
-
-    val reader = Resource.make(openReader)(closeReader)
-
+  private[this] val closeReader = (r: KantanReader) =>
     for {
-      _        <- Stream.eval(S.pure(logger.debug("Reading input from CSV reader")))
+      _ <- ECManager.shift(DefaultEC.io)
+      _ <- pureLogger.trace(s"Closing CSV reader ${r.toString}")
+      _ <- Sync[F].delay(r.close())
+    } yield ()
+
+  private[this] val reader = Resource.make(openReader)(closeReader)
+
+  /**
+   * Read from the validated raw input
+   */
+  def read: VRawInput[F] =
+    for {
+      _        <- Stream.eval(pureLogger.debug("Reading input from CSV reader"))
       iterator <- Stream.resource(reader)
-      _        <- Stream.eval(cs.shift)
+      _        <- Stream.eval(ECManager.shift(DefaultEC.io))
       records  <- Stream.unfold(iterator)(unfoldCsv)
-    } yield {
-      records
-    }
-  }
+    } yield records
 
   private[this] def unfoldCsv(iterator: KantanReader): Option[(AValidated[RawRecord], KantanReader)] = {
     def onError(e: ReadError) = {
@@ -64,6 +67,7 @@ class CsvReader[A: kantan.csv.CsvSource](input: A) {
       logger.trace(s"Reading record: ${v.toString}")
       Some((v.aValid, iterator))
     }
+
     if (iterator.hasNext) iterator.next.fold(onError, onValid) else None
   }
 }

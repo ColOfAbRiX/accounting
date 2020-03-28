@@ -1,4 +1,4 @@
-package com.colofabrix.scala.accounting.utils
+package com.colofabrix.scala.accounting.utils.logging
 
 import fs2.Pipe
 

@@ -11,7 +11,7 @@ import fs2.{ Pipe, Stream }
 /**
  * Accounting Validation (AValidation) module
  */
-object validation {
+package object validation {
 
   /** Representation of an error */
   type ValidationError = String

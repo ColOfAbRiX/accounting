@@ -3,10 +3,10 @@ import AllProjectsKeys.autoImport._
 
 // Scala version
 lazy val ScalaLangVersion = "2.13.0"
-Global / scalaVersion := ScalaLangVersion
 
 // General
 ThisBuild / organization := "com.colofabrix.scala.accounting"
+ThisBuild / scalaVersion := ScalaLangVersion
 
 // Compiler options
 ThisBuild / scalacOptions ++= Compiler.TpolecatOptions ++ Seq("-P:splain:all")

@@ -6,10 +6,9 @@ import com.colofabrix.scala.accounting.utils.ADT
 import pureconfig._
 import pureconfig.generic.auto._
 import pureconfig.generic.semiauto._
+import com.colofabrix.scala.accounting.utils.logging.Logging
 
-object config {
-
-  private[this] val logger = org.log4s.getLogger
+object config extends Logging {
 
   //  CONFIG  //
 

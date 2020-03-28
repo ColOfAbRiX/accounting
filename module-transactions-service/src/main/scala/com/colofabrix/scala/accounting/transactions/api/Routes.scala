@@ -3,7 +3,7 @@ package com.colofabrix.scala.accounting.transactions.api
 import cats.effect._
 import cats.implicits._
 import com.colofabrix.scala.accounting.transactions.BuildInfo
-import com.colofabrix.scala.accounting.utils.ContextShiftManager
+import com.colofabrix.scala.accounting.utils.ECManager
 import org.http4s.HttpRoutes
 import sttp.tapir.openapi.circe.yaml._
 import sttp.tapir.redoc.http4s.RedocHttp4s
@@ -13,7 +13,7 @@ import sttp.tapir.redoc.http4s.RedocHttp4s
  */
 object Routes {
 
-  implicit private[this] val ics: ContextShift[IO] = ContextShiftManager.global
+  implicit private[this] val ics: ContextShift[IO] = ECManager.global
 
   val redocDocsRoute: HttpRoutes[IO] = {
     new RedocHttp4s(BuildInfo.description, Endpoints.openApiDocsEndpoint.toYaml).routes

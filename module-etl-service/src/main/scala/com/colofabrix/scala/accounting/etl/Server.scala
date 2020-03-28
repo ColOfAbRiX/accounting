@@ -2,22 +2,15 @@ package com.colofabrix.scala.accounting.etl
 
 import cats.effect.IO
 import com.colofabrix.scala.accounting.etl.config._
+import com.colofabrix.scala.accounting.utils.logging._
 import org.http4s.server.{ Server => Http4sServer }
 import scala.io.StdIn
 
-object Server {
-
-  private[this] val logger = org.log4s.getLogger
-
-  def main(server: Http4sServer[IO]): IO[_] = IO {
-    logger.info(s"Started ${BuildInfo.description} version ${BuildInfo.version}")
-    logger.trace(server.toString)
-
-    if (serviceConfig.server.debugMode) {
-      StdIn.readLine()
-    } else {
-      ()
-    }
-  }
-
+object Server extends PureLogging[IO] {
+  def main(server: Http4sServer[IO]): IO[_] =
+    for {
+      _ <- pureLogger.info(s"Started ${BuildInfo.description} version ${BuildInfo.version}")
+      _ <- pureLogger.trace(server.toString)
+      _ <- IO(if (serviceConfig.server.debugMode) StdIn.readLine() else ())
+    } yield ()
 }
