@@ -16,10 +16,6 @@ final case class FixedThreadPool(parallelism: Int) extends ExecutorType
 object ECManager {
   private[this] lazy val coresCount = Runtime.getRuntime.availableProcessors
 
-  def shift[F[_]: LiftIO](ec: ExecutionContext): F[Unit] = {
-    LiftIO[F].liftIO(IO.contextShift(ec).shift)
-  }
-
   /**
    * Creates a new ExecutionContext with some predefined settings
    */
@@ -49,6 +45,13 @@ object ECManager {
     ExecutionContext.fromExecutor(executor)
   }
 
+  /**
+   * Explicitly shift an computation inside an effect F[_]
+   */
+  def shift[F[_]: LiftIO](ec: ExecutionContext): F[Unit] = {
+    LiftIO[F].liftIO(IO.contextShift(ec).shift)
+  }
+
   /** Creates a new CPU-bound pool, fixed to the number of CPUs dedicated to computations */
   def createCompute(name: String): ExecutionContext =
     create("%s-compute".format(name), FixedThreadPool(coresCount), Thread.NORM_PRIORITY)
@@ -58,6 +61,6 @@ object ECManager {
     create("%s-io".format(name), CachedThreadPool, Thread.NORM_PRIORITY)
 
   /** Creates a new non-blocking IO polling pool, high priority for I/O notifications */
-  def createIoPolling(name: String): ExecutionContext =
-    create("%s-iopolling".format(name), SingleThreadThreadPool, Thread.MAX_PRIORITY)
+  def createEvents(name: String): ExecutionContext =
+    create("%s-events".format(name), SingleThreadThreadPool, Thread.MAX_PRIORITY)
 }

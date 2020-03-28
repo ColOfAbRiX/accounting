@@ -4,6 +4,7 @@ import cats.data.Nested
 import cats.effect._
 import cats.implicits._
 import com.colofabrix.scala.accounting.etl.model._
+import com.colofabrix.scala.accounting.utils.logging._
 import com.colofabrix.scala.accounting.utils.validation._
 import java.time.LocalDate
 import shapeless._
@@ -15,12 +16,14 @@ trait Cleaner[T <: InputTransaction] {
   def cleanInputTransaction(transaction: T): T
 }
 
-object Cleaner {
-  private[this] val logger = org.log4s.getLogger
+object Cleaner extends PipeLogging {
+  protected[this] val logger = org.log4s.getLogger
 
-  /** Cleans a stream of InputTransaction */
+  /**
+   * Cleans a stream of InputTransaction
+   */
   def apply[F[_]: Sync, T <: InputTransaction](implicit c: Cleaner[T]): VPipe[F, T, T] = {
-    val log: VPipe[F, T, T] = _.debug(x => s"Cleaning input transaction ${x.toString}", logger.trace(_))
+    val log: VPipe[F, T, T] = pipeLogger.trace(x => s"Cleaning input transaction ${x.toString}")
     val clean: VPipe[F, T, T] =
       Nested(_)
         .map(c.cleanInputTransaction)

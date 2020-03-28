@@ -18,5 +18,5 @@ object DefaultEC {
   lazy val io: ExecutionContext = ECManager.createIo("default")
 
   /** Default non-blocking IO polling pool, high priority for I/O notifications */
-  lazy val ioPolling: ExecutionContext = ECManager.createIoPolling("default")
+  lazy val events: ExecutionContext = ECManager.createEvents("default")
 }

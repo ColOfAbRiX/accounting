@@ -5,6 +5,7 @@ import cats.effect._
 import cats.implicits._
 import com.colofabrix.scala.accounting.etl.definitions._
 import com.colofabrix.scala.accounting.etl.model._
+import com.colofabrix.scala.accounting.utils.logging._
 import com.colofabrix.scala.accounting.utils.validation._
 import fs2.Pure
 
@@ -19,12 +20,14 @@ trait InputProcessor[T <: InputTransaction] {
   def filterInput: VPipe[Pure, RawRecord, RawRecord]
 }
 
-object InputProcessor {
-  private[this] val logger = org.log4s.getLogger
+object InputProcessor extends PipeLogging {
+  protected[this] val logger = org.log4s.getLogger
 
-  /** Converts a stream of RawRecord into InputTransaction */
+  /**
+   * Converts a stream of RawRecord into InputTransaction
+   */
   def apply[F[_]: Sync, T <: InputTransaction](implicit ip: InputProcessor[T]): VPipe[Pure, RawRecord, T] = {
-    val log: VPipe[Pure, RawRecord, RawRecord]    = _.debug(x => s"Processing record ${x.toString}", logger.trace(_))
+    val log: VPipe[Pure, RawRecord, RawRecord]    = pipeLogger.trace(x => s"Processing record ${x.toString}")
     val filter: VPipe[Pure, RawRecord, RawRecord] = ip.filterInput
     val convert: VPipe[Pure, RawRecord, T]        = _.map(_ andThen ip.convertRaw)
 

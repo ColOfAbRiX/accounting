@@ -3,10 +3,10 @@ package com.colofabrix.scala.accounting.etl.client
 import cats.effect._
 import cats.implicits._
 import com.colofabrix.scala.accounting.etl.config._
-import com.colofabrix.scala.accounting.etl.conversion.CsvReader
 import com.colofabrix.scala.accounting.etl.model.Api._
 import com.colofabrix.scala.accounting.etl.model.Config._
 import com.colofabrix.scala.accounting.etl.pipeline.ApiPipelineInstances._
+import com.colofabrix.scala.accounting.etl.readers.CsvReader
 import com.colofabrix.scala.accounting.model.Transaction
 import com.colofabrix.scala.accounting.utils.concurrency._
 import com.colofabrix.scala.accounting.utils.logging._
@@ -15,21 +15,24 @@ import com.colofabrix.scala.accounting.utils.validation._
 /**
  * Client interface
  */
-object Client extends PureLogging[IO] {
+object Client extends PureLogging {
+  protected[this] val logger = org.log4s.getLogger
+
   type ClientOutput[A] = IO[Either[ErrorInfo, A]]
+
+  implicit val cs: ContextShift[IO] = IO.contextShift(DefaultEC.global)
 
   /**
    * Returns the list of supported input types
    */
-  def listSupportedInputs: ClientOutput[Set[InputType]] = {
-    for {
-      _      <- ECManager.shift[IO](DefaultEC.compute)
-      _      <- pureLogger.info("Requested listSupportedInputs")
+  def listSupportedInputs: IO[Either[ErrorInfo, Set[InputType]]] = {
+    val computation = for {
+      _      <- pureLogger.info[IO]("Requested listSupportedInputs")
       result <- IO(serviceConfig.inputTypes.asRight)
     } yield result
-  }
 
-  // The caller should set the thread pool, the called should introduce async boundaries
+    cs.evalOn(DefaultEC.compute)(computation)
+  }
 
   /**
    * Converts one single input record into one output transaction

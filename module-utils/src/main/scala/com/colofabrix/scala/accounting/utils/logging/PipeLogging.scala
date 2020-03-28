@@ -1,45 +1,32 @@
 package com.colofabrix.scala.accounting.utils.logging
 
 import fs2.Pipe
+import org.log4s._
 
 /**
- * Helpers for logging of pipes
+ * Includes a logger for fs2.Pipe
  */
-object PipeLogging {
-  private[this] val logger = org.log4s.getLogger
+trait PipeLogging {
+  protected def logger: Logger
+  protected lazy val pipeLogger: PipeLogger = new PipeLogger(logger)
+}
 
-  implicit class PipeLoggingImpl[F[_], I, O](pipe: Pipe[F, I, O]) {
-    /** Logs entries passings at the input of the pipeline at error level */
-    def errorI(f: I => String): Pipe[F, I, O] = PipeLogging.error(f) andThen pipe
-    /** Logs entries passings at the input of the pipeline at warn level */
-    def warnI(f: I => String): Pipe[F, I, O] = PipeLogging.warn(f) andThen pipe
-    /** Logs entries passings at the input of the pipeline at info level */
-    def infoI(f: I => String): Pipe[F, I, O] = PipeLogging.info(f) andThen pipe
-    /** Logs entries passings at the input of the pipeline at debug level */
-    def debugI(f: I => String): Pipe[F, I, O] = PipeLogging.debug(f) andThen pipe
-    /** Logs entries passings at the input of the pipeline at trace level */
-    def traceI(f: I => String): Pipe[F, I, O] = PipeLogging.trace(f) andThen pipe
+/**
+ * Logger inside an fs2.Pipe
+ */
+final protected class PipeLogger(logger: Logger) {
+  @inline def error[F[_], A](show: A => String): Pipe[F, A, A] = _.debug(show, logger.error(_))
+  @inline def error[F[_], A](msg: String): Pipe[F, A, A]       = error(_ => msg)
 
-    /** Logs entries passings at the output of the pipeline at error level */
-    def errorO(f: O => String): Pipe[F, I, O] = pipe andThen PipeLogging.error(f)
-    /** Logs entries passings at the output of the pipeline at warn level */
-    def warnO(f: O => String): Pipe[F, I, O] = pipe andThen PipeLogging.warn(f)
-    /** Logs entries passings at the output of the pipeline at info level */
-    def infoO(f: O => String): Pipe[F, I, O] = pipe andThen PipeLogging.info(f)
-    /** Logs entries passings at the output of the pipeline at debug level */
-    def debugO(f: O => String): Pipe[F, I, O] = pipe andThen PipeLogging.debug(f)
-    /** Logs entries passings at the output of the pipeline at trace level */
-    def traceO(f: O => String): Pipe[F, I, O] = pipe andThen PipeLogging.trace(f)
-  }
+  @inline def warn[F[_], A](show: A => String): Pipe[F, A, A] = _.debug(show, logger.warn(_))
+  @inline def warn[F[_], A](msg: String): Pipe[F, A, A]       = warn(_ => msg)
 
-  /** Creates a pipe that logs a message at error level */
-  def error[F[_], A](f: A => String): Pipe[F, A, A] = _.debug(f, logger.error(_))
-  /** Creates a pipe that logs a message at warn level */
-  def warn[F[_], A](f: A => String): Pipe[F, A, A] = _.debug(f, logger.warn(_))
-  /** Creates a pipe that logs a message at info level */
-  def info[F[_], A](f: A => String): Pipe[F, A, A] = _.debug(f, logger.info(_))
-  /** Creates a pipe that logs a message at debug level */
-  def debug[F[_], A](f: A => String): Pipe[F, A, A] = _.debug(f, logger.debug(_))
-  /** Creates a pipe that logs a message at trace level */
-  def trace[F[_], A](f: A => String): Pipe[F, A, A] = _.debug(f, logger.trace(_))
+  @inline def info[F[_], A](show: A => String): Pipe[F, A, A] = _.debug(show, logger.info(_))
+  @inline def info[F[_], A](msg: String): Pipe[F, A, A]       = info(_ => msg)
+
+  @inline def debug[F[_], A](show: A => String): Pipe[F, A, A] = _.debug(show, logger.debug(_))
+  @inline def debug[F[_], A](msg: String): Pipe[F, A, A]       = debug(_ => msg)
+
+  @inline def trace[F[_], A](show: A => String): Pipe[F, A, A] = _.debug(show, logger.trace(_))
+  @inline def trace[F[_], A](msg: String): Pipe[F, A, A]       = trace(_ => msg)
 }
