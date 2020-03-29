@@ -18,48 +18,54 @@ import com.colofabrix.scala.accounting.utils.validation._
 object Client extends PureLogging {
   protected[this] val logger = org.log4s.getLogger
 
-  type ClientOutput[A] = IO[Either[ErrorInfo, A]]
-
-  implicit val cs: ContextShift[IO] = IO.contextShift(DefaultEC.global)
-
   /**
    * Returns the list of supported input types
    */
-  def listSupportedInputs: IO[Either[ErrorInfo, Set[InputType]]] = {
+  def listSupportedInputs[F[_]: Sync: ContextShift]: F[Either[ErrorInfo, Set[InputType]]] = {
     val computation = for {
-      _      <- pureLogger.info[IO]("Requested listSupportedInputs")
-      result <- IO(serviceConfig.inputTypes.asRight)
+      _      <- pureLogger.info[F]("Requested listSupportedInputs")
+      result <- Sync[F].delay(serviceConfig.inputTypes.asRight[ErrorInfo])
     } yield result
 
-    cs.evalOn(DefaultEC.compute)(computation)
+    ContextShift[F].evalOn(DefaultEC.compute)(computation)
   }
 
   /**
    * Converts one single input record into one output transaction
    */
   @SuppressWarnings(Array("org.wartremover.warts.TraversableOps"))
-  def convertRecord(inputType: InputType, record: String): ClientOutput[AValidated[Transaction]] = {
+  def convertRecord[F[_]: Sync: ContextShift](
+      inputType: InputType,
+      record: String,
+  ): F[Either[ErrorInfo, AValidated[Transaction]]] = {
     logger.info(s"Requested convertRecord with input type ${inputType.entryName}")
 
-    new CsvReader[IO, String](record)
+    val computation = new CsvReader[F, String](record)
       .read
       .through(pipelineForType(inputType))
       .compile
       .toList
-      .map(_.head.asRight)
+      .map(_.head.asRight[ErrorInfo])
+
+    ContextShift[F].evalOn(DefaultEC.compute)(computation)
   }
 
   /**
-   * Converts a list of inputs records into output transactions
+   * Converts a list of input records into output transactions
    */
-  def convertRecords(inputType: InputType, records: String): ClientOutput[List[AValidated[Transaction]]] = {
+  def convertRecords[F[_]: Sync: ContextShift](
+      inputType: InputType,
+      records: String,
+  ): F[Either[ErrorInfo, List[AValidated[Transaction]]]] = {
     logger.info(s"Requested convertRecords with input type ${inputType.entryName}")
 
-    new CsvReader[IO, String](records)
+    val computation = new CsvReader[F, String](records)
       .read
       .through(pipelineForType(inputType))
       .compile
       .toList
-      .map(_.asRight)
+      .map(_.asRight[ErrorInfo])
+
+    ContextShift[F].evalOn(DefaultEC.compute)(computation)
   }
 }

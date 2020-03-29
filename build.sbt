@@ -60,7 +60,8 @@ lazy val utils = project
   .settings(
     name := "utils",
     description := "Global Utilities",
-    libraryDependencies ++= Seq(
+    libraryDependencies ++=  Seq(
+    ).flatten ++ Seq(
       CatsCoreDep,
       CatsScalaTestDep,
       FS2CoreDep,
@@ -73,7 +74,9 @@ lazy val model = project
   .in(file("module-model"))
   .settings(
     name := "model",
-    libraryDependencies ++= Seq(),
+    libraryDependencies ++= Seq(
+      EnumeratumBundle
+    ).flatten ++ Seq(),
   )
 
 // ETL Service project

@@ -1,13 +1,11 @@
 package com.colofabrix.scala.accounting.etl.pipeline
 
 import cats.data._
-import cats.effect._
 import cats.implicits._
 import com.colofabrix.scala.accounting.etl.model._
 import com.colofabrix.scala.accounting.model._
 import com.colofabrix.scala.accounting.utils.logging._
 import com.colofabrix.scala.accounting.utils.validation._
-import fs2.Pure
 
 /**
  * Transforms an InputTransaction into the final Transaction
@@ -22,9 +20,9 @@ object Normalizer extends PipeLogging {
   /**
    * Converts a given stream of InputTransaction into a stream of Transaction
    */
-  def apply[F[_]: Sync, T <: InputTransaction](implicit n: Normalizer[T]): VPipe[Pure, T, Transaction] = {
-    val log: VPipe[Pure, T, T] = pipeLogger.trace(x => s"Normalizing input transaction ${x.toString}")
-    val normalize: VPipe[Pure, T, Transaction] =
+  def apply[F[_], T <: InputTransaction](implicit n: Normalizer[T]): VPipe[F, T, Transaction] = {
+    val log: VPipe[F, T, T] = pipeLogger.trace(x => s"Normalizing transaction: ${x.toString}")
+    val normalize: VPipe[F, T, Transaction] =
       Nested(_)
         .map(n.toTransaction)
         .value

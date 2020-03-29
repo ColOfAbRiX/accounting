@@ -1,7 +1,6 @@
 package com.colofabrix.scala.accounting.etl.pipeline
 
 import cats.data.Nested
-import cats.effect._
 import cats.implicits._
 import com.colofabrix.scala.accounting.etl.model._
 import com.colofabrix.scala.accounting.utils.logging._
@@ -22,8 +21,8 @@ object Cleaner extends PipeLogging {
   /**
    * Cleans a stream of InputTransaction
    */
-  def apply[F[_]: Sync, T <: InputTransaction](implicit c: Cleaner[T]): VPipe[F, T, T] = {
-    val log: VPipe[F, T, T] = pipeLogger.trace(x => s"Cleaning input transaction ${x.toString}")
+  def apply[F[_], T <: InputTransaction](implicit c: Cleaner[T]): VPipe[F, T, T] = {
+    val log: VPipe[F, T, T] = pipeLogger.trace(x => s"Cleaning transaction: ${x.toString}")
     val clean: VPipe[F, T, T] =
       Nested(_)
         .map(c.cleanInputTransaction)

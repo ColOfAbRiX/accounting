@@ -16,11 +16,17 @@ import sttp.tapir.server.http4s._
  */
 object Routes {
 
-  implicit private[this] val ics: ContextShift[IO] = IO.contextShift(DefaultEC.global)
+  implicit val cs: ContextShift[IO] = IO.contextShift(DefaultEC.global)
 
-  val listSupportedInputsRoute: HttpRoutes[IO] = Endpoints.listSupportedInputs.toRoutes(_ => Client.listSupportedInputs)
-  val convertRecordRoute: HttpRoutes[IO]       = Endpoints.convertRecord.toRoutes((Client.convertRecord _).tupled)
-  val convertRecordsRoute: HttpRoutes[IO]      = Endpoints.convertRecords.toRoutes((Client.convertRecords _).tupled)
+  val listSupportedInputsRoute: HttpRoutes[IO] =
+    Endpoints.listSupportedInputs.toRoutes(_ => Client.listSupportedInputs[IO])
+
+  val convertRecordRoute: HttpRoutes[IO] =
+    Endpoints.convertRecord.toRoutes((Client.convertRecord[IO] _).tupled)
+
+  val convertRecordsRoute: HttpRoutes[IO] =
+    Endpoints.convertRecords.toRoutes((Client.convertRecords[IO] _).tupled)
+
   val redocDocsRoute: HttpRoutes[IO] = {
     new RedocHttp4s(BuildInfo.description, Endpoints.openApiDocsEndpoint.toYaml).routes
   }

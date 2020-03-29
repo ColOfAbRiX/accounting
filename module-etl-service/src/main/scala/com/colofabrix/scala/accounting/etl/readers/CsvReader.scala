@@ -11,7 +11,7 @@ import kantan.csv.ops._
 /**
  * Reader of generic CSV
  */
-class CsvReader[F[_]: Sync, A: CsvSource](input: A) extends StreamLogging {
+final class CsvReader[F[_]: Sync, A: CsvSource](input: A) extends StreamLogging {
   protected[this] val logger = org.log4s.getLogger
 
   private[this] type KantanReader = kantan.csv.CsvReader[ReadResult[List[String]]]
@@ -35,7 +35,7 @@ class CsvReader[F[_]: Sync, A: CsvSource](input: A) extends StreamLogging {
    */
   def read: VRawInput[F] =
     for {
-      _        <- streamLogger.debug[F]("Reading input from CSV reader")
+      _        <- streamLogger.debug[F]("Using CSV reader")
       iterator <- Stream.resource(reader)
       records  <- Stream.unfold(iterator)(unfoldCsv)
     } yield records

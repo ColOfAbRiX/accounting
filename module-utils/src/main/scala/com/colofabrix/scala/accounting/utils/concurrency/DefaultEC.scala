@@ -12,11 +12,11 @@ object DefaultEC {
   lazy val global: ExecutionContext = ExecutionContext.global
 
   /** Default CPU-bound pool, fixed to the number of CPUs dedicated to computations */
-  lazy val compute: ExecutionContext = ECManager.createCompute("default")
+  lazy val compute: ExecutionContext = ECManager.createCompute("")
 
   /** Default blocking IO pool, unbounded and dedicated to blocking I/O operations */
-  lazy val io: ExecutionContext = ECManager.createIo("default")
+  lazy val io: ExecutionContext = ECManager.createIo("")
 
   /** Default non-blocking IO polling pool, high priority for I/O notifications */
-  lazy val events: ExecutionContext = ECManager.createEvents("default")
+  lazy val events: ExecutionContext = ECManager.createEvents("")
 }
