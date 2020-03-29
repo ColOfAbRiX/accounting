@@ -28,13 +28,13 @@ object Pipeline extends PipeLogging {
 
   /** Pipeline builder */
   def apply[F[_]: Sync, T <: InputTransaction: InputProcessor: Cleaner: Normalizer]
-      : VPipe[F, RawRecord, Transaction] = {
+      : VPipe[F, RawRecord, SingleTransaction] = {
 
     val inputLog: VPipe[F, RawRecord, RawRecord] =
       pipeLogger.debug("Running ETL pipeline") andThen
       pipeLogger.trace(x => s"ETL pipeline working on: ${x.toString}")
 
-    val outputLog: VPipe[F, Transaction, Transaction] =
+    val outputLog: VPipe[F, SingleTransaction, SingleTransaction] =
       pipeLogger.trace(x => s"ETL pipeline result: ${x.toString}")
 
     inputLog andThen InputProcessor[F, T] andThen Cleaner[F, T] andThen Normalizer[F, T] andThen outputLog

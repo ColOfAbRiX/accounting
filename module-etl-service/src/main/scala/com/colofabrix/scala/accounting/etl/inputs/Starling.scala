@@ -1,17 +1,18 @@
 package com.colofabrix.scala.accounting.etl.inputs
 
 import com.colofabrix.scala.accounting.etl._
-import com.colofabrix.scala.accounting.etl.definitions._
 import com.colofabrix.scala.accounting.etl.conversion.FieldConverter._
+import com.colofabrix.scala.accounting.etl.definitions._
 import com.colofabrix.scala.accounting.etl.model._
 import com.colofabrix.scala.accounting.etl.pipeline._
 import com.colofabrix.scala.accounting.etl.pipeline.CleanerUtils._
 import com.colofabrix.scala.accounting.etl.pipeline.InputProcessorUtils._
 import com.colofabrix.scala.accounting.model._
+import com.colofabrix.scala.accounting.model.BankType.StarlingBank
 import com.colofabrix.scala.accounting.utils.validation._
+import java.{ util => jutils }
 import java.time.LocalDate
 import shapeless._
-import java.{ util => jutils }
 
 /**
  * Starling API data processor
@@ -43,8 +44,8 @@ class StarlingApiInput
     Generic[StarlingTransaction].from(cleaned)
   }
 
-  def toTransaction(input: StarlingTransaction): Transaction = {
-    Transaction(jutils.UUID.randomUUID, input.date, input.amount, input.reference, "Starling", "", "", "")
+  def toTransaction(input: StarlingTransaction): SingleTransaction = {
+    SingleTransaction(jutils.UUID.randomUUID, input.date, input.amount, input.reference, StarlingBank, "", "", "")
   }
 
 }

@@ -2,17 +2,18 @@ package com.colofabrix.scala.accounting.etl.inputs
 
 import cats.implicits._
 import com.colofabrix.scala.accounting.etl._
-import com.colofabrix.scala.accounting.etl.definitions._
 import com.colofabrix.scala.accounting.etl.conversion.FieldConverter._
+import com.colofabrix.scala.accounting.etl.definitions._
 import com.colofabrix.scala.accounting.etl.model._
 import com.colofabrix.scala.accounting.etl.pipeline._
 import com.colofabrix.scala.accounting.etl.pipeline.CleanerUtils._
 import com.colofabrix.scala.accounting.etl.pipeline.InputProcessorUtils._
 import com.colofabrix.scala.accounting.model._
+import com.colofabrix.scala.accounting.model.BankType.BarclaysBank
 import com.colofabrix.scala.accounting.utils.validation._
+import java.{ util => jutils }
 import java.time.LocalDate
 import shapeless._
-import java.{ util => jutils }
 
 /**
  * Barclays API data processor
@@ -44,8 +45,8 @@ class BarclaysApiInput
     Generic[BarclaysTransaction].from(cleaned)
   }
 
-  def toTransaction(input: BarclaysTransaction): Transaction = {
-    Transaction(jutils.UUID.randomUUID, input.date, input.amount, input.memo, "Barclays", "", "", "")
+  def toTransaction(input: BarclaysTransaction): SingleTransaction = {
+    SingleTransaction(jutils.UUID.randomUUID, input.date, input.amount, input.memo, BarclaysBank, "", "", "")
   }
 
 }

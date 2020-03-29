@@ -6,7 +6,7 @@ import com.colofabrix.scala.accounting.etl.api.Inputs._
 import com.colofabrix.scala.accounting.etl.model.Api._
 import com.colofabrix.scala.accounting.etl.model.Config._
 import com.colofabrix.scala.accounting.etl.BuildInfo
-import com.colofabrix.scala.accounting.model.Transaction
+import com.colofabrix.scala.accounting.model.SingleTransaction
 import com.colofabrix.scala.accounting.utils.validation._
 import com.colofabrix.scala.accounting.utils.validation.{ ValidationError => VError }
 import io.circe.generic.auto._
@@ -51,13 +51,13 @@ object Endpoints {
   /**
    * Converts one single input record into one output transaction
    */
-  val convertRecord: EtlEndpoint[(InputType, String), AValidated[Transaction]] = {
+  val convertRecord: EtlEndpoint[(InputType, String), AValidated[SingleTransaction]] = {
     apiBaseEndpoint
       .get
       .in("convert-record")
       .in(inputTypeQuery)
       .in(stringBody)
-      .out(jsonBody[Validated[NonEmptyChain[VError], Transaction]])
+      .out(jsonBody[Validated[NonEmptyChain[VError], SingleTransaction]])
       .name("convert-record")
       .description(
         """Validates and converts one single input record, interpreted as a CSV row
@@ -68,13 +68,13 @@ object Endpoints {
   /**
    * Converts a list of inputs records into output transactions
    */
-  val convertRecords: EtlEndpoint[(InputType, String), List[AValidated[Transaction]]] = {
+  val convertRecords: EtlEndpoint[(InputType, String), List[AValidated[SingleTransaction]]] = {
     apiBaseEndpoint
       .get
       .in("convert-records")
       .in(inputTypeQuery)
       .in(stringBody)
-      .out(jsonBody[List[Validated[NonEmptyChain[VError], Transaction]]])
+      .out(jsonBody[List[Validated[NonEmptyChain[VError], SingleTransaction]]])
       .name("convert-records")
       .description(
         """Validates and converts a list of input records, interpreted as CSV data

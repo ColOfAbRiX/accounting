@@ -7,7 +7,7 @@ import com.colofabrix.scala.accounting.etl.model.Api._
 import com.colofabrix.scala.accounting.etl.model.Config._
 import com.colofabrix.scala.accounting.etl.pipeline.ApiPipelineInstances._
 import com.colofabrix.scala.accounting.etl.readers.CsvReader
-import com.colofabrix.scala.accounting.model.Transaction
+import com.colofabrix.scala.accounting.model.SingleTransaction
 import com.colofabrix.scala.accounting.utils.concurrency._
 import com.colofabrix.scala.accounting.utils.logging._
 import com.colofabrix.scala.accounting.utils.validation._
@@ -37,7 +37,7 @@ object Client extends PureLogging {
   def convertRecord[F[_]: Sync: ContextShift](
       inputType: InputType,
       record: String,
-  ): F[Either[ErrorInfo, AValidated[Transaction]]] = {
+  ): F[Either[ErrorInfo, AValidated[SingleTransaction]]] = {
     logger.info(s"Requested convertRecord with input type ${inputType.entryName}")
 
     val computation = new CsvReader[F, String](record)
@@ -56,7 +56,7 @@ object Client extends PureLogging {
   def convertRecords[F[_]: Sync: ContextShift](
       inputType: InputType,
       records: String,
-  ): F[Either[ErrorInfo, List[AValidated[Transaction]]]] = {
+  ): F[Either[ErrorInfo, List[AValidated[SingleTransaction]]]] = {
     logger.info(s"Requested convertRecords with input type ${inputType.entryName}")
 
     val computation = new CsvReader[F, String](records)

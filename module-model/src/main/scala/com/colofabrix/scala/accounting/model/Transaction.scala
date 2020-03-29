@@ -6,57 +6,57 @@ import java.util.UUID
 /**
  * Represents a transaction in the system
  */
-trait TTransaction {
+trait Transaction {
   def id: UUID
   def date: LocalDate
   def amount: BigDecimal
   def description: String
-  def input: String
+  def input: BankType
   def category: String
   def subcategory: String
   def notes: String
 }
 
 /**
- * A transaction
+ * A single transaction
  */
-final case class Transaction(
+final case class SingleTransaction(
     id: UUID,
     date: LocalDate,
     amount: BigDecimal,
     description: String,
-    input: String,
+    input: BankType,
     category: String,
     subcategory: String,
     notes: String,
-) extends TTransaction
+) extends Transaction
 
 /**
- * A transactions that is the result of multiple merged transactions
+ * A transaction that is the result of multiple merged transactions
  */
 final case class MergeTransaction(
     id: UUID,
-    merged: List[TTransaction],
     date: LocalDate,
     amount: BigDecimal,
     description: String,
-    input: String,
+    input: BankType,
     category: String,
     subcategory: String,
     notes: String,
-) extends TTransaction
+    merged: List[Transaction],
+) extends Transaction
 
 /**
- * A transactions that is the result of amending and existing transaction
+ * A transactions that is the result of amending an existing transaction
  */
 final case class AmendedTransaction(
     id: UUID,
-    original: TTransaction,
     date: LocalDate,
     amount: BigDecimal,
     description: String,
-    input: String,
+    input: BankType,
     category: String,
     subcategory: String,
     notes: String,
-) extends TTransaction
+    original: Transaction,
+) extends Transaction

@@ -36,7 +36,9 @@ object ApiPipelineInstances {
   implicit val starlingNormalizer: Normalizer[StarlingTransaction] = starlingInput
   implicit val amexNormalizer: Normalizer[AmexTransaction]         = amexInput
 
-  def pipelineForType[F[_]: Sync, T <: InputTransaction](inputType: InputType): VPipe[F, RawRecord, Transaction] = {
+  def pipelineForType[F[_]: Sync, T <: InputTransaction](
+      inputType: InputType,
+  ): VPipe[F, RawRecord, SingleTransaction] = {
     inputType match {
       case BarclaysInputType => Pipeline[F, BarclaysTransaction]
       case HalifaxInputType  => Pipeline[F, HalifaxTransaction]
@@ -73,7 +75,7 @@ object CsvFilePipelineInstances {
   implicit val starlingNormalizer: Normalizer[StarlingTransaction] = starlingInput
   implicit val amexNormalizer: Normalizer[AmexTransaction]         = amexInput
 
-  def pipelineForType[F[_]: Sync, T <: InputTransaction](inputType: InputType): VPipe[F, RawRecord, Transaction] =
+  def pipelineForType[F[_]: Sync, T <: InputTransaction](inputType: InputType): VPipe[F, RawRecord, SingleTransaction] =
     inputType match {
       case BarclaysInputType => Pipeline[F, BarclaysTransaction]
       case HalifaxInputType  => Pipeline[F, HalifaxTransaction]

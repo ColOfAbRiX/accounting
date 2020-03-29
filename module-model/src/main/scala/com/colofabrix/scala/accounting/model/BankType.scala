@@ -1,4 +1,4 @@
-package com.colofabrix.scala.accounting.etl.model
+package com.colofabrix.scala.accounting.model
 
 import enumeratum._
 
