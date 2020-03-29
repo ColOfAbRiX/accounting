@@ -1,4 +1,4 @@
-package com.colofabrix.scala.accounting.etl
+package com.colofabrix.scala.accounting.etl.conversion
 
 import java.time.LocalDate
 import cats.scalatest._

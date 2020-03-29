@@ -1,4 +1,4 @@
-package com.colofabrix.scala.accounting.etl
+package com.colofabrix.scala.accounting.etl.pipeline
 
 import cats.data._
 import cats.data.Validated._

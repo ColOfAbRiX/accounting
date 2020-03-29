@@ -1,12 +1,12 @@
-package com.colofabrix.scala.accounting.etl
+package com.colofabrix.scala.accounting.etl.pipeline
 
 import cats.effect._
 import cats.implicits._
 import cats.scalatest._
-import com.colofabrix.scala.accounting.etl.conversion._
 import com.colofabrix.scala.accounting.etl.definitions._
 import com.colofabrix.scala.accounting.etl.model._
 import com.colofabrix.scala.accounting.etl.pipeline._
+import com.colofabrix.scala.accounting.etl.readers._
 import com.colofabrix.scala.accounting.utils.StreamHelpers
 import com.colofabrix.scala.accounting.utils.validation._
 import org.scalatest._
@@ -27,24 +27,24 @@ trait PipelineSpecsDefs[T <: InputTransaction]
   implicit val cleaner: Cleaner[T]
 
   def runTestPipeline(data: List[RawRecord]): VStream[IO, T] = {
-    new IterableReader(data)
+    new IterableReader[IO](data)
       .read
-      .through(InputProcessor[T])
-      .through(Cleaner[T])
+      .through(InputProcessor[IO, T])
+      .through(Cleaner[IO, T])
   }
 
   s"The ${name} processor" when {
     "provied with a valid input" should {
       "return a valid result" in {
         val result = runTestPipeline(this.sampleCorrectCsvData)
-        withValidatedIoStream(result) { computed =>
+        withValidatedStream(result) { computed =>
           computed.foreach(_ shouldBe valid)
         }
       }
       s"convert the input into List[${name}InputTransaction]" in {
         val result    = runTestPipeline(this.sampleCorrectCsvData)
         val expectedV = this.convertedCorrectData.aValid
-        withValidatedIoStream(result) { computedV =>
+        withValidatedStream(result) { computedV =>
           (computedV.sequence, expectedV).mapN { (computed, expected) =>
             computed should contain theSameElementsInOrderAs (expected)
             ()
@@ -57,13 +57,13 @@ trait PipelineSpecsDefs[T <: InputTransaction]
     "provied with an invalid input" should {
       "return an invalid result" in {
         val result = runTestPipeline(this.sampleBadCsvData)
-        withValidatedIoStream(result) { computed =>
+        withValidatedStream(result) { computed =>
           computed.foreach(_ shouldBe invalid)
         }
       }
       "return a detailed description of conversion errors" in {
         val result = runTestPipeline(this.sampleBadCsvData)
-        withValidatedIoStream(result) { computed =>
+        withValidatedStream(result) { computed =>
           computed should contain theSameElementsAs (this.convertedBadData)
           ()
         }
@@ -73,7 +73,7 @@ trait PipelineSpecsDefs[T <: InputTransaction]
     "provided with specific record values" should {
       "dropped these values" in {
         val result = runTestPipeline(this.sampleDroppedCsvData)
-        withValidatedIoStream(result) { computed =>
+        withValidatedStream(result) { computed =>
           computed should have size (0)
           ()
         }

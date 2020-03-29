@@ -1,4 +1,4 @@
-package com.colofabrix.scala.accounting.etl
+package com.colofabrix.scala.accounting.etl.pipeline
 
 import com.colofabrix.scala.accounting.etl.definitions._
 import com.colofabrix.scala.accounting.etl.pipeline.InputProcessorUtils._
