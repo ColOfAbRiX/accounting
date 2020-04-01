@@ -5,6 +5,7 @@ import AllProjectsKeys.autoImport._
 lazy val ScalaLangVersion = "2.13.0"
 
 // General
+Global / onChangedBuildSource := ReloadOnSourceChanges
 ThisBuild / organization := "com.colofabrix.scala.accounting"
 ThisBuild / scalaVersion := ScalaLangVersion
 

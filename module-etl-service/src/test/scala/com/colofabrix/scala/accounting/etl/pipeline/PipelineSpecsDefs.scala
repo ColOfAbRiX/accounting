@@ -27,7 +27,7 @@ trait PipelineSpecsDefs[T <: InputTransaction]
   implicit val cleaner: Cleaner[T]
 
   def runTestPipeline(data: List[RawRecord]): VStream[IO, T] = {
-    new IterableReader[IO](data)
+    IterableReader[IO](data)
       .read
       .through(InputProcessor[IO, T])
       .through(Cleaner[IO, T])

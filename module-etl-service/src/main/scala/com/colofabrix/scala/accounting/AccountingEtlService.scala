@@ -14,8 +14,8 @@ object AccountingEtlService extends IOApp {
 
   private[this] def httpApp: HttpApp[IO] =
     Router(
-      "/"     -> Routes.allRoutes,
-      "/docs" -> Routes.redocDocsRoute,
+      "/"     -> Routes[IO].allRoutes,
+      "/docs" -> Routes[IO].redocDocsRoute,
     ).orNotFound
 
   override def run(args: List[String]): IO[ExitCode] = {

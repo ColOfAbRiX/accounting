@@ -9,7 +9,7 @@ import fs2.Stream
 /**
  * Reader from Iterable
  */
-class IterableReader[F[_]: Sync](input: Iterable[RawRecord]) extends StreamLogging {
+class IterableReader[F[_]: Sync] private (input: Iterable[RawRecord]) extends StreamLogging {
   protected[this] val logger = org.log4s.getLogger
 
   /**
@@ -20,5 +20,8 @@ class IterableReader[F[_]: Sync](input: Iterable[RawRecord]) extends StreamLoggi
       _       <- streamLogger.debug[F]("Reading input from Iterable reader")
       records <- Stream.unfold(input.iterator)(i => if (i.hasNext) Some((i.next.aValid, i)) else None)
     } yield records
+}
 
+object IterableReader {
+  def apply[F[_]: Sync](input: Iterable[RawRecord]): IterableReader[F] = new IterableReader[F](input)
 }
