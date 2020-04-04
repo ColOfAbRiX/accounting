@@ -1,6 +1,6 @@
 package com.colofabrix.scala.accounting.etl
 
-import com.colofabrix.scala.accounting.utils.validation._
+import com.colofabrix.scala.accounting.utils.validation.streams._
 import fs2.Stream
 
 package object definitions {
@@ -11,5 +11,5 @@ package object definitions {
   type RawInput[F[_]] = Stream[F, RawRecord]
 
   /** An input as collection of RawRecords */
-  type VRawInput[F[_]] = Stream[F, AValidated[RawRecord]]
+  type VRawInput[F[_]] = VStream[F, RawRecord]
 }

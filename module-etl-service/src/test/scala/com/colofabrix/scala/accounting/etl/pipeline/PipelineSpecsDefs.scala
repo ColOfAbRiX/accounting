@@ -9,6 +9,7 @@ import com.colofabrix.scala.accounting.etl.pipeline._
 import com.colofabrix.scala.accounting.etl.readers._
 import com.colofabrix.scala.accounting.utils.StreamHelpers
 import com.colofabrix.scala.accounting.utils.validation._
+import com.colofabrix.scala.accounting.utils.validation.streams._
 import org.scalatest._
 import org.scalatest.matchers.should._
 import org.scalatest.wordspec._

@@ -1,57 +1,71 @@
 package com.colofabrix.scala.accounting.etl.api
 
-import com.colofabrix.scala.accounting.etl.model.Config._
-import shapeless._
-
 /**
  * Tapir codecs to convert to and from wire values
  */
 object TapirCodecs {
-  // import sttp.tapir._
+  import com.colofabrix.scala.accounting.etl.model.Config._
   import sttp.tapir.Codec._
 
   /** Tapir I/O codec for the type of input that can be decoded */
   implicit val inputTypeEndpointTapirCodec: PlainCodec[InputType] = {
     implicitly[PlainCodec[String]].map(InputType(_))(_.entryName)
   }
-
-  // //  NEWTYPE  //
-
-  // private type GenNewt[NT, W] = Generic.Aux[NT, W :: HNil]
-
-  // /** Tapir I/O codec for the newtype pattern */
-  // implicit def newtCodec[NT, W](implicit gen: GenNewt[NT, W], wCodec: PlainCodec[W]): PlainCodec[NT] = {
-  //   def encode(x: NT): String               = wCodec.encode(gen.to(x).head)
-  //   def decode(x: String): DecodeResult[NT] = wCodec.decode(x).map(w => gen.from(w :: HNil))
-  //   implicitly[PlainCodec[String]].mapDecode(decode)(encode)
-  // }
 }
 
 /**
  * Circe codecs to convert to and from JSON values
  */
-@SuppressWarnings(Array("org.wartremover.warts.ImplicitParameter"))
 object CirceCodecs {
   import cats.data.{ Validated, NonEmptyChain => NEC }
   import cats.data.Validated.{ Invalid, Valid }
-  import io.circe.{ HCursor, Json, Decoder => Dec, Encoder => Enc }
+  import CirceNewtypeCodecs._
+  import com.colofabrix.scala.accounting.etl.model.Config._
+  import com.colofabrix.scala.accounting.model.BankType
+  import io.circe.{ Encoder, Json }
 
   /**
    * Encoder for InputType -> JSON
    * See https://stackoverflow.com/a/59089128/1215156
    */
-  implicit val inputTypeJsonEnc: Enc[InputType] = Enc[String].contramap(_.entryName)
+  implicit val inputTypeJsonEnc: Encoder[InputType] = Encoder[String].contramap(_.entryName)
+
+  implicit val bankTypeJsonEnc: Encoder[BankType] = Encoder[String].contramap(_.entryName)
 
   /** Circe encoder for Validated */
-  implicit def validatedEnc[E, A](implicit necEnc: Enc[NEC[E]], aEnc: Enc[A]): Enc[Validated[NEC[E], A]] =
-    new Enc[Validated[NEC[E], A]] {
+  implicit def validatedEnc[E, A](implicit necEnc: Encoder[NEC[E]], aEnc: Encoder[A]): Encoder[Validated[NEC[E], A]] =
+    new Encoder[Validated[NEC[E], A]] {
       def apply(a: Validated[NEC[E], A]): Json = a match {
         case Invalid(e) => Json.obj(("invalid", necEnc.apply(e)))
         case Valid(a)   => Json.obj(("valid", aEnc.apply(a)))
       }
     }
+}
 
-  // //  NEWTYPE  //
+/**
+ * Tapir I/O codec for the newtype pattern
+ * */
+object TapirNewtypeCodecs {
+  import sttp.tapir._
+  import sttp.tapir.Codec._
+  import shapeless._
+
+  private type GenNewt[NT, W] = Generic.Aux[NT, W :: HNil]
+
+  implicit def newtCodec[NT, W](implicit gen: GenNewt[NT, W], wCodec: PlainCodec[W]): PlainCodec[NT] = {
+    def encode(x: NT): String               = wCodec.encode(gen.to(x).head)
+    def decode(x: String): DecodeResult[NT] = wCodec.decode(x).map(w => gen.from(w :: HNil))
+    implicitly[PlainCodec[String]].mapDecode(decode)(encode)
+  }
+}
+
+/**
+ * Circe codecs for the newtype pattern
+ */
+@SuppressWarnings(Array("org.wartremover.warts.ImplicitParameter"))
+object CirceNewtypeCodecs {
+  import shapeless._
+  import io.circe.{ HCursor, Json, Decoder => Dec, Encoder => Enc }
 
   private type GenNewt[NT, W] = Generic.Aux[NT, W :: HNil]
 

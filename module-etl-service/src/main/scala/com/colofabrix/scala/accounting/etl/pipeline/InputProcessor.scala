@@ -6,6 +6,7 @@ import com.colofabrix.scala.accounting.etl.definitions._
 import com.colofabrix.scala.accounting.etl.model._
 import com.colofabrix.scala.accounting.utils.logging._
 import com.colofabrix.scala.accounting.utils.validation._
+import com.colofabrix.scala.accounting.utils.validation.streams._
 import fs2.Pure
 
 /**

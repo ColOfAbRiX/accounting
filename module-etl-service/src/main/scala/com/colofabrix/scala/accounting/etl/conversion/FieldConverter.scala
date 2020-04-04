@@ -7,6 +7,7 @@ import com.colofabrix.scala.accounting.utils.validation._
 import java.time.format.DateTimeFormatter
 import java.time.LocalDate
 import scala.annotation.implicitNotFound
+import scala.util.Try
 
 /**
  * Parser to transform record fields into JVM types
@@ -24,10 +25,13 @@ object FieldConverter {
   @implicitNotFound("Couldn't find FieldConverter for type FieldConverter[${I}, ${O}]")
   def iParseO[I, O](extract: List[I] => I)(implicit P: FieldConverter[I, O]): FieldBuilder[I, O] =
     Kleisli { record =>
-      val extracted = TryE(extract(record)).leftMap { ex =>
-        val r = Option(record).map(_.toString).getOrElse("null")
-        s"Exception on converting record $r: ${ex.toString}"
-      }.toAValidated
+      val extracted = Try(extract(record))
+        .toEither
+        .leftMap { ex =>
+          val r = Option(record).map(_.toString).getOrElse("null")
+          s"Exception on converting record $r: ${ex.toString}"
+        }
+        .toAValidated
 
       extracted andThen P.parseField
     }
@@ -41,10 +45,13 @@ object FieldConverter {
   /** Method to create the default parser for the given type */
   def apply[I, O](f: I => O)(implicit S: Show[I]): FieldConverter[I, O] = new FieldConverter[I, O] {
     def parseField(field: I): AValidated[O] = {
-      TryE(f(field)).leftMap { ex =>
-        val f = Option(field).map(S.show).getOrElse("null")
-        s"Exception on converting field '$f': ${ex.toString}"
-      }.toAValidated
+      Try(f(field))
+        .toEither
+        .leftMap { ex =>
+          val f = Option(field).map(S.show).getOrElse("null")
+          s"Exception on converting field '$f': ${ex.toString}"
+        }
+        .toAValidated
     }
   }
 

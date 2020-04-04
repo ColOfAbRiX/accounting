@@ -1,12 +1,9 @@
 package com.colofabrix.scala.accounting.utils
 
-import scala.util.Try
 import scala.util.matching.Regex
 import cats.data._
 import cats.implicits._
 import cats.kernel.Semigroup
-import cats.Show
-import fs2.{ Pipe, Stream }
 
 /**
  * Accounting Validation (AValidation) module
@@ -19,49 +16,7 @@ package object validation {
   /** The type used to validate data */
   type AValidated[+A] = Validated[NonEmptyChain[ValidationError], A]
 
-  /** Validated Stream */
-  type VStream[+F[_], +A] = Stream[F, AValidated[A]]
-
-  /** Validated Pipe */
-  type VPipe[F[_], -I, +O] = Pipe[F, AValidated[I], AValidated[O]]
-
-  //  TYPECLASSES  //
-
-  @SuppressWarnings(Array("org.wartremover.warts.ImplicitParameter"))
-  implicit def avalidatedShow[A](
-      implicit
-      se: Show[NonEmptyChain[ValidationError]],
-      sa: Show[A],
-  ): Show[AValidated[A]] = {
-    new Show[AValidated[A]] {
-      def show(t: AValidated[A]): String = t.fold(
-        e => s"Invalid(${se.show(e)})",
-        a => s"Valid(${sa.show(a)})",
-      )
-    }
-  }
-
   //  ENRICHMENT CLASSES  //
-
-  /** Try to AValidated */
-  object TryV {
-    def apply[A](f: => A): AValidated[A] = Try(f).toAValidated
-  }
-
-  /** Try to Either */
-  object TryE {
-    def apply[A](f: => A): Either[Throwable, A] = Try(f).toEither
-  }
-
-  /** Enrichment for scala.util.Try */
-  implicit class TryOps[A](private val tryObject: Try[A]) extends AnyVal {
-    def toAValidated: AValidated[A] = {
-      tryObject
-        .toEither
-        .leftMap(_.toString)
-        .toValidatedNec
-    }
-  }
 
   /** Enrichment for any object */
   implicit class AnyOps[A <: Any](private val anyObject: A) extends AnyVal {
@@ -84,22 +39,12 @@ package object validation {
     def toAValidated: AValidated[A] = eitherObject.toValidatedNec
   }
 
-  /** Enrichment for Either[NonEmptyChain[String], A] */
-  implicit class EitherNecOps[A](private val eitherObject: Either[NonEmptyChain[ValidationError], A]) extends AnyVal {
-    /** Converts an Either[NonEmptyChain[String], A] into AValidated */
-    def toAValidated: AValidated[A] = eitherObject match {
-      case Left(error)  => Validated.invalid[NonEmptyChain[ValidationError], A](error)
-      case Right(value) => value.aValid
-    }
-  }
-
   //  COMBINATORS  //
 
-  // Validator/Vtor
-  private type Vtor[A] = ((=> String, A) => AValidated[A])
-
   /** Build a validation function as concatenation of the provided functions */
-  def validateAll[A](validators: Vtor[A]*)(name: => String, value: A)(implicit aSemi: Semigroup[A]): AValidated[A] = {
+  def validateAll[A](
+      validators: ((=> String, A) => AValidated[A])*,
+  )(name: => String, value: A)(implicit aSemi: Semigroup[A]): AValidated[A] = {
     validators.foldLeft(value.aValid)(_ combine _(name, value))
   }
 

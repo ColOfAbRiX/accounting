@@ -4,6 +4,7 @@ import cats._
 import cats.effect._
 import cats.implicits._
 import com.colofabrix.scala.accounting.utils.validation._
+import com.colofabrix.scala.accounting.utils.validation.streams._
 
 /**
  * Helpers to test streams and validated streams

@@ -2,6 +2,9 @@ package com.colofabrix.scala.accounting.model
 
 import enumeratum._
 
+/**
+ * The type of Bank a transaction can have
+ */
 sealed abstract class BankType(override val entryName: String) extends EnumEntry
 
 object BankType extends Enum[BankType] {
