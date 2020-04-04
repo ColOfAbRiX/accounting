@@ -7,7 +7,7 @@ import shapeless._
  * Tapir codecs to convert to and from wire values
  */
 object TapirCodecs {
-  import sttp.tapir._
+  // import sttp.tapir._
   import sttp.tapir.Codec._
 
   /** Tapir I/O codec for the type of input that can be decoded */
@@ -15,16 +15,16 @@ object TapirCodecs {
     implicitly[PlainCodec[String]].map(InputType(_))(_.entryName)
   }
 
-  //  NEWTYPE  //
+  // //  NEWTYPE  //
 
-  private type GenNewt[NT, W] = Generic.Aux[NT, W :: HNil]
+  // private type GenNewt[NT, W] = Generic.Aux[NT, W :: HNil]
 
-  /** Tapir I/O codec for the newtype pattern */
-  implicit def newtCodec[NT, W](implicit gen: GenNewt[NT, W], wCodec: PlainCodec[W]): PlainCodec[NT] = {
-    def encode(x: NT): String               = wCodec.encode(gen.to(x).head)
-    def decode(x: String): DecodeResult[NT] = wCodec.decode(x).map(w => gen.from(w :: HNil))
-    implicitly[PlainCodec[String]].mapDecode(decode)(encode)
-  }
+  // /** Tapir I/O codec for the newtype pattern */
+  // implicit def newtCodec[NT, W](implicit gen: GenNewt[NT, W], wCodec: PlainCodec[W]): PlainCodec[NT] = {
+  //   def encode(x: NT): String               = wCodec.encode(gen.to(x).head)
+  //   def decode(x: String): DecodeResult[NT] = wCodec.decode(x).map(w => gen.from(w :: HNil))
+  //   implicitly[PlainCodec[String]].mapDecode(decode)(encode)
+  // }
 }
 
 /**
@@ -51,7 +51,7 @@ object CirceCodecs {
       }
     }
 
-  //  NEWTYPE  //
+  // //  NEWTYPE  //
 
   private type GenNewt[NT, W] = Generic.Aux[NT, W :: HNil]
 

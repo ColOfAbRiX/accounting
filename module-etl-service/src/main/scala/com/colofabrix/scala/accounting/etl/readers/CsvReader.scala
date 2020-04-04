@@ -32,28 +32,33 @@ final class CsvReader[F[_]: Sync: ContextShift, A: CsvSource] private (input: A)
       _ <- Sync[F].delay(r.close())
     } yield ()
 
-  private[this] def unfoldCsv(iterator: KantanReader): Option[(AValidated[RawRecord], KantanReader)] = {
-    def onError(e: ReadError) = {
-      logger.warn(s"Reading error: ${e.toString}")
-      Some((e.toString.aInvalid, iterator))
-    }
-    def onValid(v: RawRecord) = {
-      logger.trace(s"Reading record: ${v.toString}")
-      Some((v.aValid, iterator))
-    }
+  private[this] def unfoldCsv(iterator: KantanReader): F[Option[(AValidated[RawRecord], KantanReader)]] = {
+    def onError(e: ReadError) = Some((e.toString.aInvalid, iterator))
+    def onValid(v: RawRecord) = Some((v.aValid, iterator))
+    def log(r: Option[(AValidated[RawRecord], _)]) = r.traverse(
+      _._1.fold(
+        e => pureLogger.warn(s"Reading error: ${e.toString}"),
+        v => pureLogger.trace(s"Reading record: ${v.toString}"),
+      ),
+    )
 
-    if (iterator.hasNext) iterator.next.fold(onError, onValid) else None
+    for {
+      _ <- ContextShift[F].shift
+      r <- Sync[F].delay {
+            if (iterator.hasNext) iterator.next.fold(onError, onValid) else None
+          }
+      _ <- log(r)
+    } yield r
   }
 
   /**
-   * Read from the validated raw input
+   * Read from the CSV data the validated raw input
    */
   def read: VRawInput[F] =
     for {
-      _        <- streamLogger.debug[F]("Using CSV reader")
+      _        <- streamLogger.debug[F]("Reading input from CSV reader")
       iterator <- Stream.resource(Resource.make(openReader)(closeReader))
-      records  <- Stream.unfold(iterator)(unfoldCsv)
-      _        <- Stream.eval(ContextShift[F].shift)
+      records  <- Stream.unfoldEval(iterator)(unfoldCsv)
     } yield records
 
 }

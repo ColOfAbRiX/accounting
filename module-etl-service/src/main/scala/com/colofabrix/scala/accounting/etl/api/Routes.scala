@@ -16,10 +16,20 @@ import sttp.tapir.redoc.http4s.RedocHttp4s
 import sttp.tapir.server.http4s._
 
 /**
+ * Common interface to gather all routes
+ */
+trait AllRoutes[F[_]] {
+  /** List of all routes */
+  def allRoutes: List[HttpRoutes[F]]
+
+  /** Route to the documentation */
+  def docsRoute: HttpRoutes[F]
+}
+
+/**
  * Http4s routes
  */
-final class Routes[F[_]: Sync: ContextShift] {
-
+final class Routes[F[_]: Sync: ContextShift] extends AllRoutes[F] {
   val listSupportedInputsRoute: HttpRoutes[F] = Endpoints
     .listSupportedInputs
     .toRoutes(Routes.applyUnitClient(Client[F].listSupportedInputs))
@@ -32,22 +42,18 @@ final class Routes[F[_]: Sync: ContextShift] {
     .convertRecords
     .toRoutes(Routes.applyClient(Client[F].convertRecords _))
 
-  val redocDocsRoute: HttpRoutes[F] =
+  val docsRoute: HttpRoutes[F] =
     new RedocHttp4s(BuildInfo.description, Endpoints.openApiDocsEndpoint.toYaml).routes
 
-  def allRoutes: HttpRoutes[F] = {
-    val allRoutes = List[HttpRoutes[F]](
-      listSupportedInputsRoute,
-      convertRecordRoute,
-      convertRecordsRoute,
-    )
-    allRoutes.foldLeft(HttpRoutes.empty[F])(_ <+> _)
-  }
-
+  val allRoutes: List[HttpRoutes[F]] = List(
+    listSupportedInputsRoute,
+    convertRecordRoute,
+    convertRecordsRoute,
+  )
 }
 
 object Routes {
-  def apply[F[_]: Sync: ContextShift]: Routes[F] = new Routes[F]
+  def apply[F[_]: Sync: ContextShift]: AllRoutes[F] = new Routes[F]
 
   private[Routes] def applyUnitClient[F[_]: Functor, A](f: => F[A]): Unit => F[Either[ErrorInfo, A]] = { _ =>
     f.map(_.asRight[ErrorInfo])
