@@ -14,16 +14,17 @@ object AccountingEtlService extends IOApp {
 
   private[this] def httpApp: HttpApp[IO] =
     Router(
-      "/"     -> Routes[IO].allRoutes.foldLeft(HttpRoutes.empty[IO])(_ <+> _),
-      "/docs" -> Routes[IO].docsRoute,
+      "/"     -> Routes.allRoutes.foldLeft(HttpRoutes.empty[IO])(_ <+> _),
+      "/docs" -> Routes.docsRoute,
     ).orNotFound
 
   override def run(args: List[String]): IO[ExitCode] =
-    BlazeServerBuilder[IO]
-      .bindHttp(serviceConfig.server.port, serviceConfig.server.host)
-      .withHttpApp(httpApp)
-      .resource
-      .use(Server.main)
-      .as(ExitCode.Success)
+    for {
+      _ <- BlazeServerBuilder[IO]
+            .bindHttp(serviceConfig.server.port, serviceConfig.server.host)
+            .withHttpApp(httpApp)
+            .resource
+            .use(Server.main)
+    } yield ExitCode.Success
 
 }

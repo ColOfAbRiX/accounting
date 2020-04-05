@@ -16,54 +16,46 @@ import sttp.tapir.redoc.http4s.RedocHttp4s
 import sttp.tapir.server.http4s._
 
 /**
- * Common interface to gather all routes
- */
-trait AllRoutes[F[_]] {
-  /** List of all routes */
-  def allRoutes: List[HttpRoutes[F]]
-
-  /** Route to the documentation */
-  def docsRoute: HttpRoutes[F]
-}
-
-/**
  * Http4s routes
  */
-final class Routes[F[_]: Sync: ContextShift] extends AllRoutes[F] {
-  val listSupportedInputsRoute: HttpRoutes[F] = Endpoints
+object Routes {
+  implicit private[this] val cs: ContextShift[IO] = implicitly[ContextShift[IO]]
+
+  private[this] def applyUnitClient[F[_]: Functor, A](f: => F[A]): Unit => F[Either[ErrorInfo, A]] = { _ =>
+    f.map(_.asRight[ErrorInfo])
+  }
+
+  private[this] def applyClient[P, G, L <: HList, R](f: G)(
+      implicit
+      gen: Generic.Aux[P, L],
+      ftp: FnToProduct.Aux[G, L => IO[R]],
+  ): P => IO[Either[ErrorInfo, R]] = { p =>
+    f.toProduct(gen.to(p)).map(_.asRight[ErrorInfo])
+  }
+
+  /** Route to "listSupportedInputs" */
+  private[this] val listSupportedInputsRoute: HttpRoutes[IO] = Endpoints
     .listSupportedInputs
-    .toRoutes(Routes.applyUnitClient(Client[F].listSupportedInputs))
+    .toRoutes(applyUnitClient(Client.listSupportedInputs))
 
-  val convertRecordRoute: HttpRoutes[F] = Endpoints
+  /** Route to convertRecordRoute */
+  private[this] val convertRecordRoute: HttpRoutes[IO] = Endpoints
     .convertRecord
-    .toRoutes(Routes.applyClient(Client[F].convertRecord _))
+    .toRoutes(applyClient(Client.convertRecord _))
 
-  val convertRecordsRoute: HttpRoutes[F] = Endpoints
+  /** Route to convertRecordsRoute */
+  private[this] val convertRecordsRoute: HttpRoutes[IO] = Endpoints
     .convertRecords
-    .toRoutes(Routes.applyClient(Client[F].convertRecords _))
+    .toRoutes(applyClient(Client.convertRecords _))
 
-  val docsRoute: HttpRoutes[F] =
+  /** Route to documentation */
+  val docsRoute: HttpRoutes[IO] =
     new RedocHttp4s(BuildInfo.description, Endpoints.openApiDocsEndpoint.toYaml).routes
 
-  val allRoutes: List[HttpRoutes[F]] = List(
+  /** List of all available routes except documentation */
+  val allRoutes: List[HttpRoutes[IO]] = List(
     listSupportedInputsRoute,
     convertRecordRoute,
     convertRecordsRoute,
   )
-}
-
-object Routes {
-  def apply[F[_]: Sync: ContextShift]: AllRoutes[F] = new Routes[F]
-
-  private[Routes] def applyUnitClient[F[_]: Functor, A](f: => F[A]): Unit => F[Either[ErrorInfo, A]] = { _ =>
-    f.map(_.asRight[ErrorInfo])
-  }
-
-  private[Routes] def applyClient[F[_]: Sync, P, G, L <: HList, R](f: G)(
-      implicit
-      gen: Generic.Aux[P, L],
-      ftp: FnToProduct.Aux[G, L => F[R]],
-  ): P => F[Either[ErrorInfo, R]] = { p =>
-    Sync[F].map(f.toProduct(gen.to(p)))(_.asRight[ErrorInfo])
-  }
 }

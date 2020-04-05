@@ -15,7 +15,7 @@ trait StreamLogging {
 /**
  * Logger inside an fs2.Stream
  */
-final protected class StreamLogger(pureLogger: PureLogger) {
+final protected[logging] class StreamLogger(pureLogger: PureLogger) {
   @inline def trace[F[_]: Sync](msg: String): Stream[F, Unit] = Stream.eval(pureLogger.trace(msg))
   @inline def debug[F[_]: Sync](msg: String): Stream[F, Unit] = Stream.eval(pureLogger.debug(msg))
   @inline def info[F[_]: Sync](msg: String): Stream[F, Unit]  = Stream.eval(pureLogger.info(msg))

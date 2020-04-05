@@ -8,10 +8,14 @@ import enumeratum._
 sealed abstract class BankType(override val entryName: String) extends EnumEntry
 
 object BankType extends Enum[BankType] {
+  /** Barclays transaction source */
   final case object BarclaysBank extends BankType("barclays")
-  final case object HalifaxBank  extends BankType("halifax")
+  /** Halifax transaction source */
+  final case object HalifaxBank extends BankType("halifax")
+  /** Starling transaction source */
   final case object StarlingBank extends BankType("starling")
-  final case object AmexBank     extends BankType("amex")
+  /** Amex transaction source */
+  final case object AmexBank extends BankType("amex")
 
   def apply(value: String): BankType = withName(value)
 

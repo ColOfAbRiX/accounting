@@ -1,30 +1,18 @@
 package com.colofabrix.scala.accounting.etl
 
 import cats.Show
+import com.colofabrix.scala.accounting.etl.BuildInfo
 import com.colofabrix.scala.accounting.etl.model.Config._
-import com.colofabrix.scala.accounting.utils.ADT
 import pureconfig._
 import pureconfig.generic.auto._
 import pureconfig.generic.semiauto._
 
-object config {
+package object config {
   protected[this] val logger = org.log4s.getLogger
 
-  //  CONFIG  //
-
-  final case class EtlConfig(
-      server: ServerConfig,
-      inputTypes: Set[InputType],
-  ) extends ADT
-
-  final case class ServerConfig(
-      port: Int,
-      host: String,
-      debugMode: Boolean,
-  ) extends ADT
-
   /**
-   * Main application configuration
+   * Main application configuration. It has to be loaded once per application
+   * and fail-fast, as soon as a bad configuration is detected
    */
   val serviceConfig: EtlConfig =
     ConfigSource
@@ -36,7 +24,6 @@ object config {
 
   //  TYPECLASS INSTANCES  //
 
-  @SuppressWarnings(Array("org.wartremover.warts.Equals"))
   implicit lazy val inputTypeReader: ConfigReader[InputType] = {
     deriveEnumerationReader[InputType](ConfigFieldMapping(PascalCase, PascalCase))
   }

@@ -14,7 +14,7 @@ trait PipeLogging {
 /**
  * Logger inside an fs2.Pipe
  */
-final protected class PipeLogger(logger: Logger) {
+final protected[logging] class PipeLogger(logger: Logger) {
   @inline def error[F[_], A](show: A => String): Pipe[F, A, A] = _.debug(show, logger.error(_))
   @inline def error[F[_], A](msg: String): Pipe[F, A, A]       = error(_ => msg)
 

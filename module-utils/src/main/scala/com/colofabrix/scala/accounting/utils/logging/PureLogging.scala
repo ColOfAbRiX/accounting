@@ -14,7 +14,7 @@ trait PureLogging {
 /**
  * Logger inside an effect F[_]
  */
-final protected class PureLogger(logger: Logger) {
+final protected[logging] class PureLogger(logger: Logger) {
   @inline def trace[F[_]: Sync](msg: String): F[Unit] = Sync[F].delay(logger.trace(msg))
   @inline def debug[F[_]: Sync](msg: String): F[Unit] = Sync[F].delay(logger.debug(msg))
   @inline def info[F[_]: Sync](msg: String): F[Unit]  = Sync[F].delay(logger.info(msg))

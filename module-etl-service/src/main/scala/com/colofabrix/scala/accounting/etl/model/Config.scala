@@ -1,5 +1,6 @@
 package com.colofabrix.scala.accounting.etl.model
 
+import com.colofabrix.scala.accounting.utils.ADT
 import enumeratum._
 
 /**
@@ -7,19 +8,41 @@ import enumeratum._
  */
 object Config {
 
-  //  INPUT TYPE  //
-
+  /**
+   * Type of input of a transaction
+   */
   sealed abstract class InputType(override val entryName: String) extends EnumEntry
 
   object InputType extends Enum[InputType] {
+    /** Input of type Barclays */
     final case object BarclaysInputType extends InputType("barclays")
-    final case object HalifaxInputType  extends InputType("halifax")
+    /** Input of type Halifax */
+    final case object HalifaxInputType extends InputType("halifax")
+    /** Input of type Starling */
     final case object StarlingInputType extends InputType("starling")
-    final case object AmexInputType     extends InputType("amex")
+    /** Input of type Amex */
+    final case object AmexInputType extends InputType("amex")
 
     def apply(value: String): InputType = withName(value)
 
     val values = findValues
   }
+
+  /**
+   * Configuration of the ETL service
+   */
+  final case class EtlConfig(
+      server: ServerConfig,
+      inputTypes: Set[InputType],
+  ) extends ADT
+
+  /**
+   * Configuration of the HTTP server
+   */
+  final case class ServerConfig(
+      port: Int,
+      host: String,
+      debugMode: Boolean,
+  ) extends ADT
 
 }
