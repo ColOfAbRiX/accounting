@@ -10,31 +10,28 @@ import cats.kernel.Semigroup
  */
 package object validation {
 
-  /** Representation of an error */
-  type ValidationError = String
-
   /** The type used to validate data */
-  type AValidated[+A] = Validated[NonEmptyChain[ValidationError], A]
+  type AValidated[+A] = Validated[NonEmptyChain[String], A]
 
   //  ENRICHMENT CLASSES  //
 
   /** Enrichment for any object */
   implicit class AnyOps[A <: Any](private val anyObject: A) extends AnyVal {
     /** Mark the value as valid */
-    def aValid: AValidated[A] = anyObject.validNec[ValidationError]
+    def aValid: AValidated[A] = anyObject.validNec[String]
 
     /** Mark the value as invalid */
-    def aInvalid(msg: ValidationError): AValidated[A] = msg.invalidNec[A]
+    def aInvalid(msg: String): AValidated[A] = msg.invalidNec[A]
   }
 
   /** Enrichment for String */
-  implicit class ErrorContainerOps(private val stringObject: ValidationError) extends AnyVal {
+  implicit class ErrorContainerOps(private val stringObject: String) extends AnyVal {
     /** Mark the value as invalid */
     def aInvalid[A]: AValidated[A] = stringObject.invalidNec[A]
   }
 
   /** Enrichment for Either[String, A] */
-  implicit class EitherOps[A](private val eitherObject: Either[ValidationError, A]) extends AnyVal {
+  implicit class EitherOps[A](private val eitherObject: Either[String, A]) extends AnyVal {
     /** Converts an Either[String, A] into AValidated */
     def toAValidated: AValidated[A] = eitherObject.toValidatedNec
   }

@@ -15,6 +15,7 @@ object TapirCodecs {
 
 /**
  * Circe codecs to convert to and from JSON values
+ * See https://stackoverflow.com/a/59089128/1215156
  */
 object CirceCodecs {
   import cats.data.{ Validated, NonEmptyChain => NEC }
@@ -25,10 +26,12 @@ object CirceCodecs {
 
   /**
    * Encoder for InputType -> JSON
-   * See https://stackoverflow.com/a/59089128/1215156
    */
   implicit val inputTypeJsonEnc: Encoder[InputType] = Encoder[String].contramap(_.entryName)
 
+  /**
+   * Encoder for BankType -> JSON
+   */
   implicit val bankTypeJsonEnc: Encoder[BankType] = Encoder[String].contramap(_.entryName)
 
   /** Circe encoder for Validated */

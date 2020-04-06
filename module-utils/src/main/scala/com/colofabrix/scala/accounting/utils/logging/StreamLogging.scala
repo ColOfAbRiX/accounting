@@ -21,4 +21,6 @@ final protected[logging] class StreamLogger(pureLogger: PureLogger) {
   @inline def info[F[_]: Sync](msg: String): Stream[F, Unit]  = Stream.eval(pureLogger.info(msg))
   @inline def warn[F[_]: Sync](msg: String): Stream[F, Unit]  = Stream.eval(pureLogger.warn(msg))
   @inline def error[F[_]: Sync](msg: String): Stream[F, Unit] = Stream.eval(pureLogger.error(msg))
+  @inline def throwable[F[_]: Sync](t: Throwable, msg: String): Stream[F, Unit] =
+    Stream.eval(pureLogger.throwable(t, msg))
 }

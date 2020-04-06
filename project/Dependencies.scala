@@ -4,46 +4,46 @@ object Dependencies {
 
   //  VERSIONS  //
 
-  lazy val CatsScalaTestVersion   = "3.0.4"
-  lazy val CatsVersion            = "2.1.0"
-  lazy val CirceVersion           = "0.13.0-RC1"
-  lazy val EnumeratumVersion      = "1.5.15"
-  lazy val EnumeratumCatsVersion  = "1.5.16"
-  lazy val FS2Version             = "2.2.1"
-  lazy val Http4sVersion          = "0.21.0-RC1"
-  lazy val KantanCsvVersion       = "0.6.0"
-  lazy val Log4sVersion           = "1.8.2"
-  lazy val LogbackVersion         = "1.2.3"
-  lazy val PPrintVersion          = "0.5.8"
-  lazy val PureconfigVersion      = "0.12.2"
-  lazy val ScalatestVersion       = "3.1.0"
-  lazy val ShapelessVersion       = "2.3.3"
-  lazy val TapirVersion           = "0.12.16"
+  lazy val CatsScalaTestVersion  = "3.0.4"
+  lazy val CatsVersion           = "2.1.0"
+  lazy val CirceVersion          = "0.13.0-RC1"
+  lazy val EnumeratumVersion     = "1.5.15"
+  lazy val EnumeratumCatsVersion = "1.5.16"
+  lazy val FS2Version            = "2.2.1"
+  lazy val Http4sVersion         = "0.21.0-RC1"
+  lazy val KantanCsvVersion      = "0.6.0"
+  lazy val Log4sVersion          = "1.8.2"
+  lazy val LogbackVersion        = "1.2.3"
+  lazy val PPrintVersion         = "0.5.8"
+  lazy val PureconfigVersion     = "0.12.2"
+  lazy val ScalatestVersion      = "3.1.0"
+  lazy val ShapelessVersion      = "2.3.3"
+  lazy val TapirVersion          = "0.12.16"
 
   //  COMPILER PLUGINS VERSIONS  //
 
   lazy val BetterMonadicForVersion = "0.3.0"
   lazy val KindProjectorVersion    = "0.10.3"
-  lazy val SlainVersion            = "0.4.1"
+  lazy val SplainVersion           = "0.4.1"
   lazy val WartRemoverVersion      = "2.4.3"
 
   //  LIBRARIES  //
 
-  lazy val CatsCoreDep        = "org.typelevel"         %% "cats-core"        % CatsVersion
-  lazy val CatsEffectsDep     = "org.typelevel"         %% "cats-effect"      % CatsVersion
-  lazy val CatsScalaTestDep   = "com.ironcorelabs"      %% "cats-scalatest"   % CatsScalaTestVersion % "test"
-  lazy val CirceGenericDep    = "io.circe"              %% "circe-generic"    % CirceVersion
-  lazy val EnumeratumDep      = "com.beachape"          %% "enumeratum"       % EnumeratumVersion
-  lazy val EnumeratumCatsDep  = "com.beachape"          %% "enumeratum-cats"  % EnumeratumCatsVersion
-  lazy val FS2CoreDep         = "co.fs2"                %% "fs2-core"         % FS2Version
-  lazy val KantanCatsCsvDep   = "com.nrinaudo"          %% "kantan.csv-cats"  % KantanCsvVersion
-  lazy val KantanCsvDep       = "com.nrinaudo"          %% "kantan.csv"       % KantanCsvVersion
-  lazy val Log4sDep           = "org.log4s"             %% "log4s"            % Log4sVersion
-  lazy val LogbackClassicDep  = "ch.qos.logback"        % "logback-classic"   % LogbackVersion
-  lazy val PPrintDep          = "com.lihaoyi"           %% "pprint"           % PPrintVersion
-  lazy val PureconfigDep      = "com.github.pureconfig" %% "pureconfig"       % PureconfigVersion
-  lazy val ScalatestDep       = "org.scalatest"         %% "scalatest"        % ScalatestVersion % "test"
-  lazy val ShapelessDep       = "com.chuusai"           %% "shapeless"        % ShapelessVersion
+  lazy val CatsCoreDep       = "org.typelevel"         %% "cats-core"       % CatsVersion
+  lazy val CatsEffectsDep    = "org.typelevel"         %% "cats-effect"     % CatsVersion
+  lazy val CatsScalaTestDep  = "com.ironcorelabs"      %% "cats-scalatest"  % CatsScalaTestVersion % "test"
+  lazy val CirceGenericDep   = "io.circe"              %% "circe-generic"   % CirceVersion
+  lazy val EnumeratumDep     = "com.beachape"          %% "enumeratum"      % EnumeratumVersion
+  lazy val EnumeratumCatsDep = "com.beachape"          %% "enumeratum-cats" % EnumeratumCatsVersion
+  lazy val FS2CoreDep        = "co.fs2"                %% "fs2-core"        % FS2Version
+  lazy val KantanCatsCsvDep  = "com.nrinaudo"          %% "kantan.csv-cats" % KantanCsvVersion
+  lazy val KantanCsvDep      = "com.nrinaudo"          %% "kantan.csv"      % KantanCsvVersion
+  lazy val Log4sDep          = "org.log4s"             %% "log4s"           % Log4sVersion
+  lazy val LogbackClassicDep = "ch.qos.logback"        % "logback-classic"  % LogbackVersion
+  lazy val PPrintDep         = "com.lihaoyi"           %% "pprint"          % PPrintVersion
+  lazy val PureconfigDep     = "com.github.pureconfig" %% "pureconfig"      % PureconfigVersion
+  lazy val ScalatestDep      = "org.scalatest"         %% "scalatest"       % ScalatestVersion % "test"
+  lazy val ShapelessDep      = "com.chuusai"           %% "shapeless"       % ShapelessVersion
 
   //  WEB SERVICE  //
 
@@ -62,7 +62,7 @@ object Dependencies {
 
   lazy val BetterMonadicForPlugin = compilerPlugin("com.olegpy"    %% "better-monadic-for" % BetterMonadicForVersion)
   lazy val KindProjectorPlugin    = compilerPlugin("org.typelevel" %% "kind-projector"     % KindProjectorVersion)
-  lazy val SlainPlugin            = compilerPlugin("io.tryp"       % "splain"              % SlainVersion cross CrossVersion.patch)
+  lazy val SplainPlugin           = compilerPlugin("io.tryp"       % "splain"              % SplainVersion cross CrossVersion.patch)
   lazy val WartremoverPlugin = compilerPlugin(
     "org.wartremover" %% "wartremover" % WartRemoverVersion cross CrossVersion.full,
   )

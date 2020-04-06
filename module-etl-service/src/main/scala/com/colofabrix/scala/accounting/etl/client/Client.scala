@@ -14,7 +14,8 @@ import com.colofabrix.scala.accounting.utils.validation._
  */
 object Client extends PureLogging {
   implicit private[this] val cs: ContextShift[IO] = implicitly[ContextShift[IO]]
-  protected[this] val logger                      = org.log4s.getLogger
+
+  protected[this] val logger = org.log4s.getLogger
 
   /**
    * Returns the list of supported input types

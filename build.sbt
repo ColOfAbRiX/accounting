@@ -35,7 +35,7 @@ ThisBuild / libraryDependencies ++= Seq(
   BetterMonadicForPlugin,
   KindProjectorPlugin,
   PPrintDep,
-  SlainPlugin,
+  SplainPlugin,
   WartremoverPlugin,
 ) ++ Seq(
   LoggingBundle,
