@@ -6,28 +6,49 @@ import cats.implicits._
 import com.colofabrix.scala.accounting.etl.api.CirceCodecs._
 import com.colofabrix.scala.accounting.etl.api.Inputs._
 import com.colofabrix.scala.accounting.etl.BuildInfo
-import com.colofabrix.scala.accounting.etl.client.Client
+import com.colofabrix.scala.accounting.etl.client.EtlClient
 import com.colofabrix.scala.accounting.etl.model.Api._
 import com.colofabrix.scala.accounting.etl.model.Config._
 import com.colofabrix.scala.accounting.model.SingleTransaction
 import com.colofabrix.scala.accounting.utils.logging._
 import com.colofabrix.scala.accounting.utils.validation._
 import io.circe.generic.auto._
+import org.http4s.HttpApp
+import org.http4s.server.Router
+import org.http4s.syntax.kleisli._
 import sttp.model._
 import sttp.tapir._
 import sttp.tapir.codec.cats._
 import sttp.tapir.docs.openapi._
 import sttp.tapir.json.circe._
-import sttp.tapir.openapi.OpenAPI
+import sttp.tapir.openapi.circe.yaml._
+import sttp.tapir.redoc.http4s.RedocHttp4s
 import sttp.tapir.server._
+import sttp.tapir.server.http4s._
 
 /**
  * Endpoints describe what's exposed
  */
 object Endpoints extends PureLogging {
   protected[this] val logger = org.log4s.getLogger
-
   private[this] type ShortEndpoint[I, O] = ServerEndpoint[I, ErrorInfo, O, Nothing, IO]
+
+  /**
+   * The definition of the http4s Http Application
+   */
+  def httpApplication(cs: ContextShift[IO]): HttpApp[IO] = {
+    implicit val ics: ContextShift[IO] = cs
+
+    val allEndpoints = List(listSupportedInputs, convertRecord, convertRecords)
+    val allRoutes    = allEndpoints.toRoutes
+    val docsEndpoint = allEndpoints.toOpenAPI(BuildInfo.description, apiVersion)
+    val docsRoute    = new RedocHttp4s(BuildInfo.description, docsEndpoint.toYaml).routes
+
+    Router(
+      "/"     -> allRoutes,
+      "/docs" -> docsRoute,
+    ).orNotFound
+  }
 
   /**
    * The version of the API
@@ -77,7 +98,7 @@ object Endpoints extends PureLogging {
           |The list of enabled inputs can be set in the application configuration file.""".stripMargin,
       )
       .serverLogic { _ =>
-        Client
+        EtlClient()
           .listSupportedInputs
           .map(_.asRight[ErrorInfo])
           .handleErrorWith(handleEndpointErrors)
@@ -100,7 +121,7 @@ object Endpoints extends PureLogging {
       )
       .serverLogic {
         case (inputType, body) =>
-          Client
+          EtlClient()
             .convertRecord(inputType, body)
             .map(_.asRight[ErrorInfo])
             .handleErrorWith(handleEndpointErrors)
@@ -123,24 +144,9 @@ object Endpoints extends PureLogging {
       )
       .serverLogic {
         case (inputType, body) =>
-          Client
+          EtlClient()
             .convertRecords(inputType, body)
             .map(_.asRight[ErrorInfo])
             .handleErrorWith(handleEndpointErrors)
       }
-
-  /**
-   * List of all endpoints
-   */
-  @SuppressWarnings(Array("org.wartremover.warts.PublicInference"))
-  val allEndpoints = List(listSupportedInputs, convertRecord, convertRecords)
-
-  /**
-   * The API documentation endpoint
-   */
-  val docsEndpoint: OpenAPI = allEndpoints.toOpenAPI(
-    BuildInfo.description,
-    apiVersion,
-  )
-
 }

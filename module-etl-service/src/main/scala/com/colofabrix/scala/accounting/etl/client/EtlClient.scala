@@ -10,9 +10,22 @@ import com.colofabrix.scala.accounting.utils.logging._
 import com.colofabrix.scala.accounting.utils.validation._
 
 /**
- * Client interface
+ * ETL Client interface
  */
-object Client extends PureLogging {
+trait EtlClient[F[_]] {
+  def listSupportedInputs: F[Set[InputType]]
+  def convertRecord(inputType: InputType, record: String): F[AValidated[SingleTransaction]]
+  def convertRecords(inputType: InputType, records: String): F[List[AValidated[SingleTransaction]]]
+}
+
+object EtlClient {
+  def apply(): EtlClient[IO] = EtlClientImpl
+}
+
+/**
+ * ETL Client standard implementation
+ */
+object EtlClientImpl extends EtlClient[IO] with PureLogging {
   implicit private[this] val cs: ContextShift[IO] = implicitly[ContextShift[IO]]
 
   protected[this] val logger = org.log4s.getLogger
