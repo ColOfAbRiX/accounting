@@ -54,7 +54,7 @@ object CleanerUtils {
   /** Removes the punctuation from a string */
   def removePunctuation: String => String = _.replaceAll("""[\p{Punct}&&[^.]]""", "")
 
-  /** Removes the punctuation from a string */
+  /** Removes leading and trailing spaces */
   def trim: String => String = _.trim
 
 }

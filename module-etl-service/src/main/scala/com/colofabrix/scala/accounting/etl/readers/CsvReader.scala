@@ -43,7 +43,7 @@ final class CsvReader[F[_]: Sync: ContextShift, A: CsvSource] private (input: A)
     )
 
     for {
-      _ <- ContextShift[F].shift
+      // _ <- ContextShift[F].shift
       r <- Sync[F].delay {
             if (iterator.hasNext) iterator.next.fold(onError, onValid) else None
           }

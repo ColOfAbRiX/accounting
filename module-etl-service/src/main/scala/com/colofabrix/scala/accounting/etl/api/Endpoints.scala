@@ -25,13 +25,20 @@ import sttp.tapir.openapi.circe.yaml._
 import sttp.tapir.redoc.http4s.RedocHttp4s
 import sttp.tapir.server._
 import sttp.tapir.server.http4s._
+import sttp.tapir.openapi.OpenAPI
 
-/**
- * Endpoints describe what's exposed
- */
-object Endpoints extends PureLogging {
-  protected[this] val logger = org.log4s.getLogger
-  private[this] type ShortEndpoint[I, O] = ServerEndpoint[I, ErrorInfo, O, Nothing, IO]
+trait EtlHttpApplication[F[_]] {
+  protected type ShortEndpoint[I, O] = ServerEndpoint[I, ErrorInfo, O, Nothing, IO]
+
+  /**
+   * The aggregation of all endpoints excluding documentation
+   */
+  def allEndpoints: List[ShortEndpoint[_, _]]
+
+  /**
+   * The documentation endpoint
+   */
+  def docsEndpoint: OpenAPI
 
   /**
    * The definition of the http4s Http Application
@@ -39,16 +46,21 @@ object Endpoints extends PureLogging {
   def httpApplication(cs: ContextShift[IO]): HttpApp[IO] = {
     implicit val ics: ContextShift[IO] = cs
 
-    val allEndpoints = List(listSupportedInputs, convertRecord, convertRecords)
-    val allRoutes    = allEndpoints.toRoutes
-    val docsEndpoint = allEndpoints.toOpenAPI(BuildInfo.description, apiVersion)
-    val docsRoute    = new RedocHttp4s(BuildInfo.description, docsEndpoint.toYaml).routes
+    val allRoutes = allEndpoints.toRoutes
+    val docsRoute = new RedocHttp4s(BuildInfo.description, docsEndpoint.toYaml).routes
 
     Router(
       "/"     -> allRoutes,
       "/docs" -> docsRoute,
     ).orNotFound
   }
+}
+
+/**
+ * Endpoints describe what's exposed
+ */
+final class EtlEndpointsImpl(client: EtlClient[IO]) extends EtlHttpApplication[IO] with PureLogging {
+  protected[this] val logger = org.log4s.getLogger
 
   /**
    * The version of the API
@@ -98,7 +110,7 @@ object Endpoints extends PureLogging {
           |The list of enabled inputs can be set in the application configuration file.""".stripMargin,
       )
       .serverLogic { _ =>
-        EtlClient()
+        client
           .listSupportedInputs
           .map(_.asRight[ErrorInfo])
           .handleErrorWith(handleEndpointErrors)
@@ -121,7 +133,7 @@ object Endpoints extends PureLogging {
       )
       .serverLogic {
         case (inputType, body) =>
-          EtlClient()
+          client
             .convertRecord(inputType, body)
             .map(_.asRight[ErrorInfo])
             .handleErrorWith(handleEndpointErrors)
@@ -144,9 +156,13 @@ object Endpoints extends PureLogging {
       )
       .serverLogic {
         case (inputType, body) =>
-          EtlClient()
+          client
             .convertRecords(inputType, body)
             .map(_.asRight[ErrorInfo])
             .handleErrorWith(handleEndpointErrors)
       }
+
+  val allEndpoints: List[ShortEndpoint[_, _]] = List(listSupportedInputs, convertRecord, convertRecords)
+
+  val docsEndpoint: OpenAPI = allEndpoints.toOpenAPI(BuildInfo.description, apiVersion)
 }

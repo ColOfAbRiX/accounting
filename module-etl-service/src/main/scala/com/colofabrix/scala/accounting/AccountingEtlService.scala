@@ -7,15 +7,19 @@ import com.colofabrix.scala.accounting.utils.logging._
 import org.http4s.server.Server
 import org.http4s.server.blaze.BlazeServerBuilder
 import scala.io.StdIn
+import com.colofabrix.scala.accounting.etl.client._
 
 object AccountingEtlService extends IOApp with PureLogging {
   protected[this] val logger = org.log4s.getLogger
 
-  override def run(args: List[String]): IO[ExitCode] =
+  private[this] val etlClient: EtlClient[IO]                = new EtlClientImpl(contextShift)
+  private[this] val httpApplication: EtlHttpApplication[IO] = new EtlEndpointsImpl(etlClient)
+
+  def run(args: List[String]): IO[ExitCode] =
     for {
       _ <- BlazeServerBuilder[IO]
             .bindHttp(serviceConfig.server.port, serviceConfig.server.host)
-            .withHttpApp(Endpoints.httpApplication(contextShift))
+            .withHttpApp(httpApplication.httpApplication(contextShift))
             .resource
             .use(server)
     } yield ExitCode.Success

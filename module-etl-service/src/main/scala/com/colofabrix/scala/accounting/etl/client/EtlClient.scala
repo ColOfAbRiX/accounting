@@ -18,15 +18,11 @@ trait EtlClient[F[_]] {
   def convertRecords(inputType: InputType, records: String): F[List[AValidated[SingleTransaction]]]
 }
 
-object EtlClient {
-  def apply(): EtlClient[IO] = EtlClientImpl
-}
-
 /**
  * ETL Client standard implementation
  */
-object EtlClientImpl extends EtlClient[IO] with PureLogging {
-  implicit private[this] val cs: ContextShift[IO] = implicitly[ContextShift[IO]]
+final class EtlClientImpl(cs: ContextShift[IO]) extends EtlClient[IO] with PureLogging {
+  implicit private[this] val ics: ContextShift[IO] = cs
 
   protected[this] val logger = org.log4s.getLogger
 

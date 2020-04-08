@@ -52,7 +52,7 @@ lazy val rootProject: Project = project
   )
   .aggregate(
     etlService,
-    transactionsService,
+    // transactionsService,
   )
 
 // Utils project
@@ -103,25 +103,25 @@ lazy val etlService = project
     ),
   )
 
-// Transactions service
-lazy val transactionsService = project
-  .in(file("module-transactions-service"))
-  .dependsOn(
-    utils,
-    model,
-  )
-  .enablePlugins(BuildInfoPlugin)
-  .settings(
-    name := "transactions-service",
-    description := "Accounting Transactions Service",
-    buildInfoPackage := projectPackage.value,
-    buildInfoKeys ++= projectBuildInfo.value,
-    libraryDependencies ++= Seq(
-      EnumeratumBundle,
-      HttpServiceBundle,
-      KantanCsvBundle,
-    ).flatten ++ Seq(
-      ScalatestDep,
-      ShapelessDep,
-    ),
-  )
+// // Transactions service
+// lazy val transactionsService = project
+//   .in(file("module-transactions-service"))
+//   .dependsOn(
+//     utils,
+//     model,
+//   )
+//   .enablePlugins(BuildInfoPlugin)
+//   .settings(
+//     name := "transactions-service",
+//     description := "Accounting Transactions Service",
+//     buildInfoPackage := projectPackage.value,
+//     buildInfoKeys ++= projectBuildInfo.value,
+//     libraryDependencies ++= Seq(
+//       EnumeratumBundle,
+//       HttpServiceBundle,
+//       KantanCsvBundle,
+//     ).flatten ++ Seq(
+//       ScalatestDep,
+//       ShapelessDep,
+//     ),
+//   )
