@@ -13,8 +13,14 @@ import com.colofabrix.scala.accounting.utils.validation._
  * ETL Client interface
  */
 trait EtlClient[F[_]] {
+
+  /** Returns the list of supported input types */
   def listSupportedInputs: F[Set[InputType]]
+
+  /** Converts one single input record into one output transaction */
   def convertRecord(inputType: InputType, record: String): F[AValidated[SingleTransaction]]
+
+  /** Converts a list of input records into output transactions */
   def convertRecords(inputType: InputType, records: String): F[List[AValidated[SingleTransaction]]]
 }
 
@@ -26,18 +32,14 @@ final class EtlClientImpl(cs: ContextShift[IO]) extends EtlClient[IO] with PureL
 
   protected[this] val logger = org.log4s.getLogger
 
-  /**
-   * Returns the list of supported input types
-   */
+  /** Returns the list of supported input types */
   def listSupportedInputs: IO[Set[InputType]] =
     for {
       _      <- pureLogger.info[IO]("Requested listSupportedInputs")
       result <- IO(serviceConfig.inputTypes)
     } yield result
 
-  /**
-   * Converts one single input record into one output transaction
-   */
+  /** Converts one single input record into one output transaction */
   @SuppressWarnings(Array("org.wartremover.warts.TraversableOps"))
   def convertRecord(inputType: InputType, record: String): IO[AValidated[SingleTransaction]] =
     for {
@@ -50,9 +52,7 @@ final class EtlClientImpl(cs: ContextShift[IO]) extends EtlClient[IO] with PureL
             .map(_.head)
     } yield r
 
-  /**
-   * Converts a list of input records into output transactions
-   */
+  /** Converts a list of input records into output transactions */
   def convertRecords(inputType: InputType, records: String): IO[List[AValidated[SingleTransaction]]] =
     for {
       _ <- pureLogger.info[IO](s"Requested convertRecords with input type ${inputType.entryName}")

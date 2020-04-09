@@ -1,5 +1,6 @@
 package com.colofabrix.scala.accounting.etl.readers
 
+import cats.data.Validated._
 import cats.effect._
 import cats.implicits._
 import com.colofabrix.scala.accounting.etl.definitions._
@@ -35,15 +36,14 @@ final class CsvReader[F[_]: Sync: ContextShift, A: CsvSource] private (input: A)
   private[this] def unfoldCsv(iterator: KantanReader): F[Option[(AValidated[RawRecord], KantanReader)]] = {
     def onError(e: ReadError) = Some((e.toString.aInvalid, iterator))
     def onValid(v: RawRecord) = Some((v.aValid, iterator))
-    def log(r: Option[(AValidated[RawRecord], _)]) = r.traverse(
-      _._1.fold(
-        e => pureLogger.warn(s"Reading error: ${e.toString}"),
-        v => pureLogger.trace(s"Reading record: ${v.toString}"),
-      ),
-    )
+    def log(r: Option[(AValidated[RawRecord], _)]) =
+      r.traverse(_ match {
+        case (Valid(v), _)   => pureLogger.trace(s"Reading record: ${v.toString}")
+        case (Invalid(e), _) => pureLogger.warn(s"Reading error: ${e.toString}")
+      })
 
     for {
-      // _ <- ContextShift[F].shift
+      _ <- ContextShift[F].shift
       r <- Sync[F].delay {
             if (iterator.hasNext) iterator.next.fold(onError, onValid) else None
           }

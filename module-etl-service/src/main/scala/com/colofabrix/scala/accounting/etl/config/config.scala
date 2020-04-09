@@ -27,5 +27,4 @@ package object config {
   implicit lazy val inputTypeReader: ConfigReader[InputType] = {
     deriveEnumerationReader[InputType](ConfigFieldMapping(PascalCase, PascalCase))
   }
-
 }
