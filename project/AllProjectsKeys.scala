@@ -16,6 +16,7 @@ object AllProjectsKeys extends AutoPlugin {
     projectPackage := {
       organization.value + "." + name.value.replaceAll("-service$", "").replaceAll("-", "")
     },
+    // The following keys will be added to every project
     projectBuildInfo := Seq[BuildInfoKey](
       "organization"   -> organization.value,
       "description"    -> description.value,

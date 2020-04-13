@@ -8,6 +8,7 @@ import org.scalatest._
 import org.scalatest.wordspec._
 import org.scalatest.matchers.should._
 
+@SuppressWarnings(Array("org.wartremover.warts.Null"))
 class FieldConverterSpecs extends AnyWordSpec with Matchers with ValidatedMatchers {
 
   // sParse[String]
@@ -18,7 +19,7 @@ class FieldConverterSpecs extends AnyWordSpec with Matchers with ValidatedMatche
       "return a valid String" in {
         val computed = parser.run(List("123"))
         val expected = "123".aValid
-        computed should equal(expected)
+        computed should equal (expected)
       }
     }
 
@@ -26,7 +27,7 @@ class FieldConverterSpecs extends AnyWordSpec with Matchers with ValidatedMatche
       "return a valid String" in {
         val computed = parser.run(List(""))
         val expected = "".aValid
-        computed should equal(expected)
+        computed should equal (expected)
       }
     }
 
@@ -34,7 +35,7 @@ class FieldConverterSpecs extends AnyWordSpec with Matchers with ValidatedMatche
       "return an invalid result containing NullPointerException" in {
         val computed = parser.run(List(null))
         val expected = "Exception on converting field 'null': java.lang.NullPointerException".aInvalid
-        computed should equal(expected)
+        computed should equal (expected)
       }
     }
 
@@ -42,7 +43,7 @@ class FieldConverterSpecs extends AnyWordSpec with Matchers with ValidatedMatche
       "compain with IndexOutOfBoundsException" in {
         val computed = parser.run(List())
         val expected = "Exception on converting record List(): java.lang.IndexOutOfBoundsException: 0".aInvalid
-        computed should equal(expected)
+        computed should equal (expected)
       }
     }
   }
@@ -58,12 +59,12 @@ class FieldConverterSpecs extends AnyWordSpec with Matchers with ValidatedMatche
       }
     }
 
-    "providing an a badly formatted String" should {
+    "providing a badly formatted String" should {
       "return an invalid result containing NumberFormatException" in {
         val computed = parser.run(List("ab12cd"))
         val expected =
           "Exception on converting field 'ab12cd': java.lang.NumberFormatException: For input string: \"ab12cd\"".aInvalid
-        computed should equal(expected)
+        computed should equal (expected)
       }
     }
 
@@ -72,7 +73,7 @@ class FieldConverterSpecs extends AnyWordSpec with Matchers with ValidatedMatche
         val computed = parser.run(List(""))
         val expected =
           "Exception on converting field '': java.lang.NumberFormatException: For input string: \"\"".aInvalid
-        computed should equal(expected)
+        computed should equal (expected)
       }
     }
 
@@ -80,7 +81,7 @@ class FieldConverterSpecs extends AnyWordSpec with Matchers with ValidatedMatche
       "return an invalid result containing NullPointerException" in {
         val computed = parser.run(List(null))
         val expected = "Exception on converting field 'null': java.lang.NullPointerException".aInvalid
-        computed should equal(expected)
+        computed should equal (expected)
       }
     }
 
@@ -88,7 +89,7 @@ class FieldConverterSpecs extends AnyWordSpec with Matchers with ValidatedMatche
       "compain with IndexOutOfBoundsException" in {
         val computed = parser.run(List())
         val expected = "Exception on converting record List(): java.lang.IndexOutOfBoundsException: 0".aInvalid
-        computed should equal(expected)
+        computed should equal (expected)
       }
     }
   }
@@ -101,7 +102,7 @@ class FieldConverterSpecs extends AnyWordSpec with Matchers with ValidatedMatche
       "return a valid Double" in {
         val computed = parser.run(List("123.45"))
         val expected = 123.45.aValid
-        computed should equal(expected)
+        computed should equal (expected)
       }
     }
 
@@ -109,7 +110,7 @@ class FieldConverterSpecs extends AnyWordSpec with Matchers with ValidatedMatche
       "return an invalid result containing NumberFormatException" in {
         val computed = parser.run(List(""))
         val expected = "Exception on converting field '': java.lang.NumberFormatException: empty String".aInvalid
-        computed should equal(expected)
+        computed should equal (expected)
       }
     }
 
@@ -117,7 +118,7 @@ class FieldConverterSpecs extends AnyWordSpec with Matchers with ValidatedMatche
       "return an invalid result containing NullPointerException" in {
         val computed = parser.run(List(null))
         val expected = "Exception on converting field 'null': java.lang.NullPointerException".aInvalid
-        computed should equal(expected)
+        computed should equal (expected)
       }
     }
 
@@ -125,7 +126,7 @@ class FieldConverterSpecs extends AnyWordSpec with Matchers with ValidatedMatche
       "compain with IndexOutOfBoundsException" in {
         val computed = parser.run(List())
         val expected = "Exception on converting record List(): java.lang.IndexOutOfBoundsException: 0".aInvalid
-        computed should equal(expected)
+        computed should equal (expected)
       }
     }
   }
@@ -138,15 +139,15 @@ class FieldConverterSpecs extends AnyWordSpec with Matchers with ValidatedMatche
       "return a valid BigDecimal" in {
         val computed = parser.run(List("123.45"))
         val expected = BigDecimal("123.45").aValid
-        computed should equal(expected)
+        computed should equal (expected)
       }
     }
 
-    "providing an a badly formatted String" should {
+    "providing a badly formatted String" should {
       "return an invalid result containing NumberFormatException" in {
         val computed = parser.run(List("ab12cd"))
         val expected = "Exception on converting field 'ab12cd': java.lang.NumberFormatException".aInvalid
-        computed should equal(expected)
+        computed should equal (expected)
       }
     }
 
@@ -154,7 +155,7 @@ class FieldConverterSpecs extends AnyWordSpec with Matchers with ValidatedMatche
       "return an invalid result containing NumberFormatException" in {
         val computed = parser.run(List(""))
         val expected = "Exception on converting field '': java.lang.NumberFormatException".aInvalid
-        computed should equal(expected)
+        computed should equal (expected)
       }
     }
 
@@ -162,7 +163,7 @@ class FieldConverterSpecs extends AnyWordSpec with Matchers with ValidatedMatche
       "return an invalid result containing NullPointerException" in {
         val computed = parser.run(List(null))
         val expected = "Exception on converting field 'null': java.lang.NullPointerException".aInvalid
-        computed should equal(expected)
+        computed should equal (expected)
       }
     }
 
@@ -170,7 +171,7 @@ class FieldConverterSpecs extends AnyWordSpec with Matchers with ValidatedMatche
       "compain with IndexOutOfBoundsException" in {
         val computed = parser.run(List())
         val expected = "Exception on converting record List(): java.lang.IndexOutOfBoundsException: 0".aInvalid
-        computed should equal(expected)
+        computed should equal (expected)
       }
     }
   }
@@ -183,16 +184,16 @@ class FieldConverterSpecs extends AnyWordSpec with Matchers with ValidatedMatche
       "return a valid LocalDate" in {
         val computed = parser.run(List("30/12/2019"))
         val expected = LocalDate.of(2019, 12, 30).aValid
-        computed should equal(expected)
+        computed should equal (expected)
       }
     }
 
-    "providing an a badly formatted String" should {
+    "providing a badly formatted String" should {
       "return an invalid result containing NumberFormatException" in {
         val computed = parser.run(List("ab12cd"))
         val expected =
           """Exception on converting field 'ab12cd': java.time.format.DateTimeParseException: Text 'ab12cd' could not be parsed at index 0""".aInvalid
-        computed should equal(expected)
+        computed should equal (expected)
       }
     }
 
@@ -201,7 +202,7 @@ class FieldConverterSpecs extends AnyWordSpec with Matchers with ValidatedMatche
         val computed = parser.run(List(""))
         val expected =
           "Exception on converting field '': java.time.format.DateTimeParseException: Text '' could not be parsed at index 0".aInvalid
-        computed should equal(expected)
+        computed should equal (expected)
       }
     }
 
@@ -209,7 +210,7 @@ class FieldConverterSpecs extends AnyWordSpec with Matchers with ValidatedMatche
       "return an invalid result containing NullPointerException" in {
         val computed = parser.run(List(null))
         val expected = "Exception on converting field 'null': java.lang.NullPointerException".aInvalid
-        computed should equal(expected)
+        computed should equal (expected)
       }
     }
 
@@ -217,7 +218,7 @@ class FieldConverterSpecs extends AnyWordSpec with Matchers with ValidatedMatche
       "compain with IndexOutOfBoundsException" in {
         val computed = parser.run(List())
         val expected = "Exception on converting record List(): java.lang.IndexOutOfBoundsException: 0".aInvalid
-        computed should equal(expected)
+        computed should equal (expected)
       }
     }
   }
@@ -230,7 +231,7 @@ class FieldConverterSpecs extends AnyWordSpec with Matchers with ValidatedMatche
       "return a valid Some[A]" in {
         val computed = parser.run(List("123"))
         val expected = Some(123).aValid
-        computed should equal(expected)
+        computed should equal (expected)
       }
     }
 
@@ -238,7 +239,7 @@ class FieldConverterSpecs extends AnyWordSpec with Matchers with ValidatedMatche
       "return a valid None" in {
         val computed = parser.run(List(""))
         val expected = None.aValid
-        computed should equal(expected)
+        computed should equal (expected)
       }
     }
 
@@ -246,7 +247,7 @@ class FieldConverterSpecs extends AnyWordSpec with Matchers with ValidatedMatche
       "return a valid None" in {
         val computed = parser.run(List(null))
         val expected = None.aValid
-        computed should equal(expected)
+        computed should equal (expected)
       }
     }
 
@@ -254,7 +255,7 @@ class FieldConverterSpecs extends AnyWordSpec with Matchers with ValidatedMatche
       "compain with IndexOutOfBoundsException" in {
         val computed = parser.run(List())
         val expected = "Exception on converting record List(): java.lang.IndexOutOfBoundsException: 0".aInvalid
-        computed should equal(expected)
+        computed should equal (expected)
       }
     }
   }

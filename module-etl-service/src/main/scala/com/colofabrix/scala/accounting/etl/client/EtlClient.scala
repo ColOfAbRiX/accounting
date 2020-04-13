@@ -22,6 +22,7 @@ trait EtlClient[F[_]] {
 
   /** Converts a list of input records into output transactions */
   def convertRecords(inputType: InputType, records: String): F[List[AValidated[SingleTransaction]]]
+
 }
 
 /**

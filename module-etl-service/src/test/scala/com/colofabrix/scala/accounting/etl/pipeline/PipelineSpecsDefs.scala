@@ -17,17 +17,19 @@ import org.scalatest.wordspec._
 /**
  * Defines the tests for all input conversions
  */
+@SuppressWarnings(Array("org.wartremover.warts.NonUnitStatements"))
 trait PipelineSpecsDefs[T <: InputTransaction]
     extends AnyWordSpec
     with Matchers
+    with Inspectors
     with ValidatedMatchers
-    with StreamHelpers { this: InputTestData[T] =>
+    with StreamHelpers { this: PipelineTestData[T] =>
 
   /** Needed to provide the processor to convert the data */
   implicit val processor: InputProcessor[T]
   implicit val cleaner: Cleaner[T]
 
-  def runTestPipeline(data: List[RawRecord]): VStream[IO, T] = {
+  def processAndClean(data: List[RawRecord]): VStream[IO, T] = {
     IterableReader[IO](data)
       .read
       .through(InputProcessor[IO, T])
@@ -37,47 +39,37 @@ trait PipelineSpecsDefs[T <: InputTransaction]
   s"The ${name} processor" when {
     "provied with a valid input" should {
       "return a valid result" in {
-        val result = runTestPipeline(this.sampleCorrectCsvData)
-        withValidatedStream(result) { computed =>
-          computed.foreach(_ shouldBe valid)
+        val result = processAndClean(this.sampleCorrectCsvData).compiled
+        forAll(result) { computed =>
+          computed shouldBe valid
         }
       }
       s"convert the input into List[${name}InputTransaction]" in {
-        val result    = runTestPipeline(this.sampleCorrectCsvData)
-        val expectedV = this.convertedCorrectData.aValid
-        withValidatedStream(result) { computedV =>
-          (computedV.sequence, expectedV).mapN { (computed, expected) =>
-            computed should contain theSameElementsInOrderAs (expected)
-            ()
-          }
-          ()
+        val result   = processAndClean(this.sampleCorrectCsvData).compiled.sequence
+        val expected = this.convertedCorrectData.aValid
+        (result, expected).mapN { (computed, expected) =>
+          computed should contain theSameElementsInOrderAs expected
         }
       }
     }
 
     "provied with an invalid input" should {
       "return an invalid result" in {
-        val result = runTestPipeline(this.sampleBadCsvData)
-        withValidatedStream(result) { computed =>
-          computed.foreach(_ shouldBe invalid)
+        val result = processAndClean(this.sampleBadCsvData).compiled
+        forAll(result) { computed =>
+          computed shouldBe invalid
         }
       }
       "return a detailed description of conversion errors" in {
-        val result = runTestPipeline(this.sampleBadCsvData)
-        withValidatedStream(result) { computed =>
-          computed should contain theSameElementsAs (this.convertedBadData)
-          ()
-        }
+        val computed = processAndClean(this.sampleBadCsvData).compiled
+        computed should contain theSameElementsAs this.convertedBadData
       }
     }
 
     "provided with specific record values" should {
       "dropped these values" in {
-        val result = runTestPipeline(this.sampleDroppedCsvData)
-        withValidatedStream(result) { computed =>
-          computed should have size (0)
-          ()
-        }
+        val computed = processAndClean(this.sampleDroppedCsvData).compiled
+        computed should have size 0
       }
     }
   }

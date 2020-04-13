@@ -2,7 +2,7 @@ import sbt._
 
 object Dependencies {
 
-  //  VERSIONS  //
+  //  LIBRARIES VERSIONS  //
 
   lazy val CatsScalaTestVersion  = "3.0.4"
   lazy val CatsVersion           = "2.1.0"
@@ -30,11 +30,11 @@ object Dependencies {
   //  LIBRARIES  //
 
   lazy val CatsCoreDep       = "org.typelevel"         %% "cats-core"       % CatsVersion
-  lazy val CatsEffectsDep    = "org.typelevel"         %% "cats-effect"     % CatsVersion
+  lazy val CatsEffectDep     = "org.typelevel"         %% "cats-effect"     % CatsVersion
   lazy val CatsScalaTestDep  = "com.ironcorelabs"      %% "cats-scalatest"  % CatsScalaTestVersion % "test"
   lazy val CirceGenericDep   = "io.circe"              %% "circe-generic"   % CirceVersion
-  lazy val EnumeratumDep     = "com.beachape"          %% "enumeratum"      % EnumeratumVersion
   lazy val EnumeratumCatsDep = "com.beachape"          %% "enumeratum-cats" % EnumeratumCatsVersion
+  lazy val EnumeratumDep     = "com.beachape"          %% "enumeratum"      % EnumeratumVersion
   lazy val FS2CoreDep        = "co.fs2"                %% "fs2-core"        % FS2Version
   lazy val KantanCatsCsvDep  = "com.nrinaudo"          %% "kantan.csv-cats" % KantanCsvVersion
   lazy val KantanCsvDep      = "com.nrinaudo"          %% "kantan.csv"      % KantanCsvVersion
@@ -69,17 +69,17 @@ object Dependencies {
 
   //  DEPENDENCY BUNDLES  //
 
-  lazy val CatsBundle       = Seq(CatsCoreDep, CatsEffectsDep, CatsScalaTestDep)
+  lazy val CatsBundle       = Seq(CatsCoreDep, CatsEffectDep, CatsScalaTestDep)
   lazy val EnumeratumBundle = Seq(EnumeratumDep, EnumeratumCatsDep)
   lazy val Http4sBundle     = Seq(Http4sBlazeServerDep, Http4sCirceDep, Http4sDslDep)
   lazy val KantanCsvBundle  = Seq(KantanCatsCsvDep, KantanCsvDep)
   lazy val LoggingBundle    = Seq(Log4sDep, LogbackClassicDep)
   lazy val HttpServiceBundle =
     Seq(CirceGenericDep, FS2CoreDep, PureconfigDep) ++
-    Http4sBundle ++
-    TapirBundle ++
     CatsBundle ++
-    LoggingBundle
+    Http4sBundle ++
+    LoggingBundle ++
+    TapirBundle
   lazy val TapirBundle = Seq(
     TapirCatsDep,
     TapirCoreDep,

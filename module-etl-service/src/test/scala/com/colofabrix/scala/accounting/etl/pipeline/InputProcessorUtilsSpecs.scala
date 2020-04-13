@@ -8,6 +8,7 @@ import org.scalatest._
 import org.scalatest.flatspec._
 import org.scalatest.matchers.should._
 
+@SuppressWarnings(Array("org.wartremover.warts.Null", "org.wartremover.warts.Equals"))
 class InputProcessorUtilsSpecs extends AnyFlatSpec with Matchers {
 
   def rawInput(data: List[RawRecord]): VRawInput[Pure] = Stream.emits(data.map(_.aValid))
@@ -19,24 +20,29 @@ class InputProcessorUtilsSpecs extends AnyFlatSpec with Matchers {
       List.fill(1)("content"),
       List.fill(2)("content"),
     )
+
+    val computed = rawInput(testData).through(dropHeader).toList
     val expected = List(
       List.fill(0)("content").aValid,
       List.fill(1)("content").aValid,
       List.fill(2)("content").aValid,
     )
-    val computed = rawInput(testData).through(dropHeader).toList
+
     computed should contain theSameElementsAs (expected)
   }
 
   "dropLength" should "remove rows of specific length" in {
-    val testData       = List.tabulate(4)(i => List.fill(i)("sample"))
-    val expected       = List(List.fill(2)("sample").aValid)
     val dropLengthNot2 = dropLength(_ != 2)
-    val computed       = rawInput(testData).through(dropLengthNot2).toList
-    computed should contain theSameElementsAs (expected)
+    val testData       = List.tabulate(4)(i => List.fill(i)("sample"))
+
+    val computed = rawInput(testData).through(dropLengthNot2).toList
+    val expected = List(List.fill(2)("sample").aValid)
+
+    computed should contain theSameElementsAs expected
   }
 
   "dropAnyMatch" should "remove rows with at least one field that matches" in {
+    val dropRecordWithRandom = dropAnyMatch(_.contains("random"))
     val testData = List(
       "",
       " ",
@@ -46,32 +52,31 @@ class InputProcessorUtilsSpecs extends AnyFlatSpec with Matchers {
       "It's the last day of the year",
     ).map(_.split(" ").toList)
 
+    val computed = rawInput(testData).through(dropRecordWithRandom).toList
     val expected = List(
       "",
       " ",
       "It's the last day of the year",
     ).map(_.split(" ").toList.aValid)
 
-    val dropRecordWithRandom = dropAnyMatch(_.contains("random"))
-
-    val computed = rawInput(testData).through(dropRecordWithRandom).toList
-    computed should contain theSameElementsAs (expected)
+    computed should contain theSameElementsAs expected
   }
 
   "dropAnyMatch" should "handle null fields" in {
+    val dropRecordWithRandom = dropAnyMatch(_.contains("random"))
     val testData = List(
       List.fill(3)(null),
       List("sample", null, "text"),
       List("random", null, "text"),
     )
+
+    val computed = rawInput(testData).through(dropRecordWithRandom).toList
     val expected = List(
       List.fill(3)(null).aValid,
       List("sample", null, "text").aValid,
     )
-    val dropRecordWithRandom = dropAnyMatch(_.contains("random"))
 
-    val computed = rawInput(testData).through(dropRecordWithRandom).toList
-    computed should contain theSameElementsAs (expected)
+    computed should contain theSameElementsAs expected
   }
 
   "dropEmptyRows" should "remove empty or null records" in {
@@ -80,8 +85,10 @@ class InputProcessorUtilsSpecs extends AnyFlatSpec with Matchers {
       List.fill(3)(""),
       List.fill(3)(null),
     )
+
     val computed = rawInput(testData).through(dropEmptyRows).toList
-    computed should have size (0)
+
+    computed should have size 0
   }
 
   "dropEmptyRows" should "keep rows with some empty or null strings" in {
@@ -89,12 +96,14 @@ class InputProcessorUtilsSpecs extends AnyFlatSpec with Matchers {
       List("filled", null),
       List("filled", ""),
     )
+
+    val computed = rawInput(testData).through(dropEmptyRows).toList
     val expected = List(
       List("filled", null).aValid,
       List("filled", "").aValid,
     )
-    val computed = rawInput(testData).through(dropEmptyRows).toList
-    computed should contain theSameElementsAs (expected)
+
+    computed should contain theSameElementsAs expected
   }
 
   "fixNulls" should "replace nulls with empty strings anywhere in the record" in {
@@ -103,13 +112,15 @@ class InputProcessorUtilsSpecs extends AnyFlatSpec with Matchers {
       List.fill(3)(null),
       List("filled", null, "filled", null),
     )
+
+    val computed = rawInput(testData).through(fixNulls).toList
     val expected = List(
       List().aValid,
       List.fill(3)("").aValid,
       List("filled", "", "filled", "").aValid,
     )
-    val computed = rawInput(testData).through(fixNulls).toList
-    computed should contain theSameElementsAs (expected)
+
+    computed should contain theSameElementsAs expected
   }
 
 }

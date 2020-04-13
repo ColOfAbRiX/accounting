@@ -40,9 +40,17 @@ object Compiler {
     "-Ywarn-unused:patvars",                     // Warn if a variable bound in a pattern is unused.
     "-Ywarn-unused:privates",                    // Warn if a private member is unused.
     "-Ywarn-value-discard",                      // Warn when non-Unit expression results are unused.
+    "-Ymacro-annotations",                       // Enable macro annotations
     "-Ybackend-parallelism", cores.toString,     // Enable paralellisation
     "-Ycache-plugin-class-loader:last-modified", // Enables caching of classloaders for compiler plugins
     "-Ycache-macro-class-loader:last-modified",  // and macro definitions. This can lead to performance improvements.
+  )
+
+  // Stricter compile option to filter out in specific situation
+  lazy val FilterStrictOptions = Set[String](
+    "-Xfatal-warnings",
+    "-Xlint",
+    "-Ywarn-unused-import",
   )
 
 }

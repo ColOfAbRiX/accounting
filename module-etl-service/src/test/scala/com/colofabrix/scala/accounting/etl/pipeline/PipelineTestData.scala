@@ -9,9 +9,11 @@ import java.time.LocalDate
 /**
  * Defines a mixin to provide test data
  */
-trait InputTestData[T <: InputTransaction] {
+@SuppressWarnings(Array("org.wartremover.warts.Null"))
+trait PipelineTestData[T <: InputTransaction] {
   def date(y: Int, m: Int, d: Int): LocalDate = LocalDate.of(y, m, d)
-  def name: String                            = this.getClass.getSimpleName.replaceAll("""InputConversion.*$""", "")
+
+  def name: String = this.getClass.getSimpleName.replaceAll("""InputConversion.*$""", "")
 
   /** Test dataset of correct CSV data */
   def sampleCorrectCsvData: List[RawRecord]
@@ -28,7 +30,7 @@ trait InputTestData[T <: InputTransaction] {
 // format: off
 
 //  Barclays
-trait BarclaysTestData extends InputTestData[BarclaysTransaction] {
+trait BarclaysTestData extends PipelineTestData[BarclaysTransaction] {
 
   val sampleCorrectCsvData: List[RawRecord] = List(
     List("Number", "Date", "Account", "Amount", "Subcategory", "Memo"),
@@ -92,7 +94,7 @@ trait BarclaysTestData extends InputTestData[BarclaysTransaction] {
 
 
 //  Halifax
-trait HalifaxTestData extends InputTestData[HalifaxTransaction] {
+trait HalifaxTestData extends PipelineTestData[HalifaxTransaction] {
 
   val sampleCorrectCsvData: List[RawRecord] = List(
     List("Date", "Date entered", "Reference", "Description", "Amount"),
@@ -156,7 +158,7 @@ trait HalifaxTestData extends InputTestData[HalifaxTransaction] {
 
 
 //  Starling
-trait StarlingTestData extends InputTestData[StarlingTransaction] {
+trait StarlingTestData extends PipelineTestData[StarlingTransaction] {
 
   val sampleCorrectCsvData: List[RawRecord] = List(
     List("Date", "Counter Party", "Reference", "Type", "Amount (GBP)", "Balance (GBP)"),
@@ -210,7 +212,7 @@ trait StarlingTestData extends InputTestData[StarlingTransaction] {
 
 
 //  Amex
-trait AmexTestData extends InputTestData[AmexTransaction] {
+trait AmexTestData extends PipelineTestData[AmexTransaction] {
 
   val sampleCorrectCsvData: List[RawRecord] = List(
     List("21/10/2019", "Reference: AT192160041000011301953", " 1.50", "YGA TRAVEL CHARGE YGA.GOV.NL/CP", " Process Date 22/10/2019"),

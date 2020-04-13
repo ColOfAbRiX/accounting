@@ -8,12 +8,16 @@ lazy val ScalaLangVersion = "2.13.0"
 Global / onChangedBuildSource := ReloadOnSourceChanges
 ThisBuild / organization := "com.colofabrix.scala.accounting"
 ThisBuild / scalaVersion := ScalaLangVersion
-
-// Compiler options
-ThisBuild / scalacOptions ++= Compiler.TpolecatOptions ++ Seq("-P:splain:all")
+ThisBuild / turbo := true
 ThisBuild / developers := List(
   Developer("ColOfAbRiX", "Fabrizio Colonna", "@ColOfAbRiX", url("http://github.com/ColOfAbRiX")),
 )
+
+// Compiler options
+ThisBuild / scalacOptions ++= Compiler.TpolecatOptions ++ Seq("-P:splain:all")
+ThisBuild / Compile / console / scalacOptions         := (ThisBuild / scalacOptions).value filterNot Compiler.FilterStrictOptions
+ThisBuild / Test / console / scalacOptions            := (ThisBuild / Compile / console / scalacOptions).value
+ThisBuild / IntegrationTest / console / scalacOptions := (ThisBuild / Compile / console / scalacOptions).value
 
 // GIT version information
 ThisBuild / dynverVTagPrefix := false
