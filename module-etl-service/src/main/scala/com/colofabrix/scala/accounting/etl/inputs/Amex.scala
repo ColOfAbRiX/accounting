@@ -10,6 +10,7 @@ import com.colofabrix.scala.accounting.etl.pipeline.InputProcessorUtils._
 import com.colofabrix.scala.accounting.model._
 import com.colofabrix.scala.accounting.model.BankType.AmexBank
 import com.colofabrix.scala.accounting.utils.validation._
+import io.scalaland.chimney.dsl._
 import java.{ util => jutils }
 import java.time.LocalDate
 import shapeless._
@@ -43,9 +44,15 @@ class AmexApiInput
     Generic[AmexTransaction].from(cleaned)
   }
 
-  def toTransaction(input: AmexTransaction): SingleTransaction = {
-    SingleTransaction(jutils.UUID.randomUUID, input.date, input.amount, input.description, AmexBank, "", "", "")
-  }
+  def toTransaction(input: AmexTransaction): SingleTransaction =
+    input
+      .into[SingleTransaction]
+      .withFieldConst(_.id, jutils.UUID.randomUUID)
+      .withFieldConst(_.input, AmexBank)
+      .withFieldConst(_.category, "")
+      .withFieldConst(_.subcategory, "")
+      .withFieldConst(_.notes, "")
+      .transform
 
 }
 

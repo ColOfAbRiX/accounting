@@ -15,8 +15,8 @@ ThisBuild / developers := List(
 
 // Compiler options
 ThisBuild / scalacOptions ++= Compiler.TpolecatOptions ++ Seq("-P:splain:all")
-ThisBuild / Compile / console / scalacOptions         := (ThisBuild / scalacOptions).value filterNot Compiler.FilterStrictOptions
-ThisBuild / Test / console / scalacOptions            := (ThisBuild / Compile / console / scalacOptions).value
+ThisBuild / Compile / console / scalacOptions := (ThisBuild / scalacOptions).value filterNot Compiler.FilterStrictOptions
+ThisBuild / Test / console / scalacOptions := (ThisBuild / Compile / console / scalacOptions).value
 ThisBuild / IntegrationTest / console / scalacOptions := (ThisBuild / Compile / console / scalacOptions).value
 
 // GIT version information
@@ -36,7 +36,7 @@ ThisBuild / scalafmtOnCompile := true
 
 // Global dependencies and compiler plugins
 ThisBuild / libraryDependencies ++= Seq(
-).flatten ++ Seq(
+  ).flatten ++ Seq(
   BetterMonadicForPlugin,
   KindProjectorPlugin,
   PPrintDep,
@@ -55,7 +55,7 @@ lazy val rootProject: Project = project
   )
   .aggregate(
     etlService,
-    // transactionsService,
+    transactionsService,
   )
 
 // Utils project
@@ -64,11 +64,11 @@ lazy val utils = project
   .settings(
     name := "utils",
     description := "Global Utilities",
-    libraryDependencies ++=  Seq(
+    libraryDependencies ++= Seq(
       LoggingBundle,
     ).flatten ++ Seq(
       CatsCoreDep,
-      CatsScalaTestDep,
+      ScalaTestCatsDep,
       FS2CoreDep,
       ScalaTestDep,
     ),
@@ -80,7 +80,7 @@ lazy val model = project
   .settings(
     name := "model",
     libraryDependencies ++= Seq(
-      EnumeratumBundle
+      EnumeratumBundle,
     ).flatten ++ Seq(),
   )
 
@@ -98,6 +98,7 @@ lazy val etlService = project
     buildInfoPackage := projectPackage.value,
     buildInfoKeys ++= projectBuildInfo.value,
     libraryDependencies ++= Seq(
+      ChimneyBundle,
       EnumeratumBundle,
       HttpServiceBundle,
       KantanCsvBundle,

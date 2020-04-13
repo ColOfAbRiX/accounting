@@ -11,6 +11,7 @@ import com.colofabrix.scala.accounting.etl.pipeline.InputProcessorUtils._
 import com.colofabrix.scala.accounting.model._
 import com.colofabrix.scala.accounting.model.BankType.BarclaysBank
 import com.colofabrix.scala.accounting.utils.validation._
+import io.scalaland.chimney.dsl._
 import java.{ util => jutils }
 import java.time.LocalDate
 import shapeless._
@@ -38,16 +39,23 @@ class BarclaysApiInput
     }
   }
 
-  def cleanInputTransaction(transactions: BarclaysTransaction): BarclaysTransaction = {
-    val cleaned = Generic[BarclaysTransaction]
-      .to(transactions)
-      .map(defaultCleaner)
-    Generic[BarclaysTransaction].from(cleaned)
-  }
+  def cleanInputTransaction(transactions: BarclaysTransaction): BarclaysTransaction =
+    Generic[BarclaysTransaction].from {
+      Generic[BarclaysTransaction]
+        .to(transactions)
+        .map(defaultCleaner)
+    }
 
-  def toTransaction(input: BarclaysTransaction): SingleTransaction = {
-    SingleTransaction(jutils.UUID.randomUUID, input.date, input.amount, input.memo, BarclaysBank, "", "", "")
-  }
+  def toTransaction(input: BarclaysTransaction): SingleTransaction =
+    input
+      .into[SingleTransaction]
+      .withFieldConst(_.id, jutils.UUID.randomUUID)
+      .withFieldConst(_.input, BarclaysBank)
+      .withFieldRenamed(_.memo, _.description)
+      .withFieldConst(_.category, "")
+      .withFieldConst(_.subcategory, "")
+      .withFieldConst(_.notes, "")
+      .transform
 
 }
 

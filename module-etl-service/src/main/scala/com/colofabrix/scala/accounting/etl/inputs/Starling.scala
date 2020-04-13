@@ -10,6 +10,7 @@ import com.colofabrix.scala.accounting.etl.pipeline.InputProcessorUtils._
 import com.colofabrix.scala.accounting.model._
 import com.colofabrix.scala.accounting.model.BankType.StarlingBank
 import com.colofabrix.scala.accounting.utils.validation._
+import io.scalaland.chimney.dsl._
 import java.{ util => jutils }
 import java.time.LocalDate
 import shapeless._
@@ -44,9 +45,16 @@ class StarlingApiInput
     Generic[StarlingTransaction].from(cleaned)
   }
 
-  def toTransaction(input: StarlingTransaction): SingleTransaction = {
-    SingleTransaction(jutils.UUID.randomUUID, input.date, input.amount, input.reference, StarlingBank, "", "", "")
-  }
+  def toTransaction(input: StarlingTransaction): SingleTransaction =
+    input
+      .into[SingleTransaction]
+      .withFieldConst(_.id, jutils.UUID.randomUUID)
+      .withFieldConst(_.input, StarlingBank)
+      .withFieldRenamed(_.reference, _.description)
+      .withFieldConst(_.category, "")
+      .withFieldConst(_.subcategory, "")
+      .withFieldConst(_.notes, "")
+      .transform
 
 }
 
