@@ -1,3 +1,4 @@
+<?xml version="1.0" encoding="UTF-8"?>
 <configuration>
 
   <appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
@@ -8,7 +9,7 @@
     </encoder>
   </appender>
 
-  <logger name="com.colofabrix.scala" level="INFO"/>
+  <logger name="com.colofabrix.scala" level="TRACE"/>
 
   <root level="INFO">
     <appender-ref ref="STDOUT" />

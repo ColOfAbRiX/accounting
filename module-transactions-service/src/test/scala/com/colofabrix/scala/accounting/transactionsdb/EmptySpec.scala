@@ -1,3 +1,3 @@
-package com.colofabrix.scala.accounting.transactions
+package com.colofabrix.scala.transactions.transactions
 
 object EmptySpec {}

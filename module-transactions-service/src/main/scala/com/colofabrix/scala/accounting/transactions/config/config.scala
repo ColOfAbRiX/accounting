@@ -1,33 +1,23 @@
 package com.colofabrix.scala.accounting.transactions
 
 import cats.Show
-import com.colofabrix.scala.accounting.utils.ADT
+import com.colofabrix.scala.accounting.transactions.BuildInfo
+import com.colofabrix.scala.accounting.transactions.model.Config._
 import pureconfig._
 import pureconfig.generic.auto._
 
-object config {
-  private[this] val logger = org.log4s.getLogger
-
-  //  CONFIG  //
-
-  final case class ServiceConfig(
-      server: ServerConfig,
-  ) extends ADT
-
-  final case class ServerConfig(
-      port: Int,
-      host: String,
-      debugMode: Boolean,
-  ) extends ADT
+package object config {
+  protected[this] val logger = org.log4s.getLogger
 
   /**
-   * Main application configuration
+   * Main application configuration. It has to be loaded once per application
+   * and fail-fast, as soon as a bad configuration is detected
    */
-  val serviceConfig: ServiceConfig =
+  val serviceConfig: TransactionsConfig =
     ConfigSource
       .default
       .at(BuildInfo.projectPackage)
-      .loadOrThrow[ServiceConfig]
+      .loadOrThrow[TransactionsConfig]
 
-  logger.info(s"Loaded configuration: ${Show[ServiceConfig].show(serviceConfig)}")
+  logger.info(s"Loaded configuration: ${Show[TransactionsConfig].show(serviceConfig)}")
 }
