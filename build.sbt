@@ -2,7 +2,7 @@ import Dependencies._
 import AllProjectsKeys.autoImport._
 
 // Scala version
-lazy val ScalaLangVersion = "2.13.0"
+lazy val ScalaLangVersion = "2.13.1"
 
 // General
 Global / onChangedBuildSource := ReloadOnSourceChanges
@@ -36,14 +36,13 @@ ThisBuild / scalafmtOnCompile := true
 
 // Global dependencies and compiler plugins
 ThisBuild / libraryDependencies ++= Seq(
+).flatten ++ Seq(
   BetterMonadicForPlugin,
   KindProjectorPlugin,
   PPrintDep,
   SplainPlugin,
   WartremoverPlugin,
-) ++ Seq(
-  LoggingBundle,
-).flatten
+)
 
 //  PROJECTS  //
 
@@ -66,11 +65,12 @@ lazy val utils = project
     name := "utils",
     description := "Global Utilities",
     libraryDependencies ++=  Seq(
+      LoggingBundle,
     ).flatten ++ Seq(
       CatsCoreDep,
       CatsScalaTestDep,
       FS2CoreDep,
-      ScalatestDep,
+      ScalaTestDep,
     ),
   )
 
@@ -102,7 +102,7 @@ lazy val etlService = project
       HttpServiceBundle,
       KantanCsvBundle,
     ).flatten ++ Seq(
-      ScalatestDep,
+      ScalaTestDep,
       ShapelessDep,
     ),
   )
@@ -125,7 +125,7 @@ lazy val etlService = project
 //       HttpServiceBundle,
 //       KantanCsvBundle,
 //     ).flatten ++ Seq(
-//       ScalatestDep,
+//       ScalaTestDep,
 //       ShapelessDep,
 //     ),
 //   )

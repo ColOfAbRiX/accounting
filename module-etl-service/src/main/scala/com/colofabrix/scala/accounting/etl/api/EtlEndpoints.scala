@@ -60,7 +60,7 @@ final class EtlEndpointsImpl(client: EtlClient[IO]) extends EtlEndpoints[IO] wit
   protected[this] val logger = org.log4s.getLogger
 
   /** Mapping between the internal representation of API errors to HTTP errors */
-  private[this] val errorsMapping: EndpointOutput.OneOf[ErrorInfo] = oneOf(
+  private[this] val errorsMapping: EndpointOutput.OneOf[ErrorInfo, ErrorInfo] = oneOf(
     statusMapping(
       StatusCode.InternalServerError,
       jsonBody[GenericExceptionError].description("Generic server exception"),

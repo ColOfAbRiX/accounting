@@ -4,28 +4,28 @@ object Dependencies {
 
   //  LIBRARIES VERSIONS  //
 
-  lazy val CatsScalaTestVersion  = "3.0.4"
-  lazy val CatsVersion           = "2.1.0"
-  lazy val CirceVersion          = "0.13.0-RC1"
+  lazy val CatsScalaTestVersion  = "3.0.5"
+  lazy val CatsVersion           = "2.1.1"
+  lazy val CirceVersion          = "0.13.0"
   lazy val EnumeratumVersion     = "1.5.15"
   lazy val EnumeratumCatsVersion = "1.5.16"
-  lazy val FS2Version            = "2.2.1"
-  lazy val Http4sVersion         = "0.21.0-RC1"
+  lazy val FS2Version            = "2.2.0"
+  lazy val Http4sVersion         = "0.21.3"
   lazy val KantanCsvVersion      = "0.6.0"
   lazy val Log4sVersion          = "1.8.2"
   lazy val LogbackVersion        = "1.2.3"
-  lazy val PPrintVersion         = "0.5.8"
-  lazy val PureconfigVersion     = "0.12.2"
-  lazy val ScalatestVersion      = "3.1.0"
+  lazy val PPrintVersion         = "0.5.9"
+  lazy val PureconfigVersion     = "0.12.3"
+  lazy val ScalaTestVersion      = "3.1.1"
   lazy val ShapelessVersion      = "2.3.3"
-  lazy val TapirVersion          = "0.12.16"
+  lazy val TapirVersion          = "0.13.2"
 
   //  COMPILER PLUGINS VERSIONS  //
 
-  lazy val BetterMonadicForVersion = "0.3.0"
+  lazy val BetterMonadicForVersion = "0.3.1"
   lazy val KindProjectorVersion    = "0.10.3"
-  lazy val SplainVersion           = "0.4.1"
-  lazy val WartRemoverVersion      = "2.4.3"
+  lazy val SplainVersion           = "0.5.1"
+  lazy val WartRemoverVersion      = "2.4.5"
 
   //  LIBRARIES  //
 
@@ -42,7 +42,7 @@ object Dependencies {
   lazy val LogbackClassicDep = "ch.qos.logback"        % "logback-classic"  % LogbackVersion
   lazy val PPrintDep         = "com.lihaoyi"           %% "pprint"          % PPrintVersion
   lazy val PureconfigDep     = "com.github.pureconfig" %% "pureconfig"      % PureconfigVersion
-  lazy val ScalatestDep      = "org.scalatest"         %% "scalatest"       % ScalatestVersion % "test"
+  lazy val ScalaTestDep      = "org.scalatest"         %% "scalatest"       % ScalaTestVersion % "test"
   lazy val ShapelessDep      = "com.chuusai"           %% "shapeless"       % ShapelessVersion
 
   //  WEB SERVICE  //

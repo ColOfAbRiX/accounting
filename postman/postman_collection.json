@@ -60,6 +60,38 @@
 					"response": []
 				},
 				{
+					"name": "Convert single with bad input type",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": " ,04/11/20GS            FT"
+						},
+						"url": {
+							"raw": "{{etlServiceUrl}}/api/{{apiVersion}}/convert-record?inputType=barclays",
+							"host": [
+								"{{etlServiceUrl}}"
+							],
+							"path": [
+								"api",
+								"{{apiVersion}}",
+								"convert-record"
+							],
+							"query": [
+								{
+									"key": "inputType",
+									"value": "barclays"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
 					"name": "Convert single bad record",
 					"protocolProfileBehavior": {
 						"disableBodyPruning": true
