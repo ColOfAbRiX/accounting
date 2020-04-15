@@ -2,12 +2,13 @@ package com.colofabrix.scala.accounting
 
 import cats.effect._
 import com.colofabrix.scala.accounting.etl.api._
+import com.colofabrix.scala.accounting.etl.client._
 import com.colofabrix.scala.accounting.etl.config._
 import com.colofabrix.scala.accounting.utils.logging._
-import org.http4s.server.Server
+import eu.timepit.refined.auto._
 import org.http4s.server.blaze.BlazeServerBuilder
+import org.http4s.server.Server
 import scala.io.StdIn
-import com.colofabrix.scala.accounting.etl.client._
 
 object AccountingEtlService extends IOApp with PureLogging {
   protected[this] val logger = org.log4s.getLogger

@@ -4,31 +4,24 @@ object Dependencies {
 
   //  LIBRARIES VERSIONS  //
 
-  // Low-level
   lazy val CatsVersion           = "2.1.1"
+  lazy val ChimneyVersion        = "0.5.0"
+  lazy val CirceVersion          = "0.13.0"
   lazy val EnumeratumCatsVersion = "1.5.16"
   lazy val EnumeratumVersion     = "1.5.15"
+  lazy val FS2Version            = "2.3.0"
+  lazy val Http4sVersion         = "0.21.3"
+  lazy val KantanCsvVersion      = "0.6.0"
+  lazy val Log4sVersion          = "1.8.2"
+  lazy val LogbackVersion        = "1.2.3"
   lazy val NewtypeVersion        = "0.4.3"
+  lazy val PPrintVersion         = "0.5.9"
+  lazy val PureConfigVersion     = "0.12.3"
   lazy val RefinedVersion        = "0.9.13"
   lazy val ScalaTestCatsVersion  = "3.0.5"
   lazy val ScalaTestVersion      = "3.1.1"
   lazy val ShapelessVersion      = "2.3.3"
-
-  // Common utilities
-  lazy val FS2Version        = "2.2.0"
-  lazy val Log4sVersion      = "1.8.2"
-  lazy val LogbackVersion    = "1.2.3"
-  lazy val PPrintVersion     = "0.5.9"
-  lazy val PureconfigVersion = "0.12.3"
-
-  // Data manipulation
-  lazy val ChimneyVersion   = "0.5.0"
-  lazy val CirceVersion     = "0.13.0"
-  lazy val KantanCsvVersion = "0.6.0"
-
-  // Web service
-  lazy val Http4sVersion = "0.21.3"
-  lazy val TapirVersion  = "0.13.2"
+  lazy val TapirVersion          = "0.13.2"
 
   //  COMPILER PLUGINS VERSIONS  //
 
@@ -48,6 +41,7 @@ object Dependencies {
   lazy val RefinedCatsDep       = "eu.timepit"       %% "refined-cats"       % RefinedVersion
   lazy val RefinedDep           = "eu.timepit"       %% "refined"            % RefinedVersion
   lazy val RefinedPureconfigDep = "eu.timepit"       %% "refined-pureconfig" % RefinedVersion
+  lazy val RefinedShapelessDef  = "eu.timepit"       %% "refined-shapeless"  % RefinedVersion
   lazy val ScalaTestCatsDep     = "com.ironcorelabs" %% "cats-scalatest"     % ScalaTestCatsVersion % "test"
   lazy val ScalaTestDep         = "org.scalatest"    %% "scalatest"          % ScalaTestVersion % "test"
   lazy val ShapelessDep         = "com.chuusai"      %% "shapeless"          % ShapelessVersion
@@ -57,7 +51,7 @@ object Dependencies {
   lazy val Log4sDep          = "org.log4s"             %% "log4s"          % Log4sVersion
   lazy val LogbackClassicDep = "ch.qos.logback"        % "logback-classic" % LogbackVersion
   lazy val PPrintDep         = "com.lihaoyi"           %% "pprint"         % PPrintVersion
-  lazy val PureconfigDep     = "com.github.pureconfig" %% "pureconfig"     % PureconfigVersion
+  lazy val PureConfigDep     = "com.github.pureconfig" %% "pureconfig"     % PureConfigVersion
 
   // Data manipulation
   lazy val ChimneyCatsDep   = "io.scalaland" %% "chimney-cats"    % ChimneyVersion
@@ -89,19 +83,14 @@ object Dependencies {
 
   //  DEPENDENCY BUNDLES  //
 
-  lazy val RefinedBundle    = Seq(RefinedDep, RefinedCatsDep, RefinedPureconfigDep)
-  lazy val ChimneyBundle    = Seq(ChimneyDep, ChimneyCatsDep)
   lazy val CatsBundle       = Seq(CatsCoreDep, CatsEffectDep, ScalaTestCatsDep)
+  lazy val ChimneyBundle    = Seq(ChimneyDep, ChimneyCatsDep)
+  lazy val ConfigBundle     = Seq(PureConfigDep, RefinedDep, RefinedPureconfigDep)
   lazy val EnumeratumBundle = Seq(EnumeratumDep, EnumeratumCatsDep)
   lazy val Http4sBundle     = Seq(Http4sBlazeServerDep, Http4sCirceDep, Http4sDslDep)
   lazy val KantanCsvBundle  = Seq(KantanCatsCsvDep, KantanCsvDep)
   lazy val LoggingBundle    = Seq(Log4sDep, LogbackClassicDep)
-  lazy val HttpServiceBundle =
-    Seq(CirceGenericDep, FS2CoreDep, PureconfigDep) ++
-    CatsBundle ++
-    Http4sBundle ++
-    LoggingBundle ++
-    TapirBundle
+  lazy val RefinedBundle    = Seq(RefinedDep, RefinedCatsDep, RefinedPureconfigDep, RefinedShapelessDef)
   lazy val TapirBundle = Seq(
     TapirCatsDep,
     TapirCoreDep,

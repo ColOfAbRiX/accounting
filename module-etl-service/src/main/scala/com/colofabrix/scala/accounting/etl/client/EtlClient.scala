@@ -13,7 +13,6 @@ import com.colofabrix.scala.accounting.utils.validation._
  * ETL Client interface
  */
 trait EtlClient[F[_]] {
-
   /** Returns the list of supported input types */
   def listSupportedInputs: F[Set[InputType]]
 
@@ -22,7 +21,6 @@ trait EtlClient[F[_]] {
 
   /** Converts a list of input records into output transactions */
   def convertRecords(inputType: InputType, records: String): F[List[AValidated[SingleTransaction]]]
-
 }
 
 /**
@@ -36,9 +34,9 @@ final class EtlClientImpl(cs: ContextShift[IO]) extends EtlClient[IO] with PureL
   /** Returns the list of supported input types */
   def listSupportedInputs: IO[Set[InputType]] =
     for {
-      _      <- pureLogger.info[IO]("Requested listSupportedInputs")
-      result <- IO(serviceConfig.inputTypes)
-    } yield result
+      _ <- pureLogger.info[IO]("Requested listSupportedInputs")
+      r <- IO(serviceConfig.inputTypes)
+    } yield r
 
   /** Converts one single input record into one output transaction */
   @SuppressWarnings(Array("org.wartremover.warts.TraversableOps"))

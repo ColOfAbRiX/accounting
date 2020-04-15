@@ -3,6 +3,7 @@ package com.colofabrix.scala.accounting.etl
 import cats.Show
 import com.colofabrix.scala.accounting.etl.BuildInfo
 import com.colofabrix.scala.accounting.etl.model.Config._
+import eu.timepit.refined.pureconfig._
 import pureconfig._
 import pureconfig.generic.auto._
 import pureconfig.generic.semiauto._

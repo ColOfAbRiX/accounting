@@ -3,6 +3,11 @@ package com.colofabrix.scala.accounting.etl.model
 import com.colofabrix.scala.accounting.utils.ADT
 import enumeratum._
 
+import eu.timepit.refined._
+import eu.timepit.refined.api.Refined
+import eu.timepit.refined.numeric._
+import eu.timepit.refined.string.IPv4
+
 /**
  * Model used by the service configuration
  */
@@ -40,8 +45,8 @@ object Config {
    * Configuration of the HTTP server
    */
   final case class ServerConfig(
-      port: Int,
-      host: String,
+      port: Int Refined Interval.Closed[W.`1024`.T, W.`65535`.T],
+      host: String Refined IPv4,
       debugMode: Boolean,
   ) extends ADT
 
