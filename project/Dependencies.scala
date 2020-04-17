@@ -20,7 +20,7 @@ object Dependencies {
   lazy val RefinedVersion        = "0.9.13"
   lazy val ScalaTestCatsVersion  = "3.0.5"
   lazy val ScalaTestVersion      = "3.1.1"
-  lazy val ShapelessVersion      = "2.3.3"
+  lazy val ShapelessVersion      = "2.4.0-M1"
   lazy val TapirVersion          = "0.13.2"
 
   //  COMPILER PLUGINS VERSIONS  //

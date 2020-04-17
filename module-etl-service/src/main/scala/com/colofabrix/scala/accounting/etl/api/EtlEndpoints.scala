@@ -80,7 +80,7 @@ final class EtlEndpointsImpl(client: EtlClient[IO]) extends EtlEndpoints[IO] wit
   /** How endpoints handle Exceptions */
   private[this] def handleEndpointErrors[A](t: Throwable): IO[Either[ErrorInfo, A]] =
     for {
-      msg <- IO(GenericExceptionError(t.toString()).asLeft[A])
+      msg <- IO(GenericExceptionError(t.toString).asLeft[A])
       _   <- pureLogger.throwable[IO](t, s"Generic API error")
     } yield msg
 
@@ -107,7 +107,7 @@ final class EtlEndpointsImpl(client: EtlClient[IO]) extends EtlEndpoints[IO] wit
   /**
    * Converts one single input record into one output transaction
    */
-  private[this] val convertRecord: ShortEndpoint[(InputType, String), AValidated[SingleTransaction]] =
+  private[this] val convertRecord: ShortEndpoint[(InputType, String), AValidated[SingleTransaction]] = {
     apiBaseEndpoint
       .get
       .in("convert-record")
@@ -126,6 +126,7 @@ final class EtlEndpointsImpl(client: EtlClient[IO]) extends EtlEndpoints[IO] wit
             .map(_.asRight[ErrorInfo])
             .handleErrorWith(handleEndpointErrors)
       }
+  }
 
   /**
    * Converts a list of inputs records into output transactions

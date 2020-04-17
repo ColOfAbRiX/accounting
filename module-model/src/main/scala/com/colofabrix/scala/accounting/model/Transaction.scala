@@ -1,5 +1,6 @@
 package com.colofabrix.scala.accounting.model
 
+import eu.timepit.refined.types.string.NonEmptyString
 import java.time.LocalDate
 import java.util.UUID
 
@@ -10,7 +11,7 @@ trait Transaction {
   def id: UUID
   def date: LocalDate
   def amount: BigDecimal
-  def description: String
+  def description: NonEmptyString
   def input: BankType
   def category: String
   def subcategory: String
@@ -24,7 +25,7 @@ final case class SingleTransaction(
     id: UUID,
     date: LocalDate,
     amount: BigDecimal,
-    description: String,
+    description: NonEmptyString,
     input: BankType,
     category: String,
     subcategory: String,
@@ -38,7 +39,7 @@ final case class MergeTransaction(
     id: UUID,
     date: LocalDate,
     amount: BigDecimal,
-    description: String,
+    description: NonEmptyString,
     input: BankType,
     category: String,
     subcategory: String,
@@ -53,7 +54,7 @@ final case class AmendedTransaction(
     id: UUID,
     date: LocalDate,
     amount: BigDecimal,
-    description: String,
+    description: NonEmptyString,
     input: BankType,
     category: String,
     subcategory: String,

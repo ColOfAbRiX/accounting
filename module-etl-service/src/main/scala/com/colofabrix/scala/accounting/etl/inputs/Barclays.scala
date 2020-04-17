@@ -16,6 +16,25 @@ import java.{ util => jutils }
 import java.time.LocalDate
 import shapeless._
 
+// package object chimney {
+//   import eu.timepit.refined.api.{RefType, Validate}
+//   import scala.reflect.runtime.universe.WeakTypeTag
+//   import io.scalaland.chimney.Transformer
+//   implicit def refTypeTransformer[F[_, _], T, P](
+//       implicit
+//       transformer: Transformer[T, P],
+//       refType: RefType[F],
+//       validate: Validate[T, P],
+//       typeTag: WeakTypeTag[F[T, P]]
+//   ): Transformer[T, F[P]] = ???
+// }
+
+import eu.timepit.refined._
+import eu.timepit.refined.auto._
+import eu.timepit.refined.collection._
+import eu.timepit.refined.shapeless.typeable._
+import eu.timepit.refined.cats._
+
 /**
  * Barclays API data processor
  */
@@ -34,7 +53,7 @@ class BarclaysApiInput
       val account     = sParse[String](r => r(2))
       val amount      = sParse[BigDecimal](r => r(3))
       val subcategory = sParse[String](r => r(4))
-      val memo        = sParse[String](r => r(5))
+      val memo        = sParse[String](r => r(5)).map(refineV[NonEmpty](_))
       number :: date :: account :: amount :: subcategory :: memo :: HNil
     }
   }

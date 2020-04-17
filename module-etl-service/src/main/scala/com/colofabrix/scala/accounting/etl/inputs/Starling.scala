@@ -10,6 +10,7 @@ import com.colofabrix.scala.accounting.etl.pipeline.InputProcessorUtils._
 import com.colofabrix.scala.accounting.model._
 import com.colofabrix.scala.accounting.model.BankType.StarlingBank
 import com.colofabrix.scala.accounting.utils.validation._
+import eu.timepit.refined.auto._
 import io.scalaland.chimney.dsl._
 import java.{ util => jutils }
 import java.time.LocalDate

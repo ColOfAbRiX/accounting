@@ -1,6 +1,7 @@
 package com.colofabrix.scala.accounting.etl.model
 
 import com.colofabrix.scala.accounting.utils.ADT
+import eu.timepit.refined.types.string.NonEmptyString
 import java.time.LocalDate
 
 /**
@@ -15,7 +16,7 @@ final case class BarclaysTransaction(
     account: String,
     amount: BigDecimal,
     subcategory: String,
-    memo: String,
+    memo: NonEmptyString,
 ) extends InputTransaction
 
 /** Transaction on a American Express CSV file */
@@ -23,7 +24,7 @@ final case class AmexTransaction(
     date: LocalDate,
     reference: String,
     amount: BigDecimal,
-    description: String,
+    description: NonEmptyString,
     extra: String,
 ) extends InputTransaction
 
@@ -32,7 +33,7 @@ final case class HalifaxTransaction(
     date: LocalDate,
     dateEntered: LocalDate,
     reference: String,
-    description: String,
+    description: NonEmptyString,
     amount: BigDecimal,
 ) extends InputTransaction
 
@@ -40,7 +41,7 @@ final case class HalifaxTransaction(
 final case class StarlingTransaction(
     date: LocalDate,
     counterParty: String,
-    reference: String,
+    reference: NonEmptyString,
     `type`: String,
     amount: BigDecimal,
     balance: BigDecimal,
