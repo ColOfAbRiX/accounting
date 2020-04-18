@@ -1,11 +1,12 @@
-package com.colofabrix.scala.accounting.etl.conversion
+package com.colofabrix.scala.accounting.etl.refined
 
+import com.colofabrix.scala.accounting.etl.conversion._
 import com.colofabrix.scala.accounting.utils.validation._
-import eu.timepit.refined.api.Validate
-import eu.timepit.refined.api.RefType
+import eu.timepit.refined.api.{ RefType, Validate }
+
 import scala.reflect.runtime.universe.WeakTypeTag
 
-package object refined {
+package object conversion {
 
   implicit def refTypeFieldConverter[F[_, _], T, P](
       implicit fieldConverter: FieldConverter[String, T],
