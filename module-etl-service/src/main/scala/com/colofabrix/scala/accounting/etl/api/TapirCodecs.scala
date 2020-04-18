@@ -7,8 +7,9 @@ import sttp.tapir.Codec._
  * Tapir codecs to convert to and from wire values
  */
 object TapirCodecs {
-
-  /** Tapir I/O codec for the type of input that can be decoded */
+  /**
+   * Tapir I/O codec for the type of input that can be decoded
+   */
   implicit val inputTypeEndpointTapirCodec: PlainCodec[InputType] = {
     implicitly[PlainCodec[String]].map(InputType(_))(_.entryName)
   }

@@ -4,7 +4,7 @@ object Compiler {
 
   // Compiler options
   // https://nathankleyn.com/2019/05/13/recommended-scalac-flags-for-2-13/
-  lazy val TpolecatOptions = Seq(
+  lazy val TpolecatOptions: Seq[String] = Seq(
     "-deprecation",                              // Emit warning and location for usages of deprecated APIs.
     "-explaintypes",                             // Explain type errors in more detail.
     "-feature",                                  // Emit warning and location for usages of features that should be imported explicitly.
@@ -47,10 +47,10 @@ object Compiler {
   )
 
   // Stricter compile option to filter out in specific situation
-  lazy val FilterStrictOptions = Set[String](
+  lazy val FilterStrictOptions: Set[String] = Set[String](
+    "-Ywarn-unused-import",
     "-Xfatal-warnings",
     "-Xlint",
-    "-Ywarn-unused-import",
   )
 
 }

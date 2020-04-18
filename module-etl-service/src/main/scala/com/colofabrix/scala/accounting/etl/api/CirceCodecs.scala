@@ -11,7 +11,6 @@ import io.circe._
  * See https://stackoverflow.com/a/59089128/1215156
  */
 object CirceCodecs {
-
   /**
    * Encoder for InputType -> JSON
    */
@@ -22,7 +21,9 @@ object CirceCodecs {
    */
   implicit val bankTypeJsonEnc: Encoder[BankType] = Encoder[String].contramap(_.entryName)
 
-  /** Circe encoder for Validated */
+  /**
+   * Circe encoder for Validated
+   */
   implicit def validatedEnc[E, A](implicit necEnc: Encoder[NEC[E]], aEnc: Encoder[A]): Encoder[Validated[NEC[E], A]] =
     new Encoder[Validated[NEC[E], A]] {
       def apply(a: Validated[NEC[E], A]): Json = a match {

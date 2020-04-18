@@ -56,7 +56,10 @@ object Dependencies {
   // Data manipulation
   lazy val ChimneyCatsDep   = "io.scalaland" %% "chimney-cats"    % ChimneyVersion
   lazy val ChimneyDep       = "io.scalaland" %% "chimney"         % ChimneyVersion
+  lazy val CirceDep         = "io.circe"     %% "circe-core"      % CirceVersion
   lazy val CirceGenericDep  = "io.circe"     %% "circe-generic"   % CirceVersion
+  lazy val CirceParserDep   = "io.circe"     %% "circe-parser"    % CirceVersion
+  lazy val CirceRefinedDep  = "io.circe"     %% "circe-refined"   % CirceVersion
   lazy val KantanCatsCsvDep = "com.nrinaudo" %% "kantan.csv-cats" % KantanCsvVersion
   lazy val KantanCsvDep     = "com.nrinaudo" %% "kantan.csv"      % KantanCsvVersion
 
@@ -71,6 +74,7 @@ object Dependencies {
   lazy val TapirOpenAPICirceYamlDep = "com.softwaremill.sttp.tapir" %% "tapir-openapi-circe-yaml" % TapirVersion
   lazy val TapirOpenAPIDocsDep      = "com.softwaremill.sttp.tapir" %% "tapir-openapi-docs"       % TapirVersion
   lazy val TapirRedocHttp4sDep      = "com.softwaremill.sttp.tapir" %% "tapir-redoc-http4s"       % TapirVersion
+  lazy val TapirRefinedDep          = "com.softwaremill.sttp.tapir" %% "tapir-refined"            % TapirVersion
 
   //  COMPILER PLUGIN LIBRARIES  //
 
@@ -85,12 +89,13 @@ object Dependencies {
 
   lazy val CatsBundle       = Seq(CatsCoreDep, CatsEffectDep, ScalaTestCatsDep)
   lazy val ChimneyBundle    = Seq(ChimneyDep, ChimneyCatsDep)
+  lazy val CirceBundle      = Seq(CirceDep, CirceGenericDep, CirceParserDep, CirceRefinedDep)
   lazy val ConfigBundle     = Seq(PureConfigDep, RefinedDep, RefinedPureconfigDep)
   lazy val EnumeratumBundle = Seq(EnumeratumDep, EnumeratumCatsDep)
   lazy val Http4sBundle     = Seq(Http4sBlazeServerDep, Http4sCirceDep, Http4sDslDep)
   lazy val KantanCsvBundle  = Seq(KantanCatsCsvDep, KantanCsvDep)
   lazy val LoggingBundle    = Seq(Log4sDep, LogbackClassicDep)
-  lazy val RefinedBundle    = Seq(RefinedDep, RefinedCatsDep, RefinedPureconfigDep, RefinedShapelessDef)
+  lazy val RefinedBundle    = Seq(RefinedDep, RefinedCatsDep, RefinedShapelessDef)
   lazy val TapirBundle = Seq(
     TapirCatsDep,
     TapirCoreDep,
@@ -99,6 +104,7 @@ object Dependencies {
     TapirOpenAPICirceYamlDep,
     TapirOpenAPIDocsDep,
     TapirRedocHttp4sDep,
+    TapirRefinedDep,
   )
 
 }

@@ -8,7 +8,6 @@ import sttp.tapir._
  * Inputs are the values that can be accepted by an endpoint
  */
 object TapirInputs {
-
   /**
    * An input representing the type of record
    */
@@ -16,5 +15,4 @@ object TapirInputs {
     query[InputType]("inputType")
       .description("The type of input to convert")
       .example(InputType.BarclaysInputType)
-
 }
