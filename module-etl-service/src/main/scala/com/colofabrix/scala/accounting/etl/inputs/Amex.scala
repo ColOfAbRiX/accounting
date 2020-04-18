@@ -4,16 +4,19 @@ import com.colofabrix.scala.accounting.etl._
 import com.colofabrix.scala.accounting.etl.conversion.FieldConverter._
 import com.colofabrix.scala.accounting.etl.definitions._
 import com.colofabrix.scala.accounting.etl.model._
-import com.colofabrix.scala.accounting.etl.pipeline._
 import com.colofabrix.scala.accounting.etl.pipeline.CleanerUtils._
 import com.colofabrix.scala.accounting.etl.pipeline.InputProcessorUtils._
-import com.colofabrix.scala.accounting.model._
+import com.colofabrix.scala.accounting.etl.pipeline._
+import com.colofabrix.scala.accounting.etl.refined.conversion._
 import com.colofabrix.scala.accounting.model.BankType.AmexBank
+import com.colofabrix.scala.accounting.model._
 import com.colofabrix.scala.accounting.utils.validation._
 import eu.timepit.refined.auto._
+import eu.timepit.refined.shapeless.typeable._
+import eu.timepit.refined.types.string.NonEmptyString
 import io.scalaland.chimney.dsl._
-import java.{ util => jutils }
 import java.time.LocalDate
+import java.{ util => jutils }
 import shapeless._
 
 /**
@@ -30,7 +33,7 @@ class AmexApiInput
     val converter = new RecordConverter[AmexTransaction] {}
     converter.convertRecord(record) {
       val date        = sParse[LocalDate](r => r(0))("dd/MM/yyyy")
-      val reference   = sParse[String](r => r(1))
+      val reference   = sParse[NonEmptyString](r => r(1))
       val amount      = sParse[BigDecimal](r => r(2)).map(amount => -1.0 * amount)
       val description = sParse[String](r => r(3))
       val extra       = sParse[String](r => r(4))
