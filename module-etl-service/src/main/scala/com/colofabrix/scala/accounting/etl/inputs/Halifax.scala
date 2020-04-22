@@ -1,5 +1,6 @@
 package com.colofabrix.scala.accounting.etl.inputs
 
+import cats.implicits._
 import com.colofabrix.scala.accounting.etl._
 import com.colofabrix.scala.accounting.etl.conversion.FieldConverter._
 import com.colofabrix.scala.accounting.etl.definitions._
@@ -7,12 +8,14 @@ import com.colofabrix.scala.accounting.etl.model._
 import com.colofabrix.scala.accounting.etl.pipeline._
 import com.colofabrix.scala.accounting.etl.pipeline.CleanerUtils._
 import com.colofabrix.scala.accounting.etl.pipeline.InputProcessorUtils._
+import com.colofabrix.scala.accounting.etl.refined.conversion._
 import com.colofabrix.scala.accounting.model._
 import com.colofabrix.scala.accounting.model.BankType.HalifaxBank
 import com.colofabrix.scala.accounting.utils.validation._
 import eu.timepit.refined.auto._
+import eu.timepit.refined.types.string.NonEmptyString
 import io.scalaland.chimney.dsl._
-import java.{ util => jutils }
+import java.util.UUID
 import java.time.LocalDate
 import shapeless._
 
@@ -32,8 +35,8 @@ class HalifaxApiInput
       val date        = sParse[LocalDate](r => r(0))("dd/MM/yyyy")
       val dateEntered = sParse[LocalDate](r => r(1))("dd/MM/yyyy")
       val reference   = sParse[String](r => r(2))
-      val description = sParse[String](r => r(3))
-      val amount      = sParse[BigDecimal](r => r(4)).map(amount => -1.0 * amount)
+      val description = sParse[NonEmptyString](r => r(3))
+      val amount      = sParse[BigDecimal](r => r(4)).map(x => -1.0 * x)
       date :: dateEntered :: reference :: description :: amount :: HNil
     }
   }
@@ -48,7 +51,7 @@ class HalifaxApiInput
   def toTransaction(input: HalifaxTransaction): SingleTransaction =
     input
       .into[SingleTransaction]
-      .withFieldConst(_.id, jutils.UUID.randomUUID)
+      .withFieldConst(_.id, UUID.randomUUID)
       .withFieldConst(_.input, HalifaxBank)
       .withFieldConst(_.category, "")
       .withFieldConst(_.subcategory, "")

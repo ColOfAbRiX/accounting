@@ -12,7 +12,6 @@ import eu.timepit.refined.string.IPv4
  * Model used by the service configuration
  */
 object Config {
-
   /**
    * Type of input of a transaction
    */

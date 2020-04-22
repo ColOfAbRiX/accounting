@@ -8,32 +8,16 @@ import com.colofabrix.scala.accounting.etl.model._
 import com.colofabrix.scala.accounting.etl.pipeline._
 import com.colofabrix.scala.accounting.etl.pipeline.CleanerUtils._
 import com.colofabrix.scala.accounting.etl.pipeline.InputProcessorUtils._
+import com.colofabrix.scala.accounting.etl.refined.conversion._
 import com.colofabrix.scala.accounting.model._
 import com.colofabrix.scala.accounting.model.BankType.BarclaysBank
 import com.colofabrix.scala.accounting.utils.validation._
+import eu.timepit.refined.auto._
+import eu.timepit.refined.types.string.NonEmptyString
 import io.scalaland.chimney.dsl._
-import java.{ util => jutils }
+import java.util.UUID
 import java.time.LocalDate
 import shapeless._
-
-// package object chimney {
-//   import eu.timepit.refined.api.{RefType, Validate}
-//   import scala.reflect.runtime.universe.WeakTypeTag
-//   import io.scalaland.chimney.Transformer
-//   implicit def refTypeTransformer[F[_, _], T, P](
-//       implicit
-//       transformer: Transformer[T, P],
-//       refType: RefType[F],
-//       validate: Validate[T, P],
-//       typeTag: WeakTypeTag[F[T, P]]
-//   ): Transformer[T, F[P]] = ???
-// }
-
-import eu.timepit.refined._
-import eu.timepit.refined.auto._
-import eu.timepit.refined.collection._
-import eu.timepit.refined.shapeless.typeable._
-import eu.timepit.refined.cats._
 
 /**
  * Barclays API data processor
@@ -53,22 +37,23 @@ class BarclaysApiInput
       val account     = sParse[String](r => r(2))
       val amount      = sParse[BigDecimal](r => r(3))
       val subcategory = sParse[String](r => r(4))
-      val memo        = sParse[String](r => r(5)).map(refineV[NonEmpty](_))
+      val memo        = sParse[NonEmptyString](r => r(5))
       number :: date :: account :: amount :: subcategory :: memo :: HNil
     }
   }
 
-  def cleanInputTransaction(transactions: BarclaysTransaction): BarclaysTransaction =
-    Generic[BarclaysTransaction].from {
-      Generic[BarclaysTransaction]
-        .to(transactions)
-        .map(defaultCleaner)
-    }
+  def cleanInputTransaction(transactions: BarclaysTransaction): BarclaysTransaction = {
+    val gen     = Generic[BarclaysTransaction]
+    val to      = gen.to(transactions)
+    val cleaned = to.map(defaultCleaner)
+    val from    = gen.from(cleaned)
+    from
+  }
 
   def toTransaction(input: BarclaysTransaction): SingleTransaction =
     input
       .into[SingleTransaction]
-      .withFieldConst(_.id, jutils.UUID.randomUUID)
+      .withFieldConst(_.id, UUID.randomUUID)
       .withFieldConst(_.input, BarclaysBank)
       .withFieldRenamed(_.memo, _.description)
       .withFieldConst(_.category, "")

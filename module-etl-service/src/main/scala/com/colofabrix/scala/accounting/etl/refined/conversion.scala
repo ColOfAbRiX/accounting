@@ -2,19 +2,18 @@ package com.colofabrix.scala.accounting.etl.refined
 
 import com.colofabrix.scala.accounting.etl.conversion._
 import com.colofabrix.scala.accounting.utils.validation._
-import eu.timepit.refined.api.{ RefType, Validate }
-
+import eu.timepit.refined.api.{ RefType, Refined, Validate }
 import scala.reflect.runtime.universe.WeakTypeTag
 
 package object conversion {
 
-  implicit def refTypeFieldConverter[F[_, _], T, P](
+  implicit def refTypeFieldConverter[T, P](
       implicit fieldConverter: FieldConverter[String, T],
-      refType: RefType[F],
+      refType: RefType[Refined],
       validate: Validate[T, P],
-      typeTag: WeakTypeTag[F[T, P]],
-  ): FieldConverter[String, F[T, P]] = new FieldConverter[String, F[T, P]] {
-    def parseField(field: String): AValidated[F[T, P]] = {
+      typeTag: WeakTypeTag[Refined[T, P]],
+  ): FieldConverter[String, Refined[T, P]] = new FieldConverter[String, Refined[T, P]] {
+    def parseField(field: String): AValidated[Refined[T, P]] = {
       fieldConverter
         .parseField(field)
         .andThen { validated =>

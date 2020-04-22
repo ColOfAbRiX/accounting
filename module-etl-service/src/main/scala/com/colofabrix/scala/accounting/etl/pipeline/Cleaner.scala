@@ -3,10 +3,10 @@ package com.colofabrix.scala.accounting.etl.pipeline
 import cats.data.Nested
 import cats.implicits._
 import com.colofabrix.scala.accounting.etl.model._
+import com.colofabrix.scala.accounting.etl.refined.shapeless.RefinedPoly1
 import com.colofabrix.scala.accounting.utils.logging._
 import com.colofabrix.scala.accounting.utils.validation.streams._
 import java.time.LocalDate
-import shapeless._
 
 /**
  * Cleans the individual fields of the InputTransactions
@@ -36,9 +36,8 @@ object Cleaner extends PipeLogging {
  * Utility functions for cleaning
  */
 object CleanerUtils {
-
   @SuppressWarnings(Array("org.wartremover.warts.ExplicitImplicitTypes", "org.wartremover.warts.PublicInference"))
-  object defaultCleaner extends Poly1 {
+  object defaultCleaner extends RefinedPoly1 {
     implicit def caseString     = at[String](trim andThen toLowercase andThen removeRedundantSpaces)
     implicit def caseBigDecimal = at[BigDecimal](identity)
     implicit def caseLocalDate  = at[LocalDate](identity)
@@ -56,5 +55,4 @@ object CleanerUtils {
 
   /** Removes leading and trailing spaces */
   def trim: String => String = _.trim
-
 }

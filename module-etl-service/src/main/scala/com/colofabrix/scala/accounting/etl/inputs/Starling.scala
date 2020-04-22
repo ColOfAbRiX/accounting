@@ -1,5 +1,6 @@
 package com.colofabrix.scala.accounting.etl.inputs
 
+import cats.implicits._
 import com.colofabrix.scala.accounting.etl._
 import com.colofabrix.scala.accounting.etl.conversion.FieldConverter._
 import com.colofabrix.scala.accounting.etl.definitions._
@@ -7,12 +8,14 @@ import com.colofabrix.scala.accounting.etl.model._
 import com.colofabrix.scala.accounting.etl.pipeline._
 import com.colofabrix.scala.accounting.etl.pipeline.CleanerUtils._
 import com.colofabrix.scala.accounting.etl.pipeline.InputProcessorUtils._
+import com.colofabrix.scala.accounting.etl.refined.conversion._
 import com.colofabrix.scala.accounting.model._
 import com.colofabrix.scala.accounting.model.BankType.StarlingBank
 import com.colofabrix.scala.accounting.utils.validation._
 import eu.timepit.refined.auto._
+import eu.timepit.refined.types.string.NonEmptyString
 import io.scalaland.chimney.dsl._
-import java.{ util => jutils }
+import java.util.UUID
 import java.time.LocalDate
 import shapeless._
 
@@ -31,7 +34,7 @@ class StarlingApiInput
     converter.convertRecord(record) {
       val date         = sParse[LocalDate](r => r(0))("dd/MM/yyyy")
       val counterParty = sParse[String](r => r(1))
-      val reference    = sParse[String](r => r(2))
+      val reference    = sParse[NonEmptyString](r => r(2))
       val `type`       = sParse[String](r => r(3))
       val amount       = sParse[BigDecimal](r => r(4))
       val balance      = sParse[BigDecimal](r => r(5))
@@ -40,16 +43,17 @@ class StarlingApiInput
   }
 
   def cleanInputTransaction(transactions: StarlingTransaction): StarlingTransaction = {
-    val cleaned = Generic[StarlingTransaction]
-      .to(transactions)
-      .map(defaultCleaner)
-    Generic[StarlingTransaction].from(cleaned)
+    val gen     = Generic[StarlingTransaction]
+    val to      = gen.to(transactions)
+    val cleaned = to.map(defaultCleaner)
+    val from    = gen.from(cleaned)
+    from
   }
 
   def toTransaction(input: StarlingTransaction): SingleTransaction =
     input
       .into[SingleTransaction]
-      .withFieldConst(_.id, jutils.UUID.randomUUID)
+      .withFieldConst(_.id, UUID.randomUUID)
       .withFieldConst(_.input, StarlingBank)
       .withFieldRenamed(_.reference, _.description)
       .withFieldConst(_.category, "")

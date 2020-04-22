@@ -9,7 +9,6 @@ import com.colofabrix.scala.accounting.etl.api.TapirInputs._
 import com.colofabrix.scala.accounting.etl.client.EtlClient
 import com.colofabrix.scala.accounting.etl.model.Api._
 import com.colofabrix.scala.accounting.etl.model.Config._
-import com.colofabrix.scala.accounting.etl.refined.tapir._
 import com.colofabrix.scala.accounting.model.SingleTransaction
 import com.colofabrix.scala.accounting.utils.logging._
 import com.colofabrix.scala.accounting.utils.validation._

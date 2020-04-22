@@ -23,9 +23,9 @@ trait GenericConverter[Input, Output] {
   // then we append it to the accumulator.
 
   // format: off
-  private type Accumulator[A <: HList] = (Input, AValidated[A])
+  private[this] type Accumulator[A <: HList] = (Input, AValidated[A])
 
-  private object ApplyRecord extends Poly2 {
+  private[this] object ApplyRecord extends Poly2 {
     @SuppressWarnings(Array("org.wartremover.warts.ExplicitImplicitTypes"))
     implicit def folder[O, V <: HList] = at[GenericBuilder[O], Accumulator[V]] {
       case (recordParser, (record, accumulator)) =>
@@ -37,6 +37,9 @@ trait GenericConverter[Input, Output] {
 
   // UnaryTCConstraint taken from here: https://mpilquist.github.io/blog/2013/06/09/scodec-part-3/
 
+  /**
+   * Convert an Input record into a validated Output given an HList of parsers
+   */
   def convertRecord[
     HParsers <: HList : *->*[GenericBuilder]#λ,
     HParsed <: HList](
