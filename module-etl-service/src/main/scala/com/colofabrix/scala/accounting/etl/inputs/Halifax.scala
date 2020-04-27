@@ -1,9 +1,8 @@
 package com.colofabrix.scala.accounting.etl.inputs
 
 import cats.implicits._
-import com.colofabrix.scala.accounting.etl._
+import com.colofabrix.scala.accounting.etl.conversion._
 import com.colofabrix.scala.accounting.etl.conversion.FieldConverter._
-import com.colofabrix.scala.accounting.etl.definitions._
 import com.colofabrix.scala.accounting.etl.model._
 import com.colofabrix.scala.accounting.etl.pipeline._
 import com.colofabrix.scala.accounting.etl.pipeline.CleanerUtils._
@@ -30,22 +29,24 @@ class HalifaxApiInput
   def filterInput: RawInputFilter = identity
 
   def convertRaw(record: RawRecord): AValidated[HalifaxTransaction] = {
-    val converter = new RecordConverter[HalifaxTransaction] {}
-    converter.convertRecord(record) {
-      val date        = sParse[LocalDate](r => r(0))("dd/MM/yyyy")
-      val dateEntered = sParse[LocalDate](r => r(1))("dd/MM/yyyy")
-      val reference   = sParse[String](r => r(2))
-      val description = sParse[NonEmptyString](r => r(3))
-      val amount      = sParse[BigDecimal](r => r(4)).map(x => -1.0 * x)
-      date :: dateEntered :: reference :: description :: amount :: HNil
-    }
+    val date        = sParse[LocalDate](r => r(0))("dd/MM/yyyy")
+    val dateEntered = sParse[LocalDate](r => r(1))("dd/MM/yyyy")
+    val reference   = sParse[String](r => r(2))
+    val description = sParse[NonEmptyString](r => r(3))
+    val amount      = sParse[BigDecimal](r => r(4)).map(x => -1.0 * x)
+
+    val halifaxParser = date :: dateEntered :: reference :: description :: amount :: HNil
+    val converter     = new RecordConverter[HalifaxTransaction] {}
+
+    converter.convertRecord(record)(halifaxParser)
   }
 
   def cleanInputTransaction(transactions: HalifaxTransaction): HalifaxTransaction = {
-    val cleaned = Generic[HalifaxTransaction]
-      .to(transactions)
-      .map(defaultCleaner)
-    Generic[HalifaxTransaction].from(cleaned)
+    val gen     = Generic[HalifaxTransaction]
+    val to      = gen.to(transactions)
+    val cleaned = to.map(defaultCleaner)
+    val from    = gen.from(cleaned)
+    from
   }
 
   def toTransaction(input: HalifaxTransaction): SingleTransaction =

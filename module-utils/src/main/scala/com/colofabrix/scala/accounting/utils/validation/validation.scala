@@ -18,10 +18,10 @@ package object validation {
   /** Enrichment for any object */
   implicit class AnyOps[A <: Any](private val anyObject: A) extends AnyVal {
     /** Mark the value as valid */
-    def aValid: AValidated[A] = anyObject.validNec[String]
+    @inline def aValid: AValidated[A] = anyObject.validNec[String]
 
     /** Mark the value as invalid */
-    def aInvalid(msg: String): AValidated[A] = msg.invalidNec[A]
+    @inline def aInvalid(msg: String): AValidated[A] = msg.invalidNec[A]
   }
 
   /** Enrichment for String */

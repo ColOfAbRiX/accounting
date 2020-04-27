@@ -1,7 +1,6 @@
 package com.colofabrix.scala.accounting.etl.pipeline
 
 import cats.effect.Sync
-import com.colofabrix.scala.accounting.etl.definitions._
 import com.colofabrix.scala.accounting.etl.inputs._
 import com.colofabrix.scala.accounting.etl.model._
 import com.colofabrix.scala.accounting.etl.model.Config._

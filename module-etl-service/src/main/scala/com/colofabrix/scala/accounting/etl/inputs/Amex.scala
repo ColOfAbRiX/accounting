@@ -1,9 +1,8 @@
 package com.colofabrix.scala.accounting.etl.inputs
 
 import cats.implicits._
-import com.colofabrix.scala.accounting.etl._
+import com.colofabrix.scala.accounting.etl.conversion._
 import com.colofabrix.scala.accounting.etl.conversion.FieldConverter._
-import com.colofabrix.scala.accounting.etl.definitions._
 import com.colofabrix.scala.accounting.etl.model._
 import com.colofabrix.scala.accounting.etl.pipeline._
 import com.colofabrix.scala.accounting.etl.pipeline.CleanerUtils._
@@ -30,16 +29,25 @@ class AmexApiInput
   def filterInput: RawInputFilter = identity
 
   def convertRaw(record: RawRecord): AValidated[AmexTransaction] = {
-    val converter = new RecordConverter[AmexTransaction] {}
-    converter.convertRecord(record) {
-      val date        = sParse[LocalDate](r => r(0))("dd/MM/yyyy")
-      val reference   = sParse[NonEmptyString](r => r(1))
-      val amount      = sParse[BigDecimal](r => r(2)).map(x => -1.0 * x)
-      val description = sParse[String](r => r(3))
-      val extra       = sParse[String](r => r(4))
-      date :: reference :: amount :: description :: extra :: HNil
-    }
+    val date        = sParse[LocalDate](r => r(0))("dd/MM/yyyy")
+    val reference   = sParse[NonEmptyString](r => r(1))
+    val amount      = sParse[BigDecimal](r => r(2)).map(x => -1.0 * x)
+    val description = sParse[String](r => r(3))
+    val extra       = sParse[String](r => r(4))
+
+    val amexParsers = date :: reference :: amount :: description :: extra :: HNil
+    val converter   = new RecordConverter[AmexTransaction] {}
+
+    converter.convertRecord(record)(amexParsers)
   }
+
+  case class AmexTransaction2(
+      date: LocalDate,
+      reference: String,
+      amount: BigDecimal,
+      description: NonEmptyString,
+      extra: String,
+  )
 
   def cleanInputTransaction(transactions: AmexTransaction): AmexTransaction = {
     val gen     = Generic[AmexTransaction]

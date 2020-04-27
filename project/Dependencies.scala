@@ -5,7 +5,7 @@ object Dependencies {
   //  LIBRARIES VERSIONS  //
 
   lazy val CatsVersion           = "2.1.1"
-  lazy val ChimneyVersion        = "0.5.0"
+  lazy val ChimneyVersion        = "0.5.1"
   lazy val CirceVersion          = "0.13.0"
   lazy val EnumeratumCatsVersion = "1.5.16"
   lazy val EnumeratumVersion     = "1.5.15"
@@ -17,18 +17,18 @@ object Dependencies {
   lazy val NewtypeVersion        = "0.4.3"
   lazy val PPrintVersion         = "0.5.9"
   lazy val PureConfigVersion     = "0.12.3"
-  lazy val RefinedVersion        = "0.9.13"
+  lazy val RefinedVersion        = "0.9.14"
   lazy val ScalaTestCatsVersion  = "3.0.5"
   lazy val ScalaTestVersion      = "3.1.1"
   lazy val ShapelessVersion      = "2.3.3"
-  lazy val TapirVersion          = "0.14.2"
+  lazy val TapirVersion          = "0.14.3"
 
   //  COMPILER PLUGINS VERSIONS  //
 
   lazy val BetterMonadicForVersion = "0.3.1"
   lazy val KindProjectorVersion    = "0.10.3"
-  lazy val SplainVersion           = "0.5.1"
-  lazy val WartRemoverVersion      = "2.4.5"
+  lazy val SplainVersion           = "0.5.3"
+  lazy val WartRemoverVersion      = "2.4.7"
 
   //  LIBRARIES  //
 

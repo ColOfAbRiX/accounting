@@ -2,7 +2,6 @@ package com.colofabrix.scala.accounting.etl.pipeline
 
 import cats.data._
 import cats.implicits._
-import com.colofabrix.scala.accounting.etl.definitions._
 import com.colofabrix.scala.accounting.etl.model._
 import com.colofabrix.scala.accounting.utils.logging._
 import com.colofabrix.scala.accounting.utils.validation._
