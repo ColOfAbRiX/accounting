@@ -29,11 +29,11 @@ class HalifaxApiInput
   def filterInput: RawInputFilter = identity
 
   def convertRaw(record: RawRecord): AValidated[HalifaxTransaction] = {
-    val date        = sParse[LocalDate](r => r(0))("dd/MM/yyyy")
-    val dateEntered = sParse[LocalDate](r => r(1))("dd/MM/yyyy")
-    val reference   = sParse[String](r => r(2))
-    val description = sParse[NonEmptyString](r => r(3))
-    val amount      = sParse[BigDecimal](r => r(4)).map(x => -1.0 * x)
+    val date        = parse[LocalDate](r => r(0))("dd/MM/yyyy")
+    val dateEntered = parse[LocalDate](r => r(1))("dd/MM/yyyy")
+    val reference   = parse[String](r => r(2))
+    val description = parse[NonEmptyString](r => r(3))
+    val amount      = parse[BigDecimal](r => r(4)).map(x => -1.0 * x)
 
     val halifaxParser = date :: dateEntered :: reference :: description :: amount :: HNil
     val converter     = new RecordConverter[HalifaxTransaction] {}

@@ -11,9 +11,9 @@ import org.scalatest.matchers.should._
 @SuppressWarnings(Array("org.wartremover.warts.Null"))
 class FieldConverterSpecs extends AnyWordSpec with Matchers with ValidatedMatchers {
 
-  // sParse[String]
-  "Running sParse[String]" when {
-    val parser = sParse[String](x => x(0))
+  // parse[String]
+  "Running parse[String]" when {
+    val parser = parse[String](x => x(0))
 
     "providing a String" should {
       "return a valid String" in {
@@ -48,9 +48,9 @@ class FieldConverterSpecs extends AnyWordSpec with Matchers with ValidatedMatche
     }
   }
 
-  // sParse[Int]
-  "Running sParse[Int]" when {
-    val parser = sParse[Int](x => x(0))
+  // parse[Int]
+  "Running parse[Int]" when {
+    val parser = parse[Int](x => x(0))
 
     "providing a String" should {
       "return a valid Int" in {
@@ -94,9 +94,9 @@ class FieldConverterSpecs extends AnyWordSpec with Matchers with ValidatedMatche
     }
   }
 
-  // sParse[Double]
-  "Running sParse[Double]" when {
-    val parser = sParse[Double](x => x(0))
+  // parse[Double]
+  "Running parse[Double]" when {
+    val parser = parse[Double](x => x(0))
 
     "providing a String" should {
       "return a valid Double" in {
@@ -131,9 +131,9 @@ class FieldConverterSpecs extends AnyWordSpec with Matchers with ValidatedMatche
     }
   }
 
-  // sParse[BigDecimal]
-  "Running sParse[BigDecimal]" when {
-    val parser = sParse[BigDecimal](x => x(0))
+  // parse[BigDecimal]
+  "Running parse[BigDecimal]" when {
+    val parser = parse[BigDecimal](x => x(0))
 
     "providing a String" should {
       "return a valid BigDecimal" in {
@@ -176,9 +176,9 @@ class FieldConverterSpecs extends AnyWordSpec with Matchers with ValidatedMatche
     }
   }
 
-  // sParse[LocalDate]
-  "Running sParse[LocalDate]" when {
-    val parser = sParse[LocalDate](x => x(0))("dd/MM/yyyy")
+  // parse[LocalDate]
+  "Running parse[LocalDate]" when {
+    val parser = parse[LocalDate](x => x(0))("dd/MM/yyyy")
 
     "providing a String" should {
       "return a valid LocalDate" in {
@@ -223,9 +223,9 @@ class FieldConverterSpecs extends AnyWordSpec with Matchers with ValidatedMatche
     }
   }
 
-  // sParse[Option[A]]
-  "Running sParse[Option[A]]" when {
-    val parser = sParse[Option[Int]](x => x(0))
+  // parse[Option[A]]
+  "Running parse[Option[A]]" when {
+    val parser = parse[Option[Int]](x => x(0))
 
     "providing a String" should {
       "return a valid Some[A]" in {

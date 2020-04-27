@@ -29,11 +29,11 @@ class AmexApiInput
   def filterInput: RawInputFilter = identity
 
   def convertRaw(record: RawRecord): AValidated[AmexTransaction] = {
-    val date        = sParse[LocalDate](r => r(0))("dd/MM/yyyy")
-    val reference   = sParse[NonEmptyString](r => r(1))
-    val amount      = sParse[BigDecimal](r => r(2)).map(x => -1.0 * x)
-    val description = sParse[String](r => r(3))
-    val extra       = sParse[String](r => r(4))
+    val date        = parse[LocalDate](r => r(0))("dd/MM/yyyy")
+    val reference   = parse[NonEmptyString](r => r(1))
+    val amount      = parse[BigDecimal](r => r(2)).map(x => -1.0 * x)
+    val description = parse[String](r => r(3))
+    val extra       = parse[String](r => r(4))
 
     val amexParsers = date :: reference :: amount :: description :: extra :: HNil
     val converter   = new RecordConverter[AmexTransaction] {}

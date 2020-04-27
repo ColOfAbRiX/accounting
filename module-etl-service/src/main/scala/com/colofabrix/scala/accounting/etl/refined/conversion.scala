@@ -8,11 +8,11 @@ import scala.reflect.runtime.universe.WeakTypeTag
 package object conversion {
 
   implicit def refTypeFieldConverter[T, P](
-      implicit fieldConverter: FieldConverter[String, T],
+      implicit fieldConverter: FieldConverter[T],
       refType: RefType[Refined],
       validate: Validate[T, P],
       typeTag: WeakTypeTag[Refined[T, P]],
-  ): FieldConverter[String, Refined[T, P]] = new FieldConverter[String, Refined[T, P]] {
+  ): FieldConverter[Refined[T, P]] = new FieldConverter[Refined[T, P]] {
     def parseField(field: String): AValidated[Refined[T, P]] = {
       fieldConverter
         .parseField(field)
