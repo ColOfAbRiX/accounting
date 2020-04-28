@@ -30,24 +30,15 @@ class AmexApiInput
 
   def convertRaw(record: RawRecord): AValidated[AmexTransaction] = {
     val date        = parse[LocalDate](r => r(0))("dd/MM/yyyy")
-    val reference   = parse[NonEmptyString](r => r(1))
+    val reference   = parse[String](r => r(1))
     val amount      = parse[BigDecimal](r => r(2)).map(x => -1.0 * x)
-    val description = parse[String](r => r(3))
+    val description = parse[NonEmptyString](r => r(3))
     val extra       = parse[String](r => r(4))
+    val amexParser  = date :: reference :: amount :: description :: extra :: HNil
 
-    val amexParsers = date :: reference :: amount :: description :: extra :: HNil
-    val converter   = new RecordConverter[AmexTransaction] {}
-
-    converter.convertRecord(record)(amexParsers)
+    val converter = new RecordConverter[AmexTransaction] {}
+    converter.convertRecord(record)(amexParser)
   }
-
-  case class AmexTransaction2(
-      date: LocalDate,
-      reference: String,
-      amount: BigDecimal,
-      description: NonEmptyString,
-      extra: String,
-  )
 
   def cleanInputTransaction(transactions: AmexTransaction): AmexTransaction = {
     val gen     = Generic[AmexTransaction]

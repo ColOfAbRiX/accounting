@@ -23,6 +23,7 @@ ThisBuild / dynverVTagPrefix := false
 ThisBuild / wartremoverExcluded ++= (baseDirectory.value * "**" / "src" / "test").get
 ThisBuild / wartremoverErrors ++= Warts.allBut(
   Wart.Any,
+  Wart.ImplicitParameter,
   Wart.Nothing,
   Wart.Overloading,
   Wart.ToString,

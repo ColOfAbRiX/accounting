@@ -22,7 +22,7 @@ object FieldConverter {
   type FieldBuilder[O] = Kleisli[AValidated, List[String], O]
 
   /** Type-safe method to parse a value given a function that extracts what to parse from an input value */
-  @implicitNotFound("Couldn't find FieldConverter for type FieldConverter[${I}, ${O}]")
+  @implicitNotFound("Couldn't find FieldConverter for type FieldConverter[${O}]")
   def parse[O](extract: List[String] => String)(implicit P: FieldConverter[O]): FieldBuilder[O] =
     Kleisli { record =>
       val extracted = Try(extract(record))
@@ -37,12 +37,12 @@ object FieldConverter {
     }
 
   /** Method to create the default parser for the given type */
-  def apply[O](f: String => O)(implicit S: Show[String]): FieldConverter[O] = new FieldConverter[O] {
+  def apply[O](f: String => O)(implicit show: Show[String]): FieldConverter[O] = new FieldConverter[O] {
     def parseField(field: String): AValidated[O] = {
       Try(f(field))
         .toEither
         .leftMap { ex =>
-          val f = Option(field).map(S.show).getOrElse("null")
+          val f = Option(field).map(show.show).getOrElse("null")
           s"Exception on converting field '$f': ${ex.toString}"
         }
         .toAValidated

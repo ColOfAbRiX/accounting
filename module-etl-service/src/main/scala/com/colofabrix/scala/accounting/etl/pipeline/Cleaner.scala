@@ -38,18 +38,6 @@ object Cleaner extends PipeLogging {
 object CleanerUtils {
   @SuppressWarnings(Array("org.wartremover.warts.ExplicitImplicitTypes", "org.wartremover.warts.PublicInference"))
   object defaultCleaner extends RefinedPoly1 {
-    import eu.timepit.refined.types.string.NonEmptyString
-    import eu.timepit.refined.collection._
-    import eu.timepit.refined.auto._
-    import eu.timepit.refined.api.Refined
-
-    implicit def caseNonEmptyString(
-        implicit stringCase: Case[String]
-    ) = at[NonEmptyString] { x =>
-      val clean = trim andThen toLowercase andThen removeRedundantSpaces
-      Refined.unsafeApply[String, NonEmpty](clean(x))
-    }
-
     implicit def caseString     = at[String](trim andThen toLowercase andThen removeRedundantSpaces)
     implicit def caseBigDecimal = at[BigDecimal](identity)
     implicit def caseLocalDate  = at[LocalDate](identity)

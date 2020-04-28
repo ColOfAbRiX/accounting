@@ -29,16 +29,16 @@ class StarlingApiInput
   def filterInput: RawInputFilter = identity
 
   def convertRaw(record: RawRecord): AValidated[StarlingTransaction] = {
+    val date           = parse[LocalDate](r => r(0))("dd/MM/yyyy")
+    val counterParty   = parse[String](r => r(1))
+    val reference      = parse[NonEmptyString](r => r(2))
+    val `type`         = parse[String](r => r(3))
+    val amount         = parse[BigDecimal](r => r(4))
+    val balance        = parse[BigDecimal](r => r(5))
+    val starlingParser = date :: counterParty :: reference :: `type` :: amount :: balance :: HNil
+
     val converter = new RecordConverter[StarlingTransaction] {}
-    converter.convertRecord(record) {
-      val date         = parse[LocalDate](r => r(0))("dd/MM/yyyy")
-      val counterParty = parse[String](r => r(1))
-      val reference    = parse[NonEmptyString](r => r(2))
-      val `type`       = parse[String](r => r(3))
-      val amount       = parse[BigDecimal](r => r(4))
-      val balance      = parse[BigDecimal](r => r(5))
-      date :: counterParty :: reference :: `type` :: amount :: balance :: HNil
-    }
+    converter.convertRecord(record)(starlingParser)
   }
 
   def cleanInputTransaction(transactions: StarlingTransaction): StarlingTransaction = {
