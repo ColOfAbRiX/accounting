@@ -7,6 +7,9 @@ import scala.reflect.runtime.universe.WeakTypeTag
 
 package object conversion {
 
+  /**
+   * Refinement conversion for FieldConverter
+   */
   implicit def refTypeFieldConverter[T, P](
       implicit fieldConverter: FieldConverter[T],
       refType: RefType[Refined],
@@ -18,7 +21,7 @@ package object conversion {
         .parseField(field)
         .andThen { validated =>
           refType.refine[P](validated) match {
-            case Left(e)        => s"Error converting '$field' to type ${typeTag.tpe.toString}: $e".aInvalid
+            case Left(error)    => s"Error converting '$field' to type ${typeTag.tpe.toString}: $error".aInvalid
             case Right(refined) => refined.aValid
           }
         }

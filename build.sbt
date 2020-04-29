@@ -109,6 +109,7 @@ lazy val etlService = project
       TapirBundle,
     ).flatten ++ Seq(
       CirceGenericDep,
+      SimulacrumDep,
       FS2CoreDep,
       ScalaTestDep,
       ShapelessDep,

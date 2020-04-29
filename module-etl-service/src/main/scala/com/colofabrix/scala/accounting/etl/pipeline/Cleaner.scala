@@ -5,6 +5,7 @@ import cats.implicits._
 import com.colofabrix.scala.accounting.etl.model._
 import com.colofabrix.scala.accounting.etl.refined.shapeless.RefinedPoly1
 import com.colofabrix.scala.accounting.utils.logging._
+import com.colofabrix.scala.accounting.utils.validation._
 import com.colofabrix.scala.accounting.utils.validation.streams._
 import java.time.LocalDate
 
@@ -36,23 +37,58 @@ object Cleaner extends PipeLogging {
  * Utility functions for cleaning
  */
 object CleanerUtils {
-  @SuppressWarnings(Array("org.wartremover.warts.ExplicitImplicitTypes", "org.wartremover.warts.PublicInference"))
+  // -------- START OF PLAYGROUND --------
   object defaultCleaner extends RefinedPoly1 {
-    implicit def caseString     = at[String](trim andThen toLowercase andThen removeRedundantSpaces)
-    implicit def caseBigDecimal = at[BigDecimal](identity)
-    implicit def caseLocalDate  = at[LocalDate](identity)
-    implicit def caseOptionA[A] = at[Option[A]](identity)
+
+    implicit def caseBigDecimal: ValidatedCase[BigDecimal] = at[BigDecimal](validIdentity)
+    implicit def caseDouble: ValidatedCase[Double]         = at[Double](validIdentity)
+    implicit def caseInt: ValidatedCase[Int]               = at[Int](validIdentity)
+    implicit def caseLocalDate: ValidatedCase[LocalDate]   = at[LocalDate](validIdentity)
+    implicit def caseString: ValidatedCase[String]         = at[String](trim combine toLowercase combine removeRedundantSpaces)
+
+    implicit def caseSimpleOptionA[A]: ValidatedCase[Option[A]] =
+      at[Option[A]](validIdentity)
+
+    //import cats.Traverse
+
+    //implicit def caseOptionInt(implicit baseCase: ValidatedCase[Int]): ValidatedCase[Option[Int]] =
+    //  at[Option[Int]](Traverse[Option].traverse(_)(baseCase.apply))
+
+    //implicit def caseOptionA[A](implicit baseCase: ValidatedCase[A]): ValidatedCase[Option[A]] =
+    //  at[Option[A]](Traverse[Option].traverse(_)(baseCase.apply))
+
+    //implicit def caseFA[F[_]: Traverse, A](implicit baseCase: ValidatedCase[A]): ValidatedCase[F[A]] =
+    //  at[F[A]](Traverse[F].traverse(_)(baseCase.apply))
   }
 
-  /** Transforms a string field into lowercase */
-  def toLowercase: String => String = _.toLowerCase()
-
-  /** Reduces multiple spaces into one single space */
-  def removeRedundantSpaces: String => String = _.replaceAll("\\s+", " ")
-
-  /** Removes the punctuation from a string */
-  def removePunctuation: String => String = _.replaceAll("""[\p{Punct}&&[^.]]""", "")
+  //import cats.implicits._
+  //import shapeless._
+  //
+  //case class Test(oa: Option[Int])
+  //private val test = Test(None)
+  //
+  //private val gen       = Generic[Test]
+  //private val to        = gen.to(test)
+  //private val cleaned   = to.map(defaultCleaner)
+  //private val sequenced = cleaned.sequence
+  //private val cleanTest = sequenced.map(x => gen.from(x))
+  //private val result    = cleanTest.getOrElse(test)
+  //
+  //cats.effect.IO(println(result)).unsafeRunSync()
+  //-------- END OF PLAYGROUND --------
 
   /** Removes leading and trailing spaces */
-  def trim: String => String = _.trim
+  def validIdentity[A]: A => AValidated[A] = _.aValid
+
+  /** Transforms a string field into lowercase */
+  def toLowercase: String => AValidated[String] = _.toLowerCase().aValid
+
+  /** Reduces multiple spaces into one single space */
+  def removeRedundantSpaces: String => AValidated[String] = _.replaceAll("\\s+", " ").aValid
+
+  /** Removes the punctuation from a string */
+  def removePunctuation: String => AValidated[String] = _.replaceAll("""[\p{Punct}&&[^.]]""", "").aValid
+
+  /** Removes leading and trailing spaces */
+  def trim: String => AValidated[String] = _.trim.aValid
 }

@@ -103,13 +103,13 @@ final class EtlEndpointsImpl(client: EtlClient[IO]) extends EtlEndpoints[IO] wit
         client
           .listSupportedInputs
           .map(_.asRight[ErrorInfo])
-          .handleErrorWith(x => handleEndpointErrors(x))
+          .handleErrorWith(handleEndpointErrors)
       }
 
   /**
    * Converts one single input record into one output transaction
    */
-  private[this] val convertRecord: ShortEndpoint[(InputType, String), AValidated[SingleTransaction]] = {
+  private[this] val convertRecord: ShortEndpoint[(InputType, String), AValidated[SingleTransaction]] =
     apiBaseEndpoint
       .get
       .in("convert-record")
@@ -126,9 +126,8 @@ final class EtlEndpointsImpl(client: EtlClient[IO]) extends EtlEndpoints[IO] wit
           client
             .convertRecord(inputType, body)
             .map(_.asRight[ErrorInfo])
-            .handleErrorWith(x => handleEndpointErrors(x))
+            .handleErrorWith(handleEndpointErrors)
       }
-  }
 
   /**
    * Converts a list of inputs records into output transactions
@@ -150,7 +149,7 @@ final class EtlEndpointsImpl(client: EtlClient[IO]) extends EtlEndpoints[IO] wit
           client
             .convertRecords(inputType, body)
             .map(_.asRight[ErrorInfo])
-            .handleErrorWith(x => handleEndpointErrors(x))
+            .handleErrorWith(handleEndpointErrors)
       }
 
   /** The list of all endpoints */

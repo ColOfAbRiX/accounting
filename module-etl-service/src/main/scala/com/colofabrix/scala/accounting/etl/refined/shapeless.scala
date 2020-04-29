@@ -1,15 +1,34 @@
-package com.colofabrix.scala.accounting.etl.refined.shapeless
+package com.colofabrix.scala.accounting.etl.refined
 
 import _root_.shapeless._
-import eu.timepit.refined.api.{ RefType, Refined }
+import com.colofabrix.scala.accounting.utils.validation._
+import eu.timepit.refined.api.{ RefType, Refined, Validate }
 
-trait RefinedPoly1 extends Poly1 {
-  type RefinedCase[P, T] = Case[Refined[P, T]] { type Result = Refined[P, T] }
+object shapeless {
 
-  implicit def caseRefined[P, T](implicit baseCase: Case.Aux[P, P], efType: RefType[Refined]): RefinedCase[P, T] =
-    at[Refined[P, T]] { refined =>
-      val predicate = efType.unwrap(refined)
-      val a: P      = baseCase.apply(predicate :: HNil)
-      Refined.unsafeApply[P, T](a)
+  /**
+   * Shapeless Poly1 with support for Refined types
+   */
+  trait RefinedPoly1 extends Poly1 {
+    type ValidatedCase[A]  = Case.Aux[A, AValidated[A]]
+    type RefinedCase[T, P] = ValidatedCase[Refined[T, P]]
+
+    implicit def caseRefined[T, P](
+        implicit
+        baseCase: ValidatedCase[T],
+        refType: RefType[Refined],
+        validate: Validate[T, P],
+    ): RefinedCase[T, P] = at[Refined[T, P]] { refined =>
+      val predicate  = refType.unwrap(refined)
+      val baseMapped = baseCase.apply(predicate :: HNil)
+      baseMapped andThen { value =>
+        refType
+          .refine[P](value).fold(
+            error => s"Error mapping value '${predicate.toString}'}: $error".aInvalid,
+            refined => refined.aValid,
+          )
+      }
     }
+  }
+
 }
