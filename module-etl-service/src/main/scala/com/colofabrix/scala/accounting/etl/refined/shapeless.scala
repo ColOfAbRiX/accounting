@@ -1,5 +1,6 @@
 package com.colofabrix.scala.accounting.etl.refined
 
+import cats._
 import _root_.shapeless._
 import com.colofabrix.scala.accounting.utils.validation._
 import eu.timepit.refined.api.{ RefType, Refined, Validate }
@@ -13,7 +14,8 @@ object shapeless {
     type ValidatedCase[A]  = Case.Aux[A, AValidated[A]]
     type RefinedCase[T, P] = ValidatedCase[Refined[T, P]]
 
-    implicit def caseRefined[T, P](
+    /** Mapping case for Refined[T, P] => AValidated[Refined[T, P]] */
+    implicit def caseRefinedTP[T, P](
         implicit
         baseCase: ValidatedCase[T],
         refType: RefType[Refined],
@@ -28,6 +30,11 @@ object shapeless {
             refined => refined.aValid,
           )
       }
+    }
+
+    /** Mapping case for F[A] => AValidated[F[A]] */
+    implicit def caseFA[F[_]: Traverse, A](implicit baseCase: ValidatedCase[A]): ValidatedCase[F[A]] = at[F[A]] {
+      Traverse[F].traverse(_)(baseCase.apply(_))
     }
   }
 

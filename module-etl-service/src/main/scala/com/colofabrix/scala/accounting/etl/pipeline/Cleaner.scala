@@ -37,45 +37,13 @@ object Cleaner extends PipeLogging {
  * Utility functions for cleaning
  */
 object CleanerUtils {
-  // -------- START OF PLAYGROUND --------
   object defaultCleaner extends RefinedPoly1 {
-
     implicit def caseBigDecimal: ValidatedCase[BigDecimal] = at[BigDecimal](validIdentity)
     implicit def caseDouble: ValidatedCase[Double]         = at[Double](validIdentity)
     implicit def caseInt: ValidatedCase[Int]               = at[Int](validIdentity)
     implicit def caseLocalDate: ValidatedCase[LocalDate]   = at[LocalDate](validIdentity)
     implicit def caseString: ValidatedCase[String]         = at[String](trim combine toLowercase combine removeRedundantSpaces)
-
-    implicit def caseSimpleOptionA[A]: ValidatedCase[Option[A]] =
-      at[Option[A]](validIdentity)
-
-    //import cats.Traverse
-
-    //implicit def caseOptionInt(implicit baseCase: ValidatedCase[Int]): ValidatedCase[Option[Int]] =
-    //  at[Option[Int]](Traverse[Option].traverse(_)(baseCase.apply))
-
-    //implicit def caseOptionA[A](implicit baseCase: ValidatedCase[A]): ValidatedCase[Option[A]] =
-    //  at[Option[A]](Traverse[Option].traverse(_)(baseCase.apply))
-
-    //implicit def caseFA[F[_]: Traverse, A](implicit baseCase: ValidatedCase[A]): ValidatedCase[F[A]] =
-    //  at[F[A]](Traverse[F].traverse(_)(baseCase.apply))
   }
-
-  //import cats.implicits._
-  //import shapeless._
-  //
-  //case class Test(oa: Option[Int])
-  //private val test = Test(None)
-  //
-  //private val gen       = Generic[Test]
-  //private val to        = gen.to(test)
-  //private val cleaned   = to.map(defaultCleaner)
-  //private val sequenced = cleaned.sequence
-  //private val cleanTest = sequenced.map(x => gen.from(x))
-  //private val result    = cleanTest.getOrElse(test)
-  //
-  //cats.effect.IO(println(result)).unsafeRunSync()
-  //-------- END OF PLAYGROUND --------
 
   /** Removes leading and trailing spaces */
   def validIdentity[A]: A => AValidated[A] = _.aValid
