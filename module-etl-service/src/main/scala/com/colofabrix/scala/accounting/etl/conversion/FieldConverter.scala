@@ -8,11 +8,12 @@ import java.time.format.DateTimeFormatter
 import java.time.LocalDate
 import scala.annotation.implicitNotFound
 import scala.util.Try
+import simulacrum._
 
 /**
  * Parser to transform record fields into JVM types
  */
-trait FieldConverter[+O] {
+@typeclass trait FieldConverter[+O] {
   def parseField(field: String): AValidated[O]
 }
 

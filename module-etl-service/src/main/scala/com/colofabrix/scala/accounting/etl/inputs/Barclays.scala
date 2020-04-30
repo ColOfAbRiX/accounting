@@ -1,12 +1,9 @@
 package com.colofabrix.scala.accounting.etl.inputs
 
-import cats.implicits._
-import cats.sequence._
 import com.colofabrix.scala.accounting.etl.conversion._
 import com.colofabrix.scala.accounting.etl.conversion.FieldConverter._
 import com.colofabrix.scala.accounting.etl.model._
 import com.colofabrix.scala.accounting.etl.pipeline._
-import com.colofabrix.scala.accounting.etl.pipeline.CleanerUtils._
 import com.colofabrix.scala.accounting.etl.pipeline.InputProcessorUtils._
 import com.colofabrix.scala.accounting.etl.refined.conversion._
 import com.colofabrix.scala.accounting.model._
@@ -42,18 +39,9 @@ class BarclaysApiInput
     converter.convertRecord(record)(barclaysParser)
   }
 
-  // FIXME: Temporary until I propagate the validation to the top of the endpoint
-  @SuppressWarnings(Array("org.wartremover.warts.Throw"))
-  def cleanInputTransaction(transaction: BarclaysTransaction): BarclaysTransaction = {
-    val gen      = Generic[BarclaysTransaction]
-    val to       = gen.to(transaction)
-    val cleaned  = to.map(defaultCleaner)
-    val vCleaned = cleaned.sequence
-    val from     = vCleaned.map(gen.from)
-    from.fold(
-      error => throw new Exception(error.toString),
-      identity,
-    )
+  def cleanInputTransaction(transaction: BarclaysTransaction): AValidated[BarclaysTransaction] = {
+    import cats.implicits._
+    genericCleaner(CleanerUtils.defaultCleaner)(transaction)
   }
 
   def toTransaction(input: BarclaysTransaction): SingleTransaction =

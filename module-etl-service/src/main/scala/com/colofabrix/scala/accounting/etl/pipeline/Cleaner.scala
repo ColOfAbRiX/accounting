@@ -1,19 +1,41 @@
 package com.colofabrix.scala.accounting.etl.pipeline
 
-import cats.data.Nested
 import cats.implicits._
+import cats.sequence._
 import com.colofabrix.scala.accounting.etl.model._
 import com.colofabrix.scala.accounting.etl.refined.shapeless.RefinedPoly1
 import com.colofabrix.scala.accounting.utils.logging._
 import com.colofabrix.scala.accounting.utils.validation._
 import com.colofabrix.scala.accounting.utils.validation.streams._
 import java.time.LocalDate
+import shapeless.ops.hlist.Mapper
+import shapeless.{ Generic, HList }
+import simulacrum._
 
 /**
  * Cleans the individual fields of the InputTransactions
  */
-trait Cleaner[T <: InputTransaction] {
-  def cleanInputTransaction(transaction: T): T
+@typeclass trait Cleaner[T <: InputTransaction] {
+  def cleanInputTransaction(transaction: T): AValidated[T]
+
+  // format: off
+  protected def genericCleaner[
+    HT <: HList,
+    HVT <: HList](
+      cleaner: RefinedPoly1)(
+      transaction: T)(
+        implicit
+        gen: Generic.Aux[T, HT],
+        map: Mapper.Aux[cleaner.type, HT, HVT],
+        seq: Sequencer.Aux[HVT, AValidated, HT],
+  ): AValidated[T] = {
+    val to       = gen.to(transaction)
+    val cleaned  = to.map(cleaner)
+    val vCleaned = cleaned.sequence
+    val from     = vCleaned.map(gen.from)
+    from
+  }
+  // format: on
 }
 
 object Cleaner extends PipeLogging {
@@ -24,10 +46,9 @@ object Cleaner extends PipeLogging {
    */
   def apply[F[_], T <: InputTransaction](implicit c: Cleaner[T]): VPipe[F, T, T] = {
     val log: VPipe[F, T, T] = pipeLogger.trace(x => s"Cleaning transaction: ${x.toString}")
-    val clean: VPipe[F, T, T] =
-      Nested(_)
-        .map(c.cleanInputTransaction)
-        .value
+    val clean: VPipe[F, T, T] = {
+      _.map(_ andThen c.cleanInputTransaction)
+    }
 
     log andThen clean
   }

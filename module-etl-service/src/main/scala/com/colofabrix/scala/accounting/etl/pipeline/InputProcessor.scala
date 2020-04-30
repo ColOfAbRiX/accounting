@@ -7,16 +7,17 @@ import com.colofabrix.scala.accounting.utils.logging._
 import com.colofabrix.scala.accounting.utils.validation._
 import com.colofabrix.scala.accounting.utils.validation.streams._
 import fs2.Pure
+import simulacrum._
 
 /**
  * Converts an input source into transactions
  */
-trait InputProcessor[T <: InputTransaction] {
+@typeclass trait InputProcessor[T <: InputTransaction] {
   /** Converts one raw record into an input transaction */
-  def convertRaw(record: RawRecord): AValidated[T]
+  protected def convertRaw(record: RawRecord): AValidated[T]
 
   /** Filter an input to adapt it for processing, like removing head, empty rows and so on */
-  def filterInput: VPipe[Pure, RawRecord, RawRecord]
+  protected def filterInput: VPipe[Pure, RawRecord, RawRecord]
 }
 
 object InputProcessor extends PipeLogging {
