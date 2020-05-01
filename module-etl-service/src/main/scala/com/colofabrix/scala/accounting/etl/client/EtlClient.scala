@@ -39,7 +39,6 @@ final class EtlClientImpl(cs: ContextShift[IO]) extends EtlClient[IO] with PureL
     } yield r
 
   /** Converts one single input record into one output transaction */
-  @SuppressWarnings(Array("org.wartremover.warts.TraversableOps"))
   def convertRecord(inputType: InputType, record: String): IO[AValidated[SingleTransaction]] =
     for {
       _ <- pureLogger.info[IO](s"Requested convertRecord with input type ${inputType.entryName}")
@@ -48,7 +47,9 @@ final class EtlClientImpl(cs: ContextShift[IO]) extends EtlClient[IO] with PureL
             .through(pipelineForType(inputType))
             .compile
             .toList
-            .map(_.head)
+            .map {
+              _.headOption.fold("No transaction present".aInvalid[SingleTransaction])(identity)
+            }
     } yield r
 
   /** Converts a list of input records into output transactions */

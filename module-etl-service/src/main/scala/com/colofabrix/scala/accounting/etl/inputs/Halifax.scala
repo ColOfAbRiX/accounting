@@ -42,7 +42,7 @@ class HalifaxApiInput
     genericCleaner(CleanerUtils.defaultCleaner)(transaction)
   }
 
-  def toTransaction(input: HalifaxTransaction): SingleTransaction =
+  def toTransaction(input: HalifaxTransaction): AValidated[SingleTransaction] =
     input
       .into[SingleTransaction]
       .withFieldConst(_.id, UUID.randomUUID)
@@ -51,6 +51,7 @@ class HalifaxApiInput
       .withFieldConst(_.subcategory, "")
       .withFieldConst(_.notes, "")
       .transform
+      .aValid
 
 }
 

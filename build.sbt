@@ -1,9 +1,6 @@
 import Dependencies._
 import AllProjectsKeys.autoImport._
 
-// Scala version
-lazy val ScalaLangVersion = "2.13.1"
-
 // General
 Global / onChangedBuildSource := ReloadOnSourceChanges
 ThisBuild / organization := "com.colofabrix.scala.accounting"
@@ -64,11 +61,10 @@ lazy val utils = project
     description := "Global Utilities",
     libraryDependencies ++= Seq(
       LoggingBundle,
+      TestingBundle
     ).flatten ++ Seq(
       CatsCoreDep,
-      ScalaTestCatsDep,
       FS2CoreDep,
-      ScalaTestDep,
     ),
   )
 
@@ -107,11 +103,11 @@ lazy val etlService = project
       LoggingBundle,
       RefinedBundle,
       TapirBundle,
+      TestingBundle,
     ).flatten ++ Seq(
       CirceGenericDep,
       SimulacrumDep,
       FS2CoreDep,
-      ScalaTestDep,
       ShapelessDep,
     ),
   )
@@ -139,10 +135,10 @@ lazy val transactionsService = project
       KantanCsvBundle,
       LoggingBundle,
       TapirBundle,
+      TestingBundle,
     ).flatten ++ Seq(
       CirceGenericDep,
       FS2CoreDep,
-      ScalaTestDep,
       ShapelessDep,
     ),
   )

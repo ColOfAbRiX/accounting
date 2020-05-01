@@ -40,7 +40,7 @@ class FieldConverterSpecs extends AnyWordSpec with Matchers with ValidatedMatche
     }
 
     "providing an empty list" should {
-      "compain with IndexOutOfBoundsException" in {
+      "complain with IndexOutOfBoundsException" in {
         val computed = parser.run(List())
         val expected = "Exception on converting record List(): java.lang.IndexOutOfBoundsException: 0".aInvalid
         computed should equal(expected)
@@ -86,7 +86,7 @@ class FieldConverterSpecs extends AnyWordSpec with Matchers with ValidatedMatche
     }
 
     "providing an empty list" should {
-      "compain with IndexOutOfBoundsException" in {
+      "complain with IndexOutOfBoundsException" in {
         val computed = parser.run(List())
         val expected = "Exception on converting record List(): java.lang.IndexOutOfBoundsException: 0".aInvalid
         computed should equal(expected)
@@ -123,7 +123,7 @@ class FieldConverterSpecs extends AnyWordSpec with Matchers with ValidatedMatche
     }
 
     "providing an empty list" should {
-      "compain with IndexOutOfBoundsException" in {
+      "complain with IndexOutOfBoundsException" in {
         val computed = parser.run(List())
         val expected = "Exception on converting record List(): java.lang.IndexOutOfBoundsException: 0".aInvalid
         computed should equal(expected)
@@ -168,7 +168,7 @@ class FieldConverterSpecs extends AnyWordSpec with Matchers with ValidatedMatche
     }
 
     "providing an empty list" should {
-      "compain with IndexOutOfBoundsException" in {
+      "complain with IndexOutOfBoundsException" in {
         val computed = parser.run(List())
         val expected = "Exception on converting record List(): java.lang.IndexOutOfBoundsException: 0".aInvalid
         computed should equal(expected)
@@ -215,7 +215,7 @@ class FieldConverterSpecs extends AnyWordSpec with Matchers with ValidatedMatche
     }
 
     "providing an empty list" should {
-      "compain with IndexOutOfBoundsException" in {
+      "complain with IndexOutOfBoundsException" in {
         val computed = parser.run(List())
         val expected = "Exception on converting record List(): java.lang.IndexOutOfBoundsException: 0".aInvalid
         computed should equal(expected)
@@ -252,7 +252,7 @@ class FieldConverterSpecs extends AnyWordSpec with Matchers with ValidatedMatche
     }
 
     "providing an empty list" should {
-      "compain with IndexOutOfBoundsException" in {
+      "complain with IndexOutOfBoundsException" in {
         val computed = parser.run(List())
         val expected = "Exception on converting record List(): java.lang.IndexOutOfBoundsException: 0".aInvalid
         computed should equal(expected)

@@ -43,7 +43,7 @@ class StarlingApiInput
     genericCleaner(CleanerUtils.defaultCleaner)(transaction)
   }
 
-  def toTransaction(input: StarlingTransaction): SingleTransaction =
+  def toTransaction(input: StarlingTransaction): AValidated[SingleTransaction] =
     input
       .into[SingleTransaction]
       .withFieldConst(_.id, UUID.randomUUID)
@@ -53,6 +53,7 @@ class StarlingApiInput
       .withFieldConst(_.subcategory, "")
       .withFieldConst(_.notes, "")
       .transform
+      .aValid
 
 }
 

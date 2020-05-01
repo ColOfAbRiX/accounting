@@ -1,9 +1,9 @@
 package com.colofabrix.scala.accounting.etl.pipeline
 
-import cats.data._
 import cats.data.Validated._
-import com.colofabrix.scala.accounting.etl.definitions._
+import cats.data._
 import com.colofabrix.scala.accounting.etl.model._
+import eu.timepit.refined.auto._
 import java.time.LocalDate
 
 /**
@@ -13,7 +13,7 @@ import java.time.LocalDate
 trait PipelineTestData[T <: InputTransaction] {
   def date(y: Int, m: Int, d: Int): LocalDate = LocalDate.of(y, m, d)
 
-  def name: String = this.getClass.getSimpleName.replaceAll("""InputConversion.*$""", "")
+  def name: String = this.getClass.getSimpleName.replaceAll("""Specs.*$""", "")
 
   /** Test dataset of correct CSV data */
   def sampleCorrectCsvData: List[RawRecord]

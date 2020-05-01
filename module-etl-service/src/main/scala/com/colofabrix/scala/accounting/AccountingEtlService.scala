@@ -6,8 +6,9 @@ import com.colofabrix.scala.accounting.etl.client._
 import com.colofabrix.scala.accounting.etl.config._
 import com.colofabrix.scala.accounting.utils.logging._
 import eu.timepit.refined.auto._
-import org.http4s.server.blaze.BlazeServerBuilder
 import org.http4s.server.Server
+import org.http4s.server.blaze.BlazeServerBuilder
+import scala.concurrent.ExecutionContext.global
 import scala.io.StdIn
 
 object AccountingEtlService extends IOApp with PureLogging {
@@ -18,7 +19,7 @@ object AccountingEtlService extends IOApp with PureLogging {
 
   def run(args: List[String]): IO[ExitCode] =
     for {
-      _ <- BlazeServerBuilder[IO]
+      _ <- BlazeServerBuilder[IO](global)
             .bindHttp(serviceConfig.server.port, serviceConfig.server.host)
             .withHttpApp(etlEndpoints.app(contextShift))
             .resource
@@ -27,7 +28,7 @@ object AccountingEtlService extends IOApp with PureLogging {
 
   private[this] def server(server: Server[IO]): IO[_] =
     for {
-      _ <- pureLogger.info[IO](s" *** Started ${etl.BuildInfo.description} version ${etl.BuildInfo.version} ***")
+      _ <- pureLogger.info[IO](s"STARTED ${etl.BuildInfo.description} version ${etl.BuildInfo.version}")
       _ <- pureLogger.trace[IO](server.toString)
       _ <- IO(if (serviceConfig.server.debugMode) StdIn.readLine() else ())
     } yield ()

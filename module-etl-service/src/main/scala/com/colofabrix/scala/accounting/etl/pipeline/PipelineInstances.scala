@@ -5,7 +5,6 @@ import com.colofabrix.scala.accounting.etl.inputs._
 import com.colofabrix.scala.accounting.etl.model._
 import com.colofabrix.scala.accounting.etl.model.Config._
 import com.colofabrix.scala.accounting.etl.model.Config.InputType._
-import com.colofabrix.scala.accounting.etl.pipeline._
 import com.colofabrix.scala.accounting.model._
 import com.colofabrix.scala.accounting.utils.validation.streams._
 

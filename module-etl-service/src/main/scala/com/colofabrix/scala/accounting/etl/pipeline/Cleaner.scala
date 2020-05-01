@@ -63,7 +63,9 @@ object CleanerUtils {
     implicit def caseDouble: ValidatedCase[Double]         = at[Double](validIdentity)
     implicit def caseInt: ValidatedCase[Int]               = at[Int](validIdentity)
     implicit def caseLocalDate: ValidatedCase[LocalDate]   = at[LocalDate](validIdentity)
-    implicit def caseString: ValidatedCase[String]         = at[String](trim combine toLowercase combine removeRedundantSpaces)
+    implicit def caseString: ValidatedCase[String] = at[String] {
+      trim(_) andThen toLowercase andThen removeRedundantSpaces
+    }
   }
 
   /** Removes leading and trailing spaces */

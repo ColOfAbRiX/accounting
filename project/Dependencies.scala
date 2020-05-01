@@ -2,6 +2,10 @@ import sbt._
 
 object Dependencies {
 
+  //  SCALA VERSION  //
+
+  lazy val ScalaLangVersion = "2.13.2"
+
   //  LIBRARIES VERSIONS  //
 
   lazy val CatsVersion           = "2.1.1"
@@ -10,52 +14,54 @@ object Dependencies {
   lazy val EnumeratumCatsVersion = "1.5.16"
   lazy val EnumeratumVersion     = "1.5.15"
   lazy val FS2Version            = "2.3.0"
-  lazy val Http4sVersion         = "0.21.3"
+  lazy val Http4sVersion         = "0.21.4"
   lazy val KantanCsvVersion      = "0.6.0"
+  lazy val KittensVersion        = "2.1.0"
   lazy val Log4sVersion          = "1.8.2"
   lazy val LogbackVersion        = "1.2.3"
   lazy val NewtypeVersion        = "0.4.3"
   lazy val PPrintVersion         = "0.5.9"
   lazy val PureConfigVersion     = "0.12.3"
   lazy val RefinedVersion        = "0.9.14"
+  lazy val ScalaCheckVersion     = "1.14.1"
   lazy val ScalaTestCatsVersion  = "3.0.5"
   lazy val ScalaTestVersion      = "3.1.1"
   lazy val ShapelessVersion      = "2.3.3"
   lazy val SimulacrumVersion     = "1.0.0"
   lazy val TapirVersion          = "0.14.3"
-  lazy val KittensVersion        = "2.1.0"
 
   //  COMPILER PLUGINS VERSIONS  //
 
   lazy val BetterMonadicForVersion = "0.3.1"
   lazy val KindProjectorVersion    = "0.10.3"
-  lazy val SplainVersion           = "0.5.3"
+  lazy val SplainVersion           = "0.5.5"
   lazy val WartRemoverVersion      = "2.4.7"
 
   //  LIBRARIES  //
 
-  lazy val CatsCoreDep          = "org.typelevel"         %% "cats-core"          % CatsVersion
-  lazy val CatsEffectDep        = "org.typelevel"         %% "cats-effect"        % CatsVersion
-  lazy val ChimneyCatsDep       = "io.scalaland"          %% "chimney-cats"       % ChimneyVersion
-  lazy val ChimneyDep           = "io.scalaland"          %% "chimney"            % ChimneyVersion
-  lazy val EnumeratumCatsDep    = "com.beachape"          %% "enumeratum-cats"    % EnumeratumCatsVersion
-  lazy val EnumeratumDep        = "com.beachape"          %% "enumeratum"         % EnumeratumVersion
-  lazy val FS2CoreDep           = "co.fs2"                %% "fs2-core"           % FS2Version
-  lazy val KantanCatsCsvDep     = "com.nrinaudo"          %% "kantan.csv-cats"    % KantanCsvVersion
-  lazy val KantanCsvDep         = "com.nrinaudo"          %% "kantan.csv"         % KantanCsvVersion
-  lazy val KittensDep           = "org.typelevel"         %% "kittens"            % KittensVersion
-  lazy val Log4sDep             = "org.log4s"             %% "log4s"              % Log4sVersion
-  lazy val LogbackClassicDep    = "ch.qos.logback"        % "logback-classic"     % LogbackVersion
-  lazy val NewtypeDep           = "io.estatico"           %% "newtype"            % NewtypeVersion
-  lazy val PPrintDep            = "com.lihaoyi"           %% "pprint"             % PPrintVersion
-  lazy val PureConfigDep        = "com.github.pureconfig" %% "pureconfig"         % PureConfigVersion
-  lazy val RefinedCatsDep       = "eu.timepit"            %% "refined-cats"       % RefinedVersion
-  lazy val RefinedDep           = "eu.timepit"            %% "refined"            % RefinedVersion
-  lazy val RefinedPureconfigDep = "eu.timepit"            %% "refined-pureconfig" % RefinedVersion
-  lazy val ScalaTestCatsDep     = "com.ironcorelabs"      %% "cats-scalatest"     % ScalaTestCatsVersion % "test"
-  lazy val ScalaTestDep         = "org.scalatest"         %% "scalatest"          % ScalaTestVersion % "test"
-  lazy val ShapelessDep         = "com.chuusai"           %% "shapeless"          % ShapelessVersion
-  lazy val SimulacrumDep        = "org.typelevel"         %% "simulacrum"         % SimulacrumVersion
+  lazy val CatsCoreDep          = "org.typelevel"          %% "cats-core"          % CatsVersion
+  lazy val CatsEffectDep        = "org.typelevel"          %% "cats-effect"        % CatsVersion
+  lazy val ChimneyCatsDep       = "io.scalaland"           %% "chimney-cats"       % ChimneyVersion
+  lazy val ChimneyDep           = "io.scalaland"           %% "chimney"            % ChimneyVersion
+  lazy val EnumeratumCatsDep    = "com.beachape"           %% "enumeratum-cats"    % EnumeratumCatsVersion
+  lazy val EnumeratumDep        = "com.beachape"           %% "enumeratum"         % EnumeratumVersion
+  lazy val FS2CoreDep           = "co.fs2"                 %% "fs2-core"           % FS2Version
+  lazy val KantanCatsCsvDep     = "com.nrinaudo"           %% "kantan.csv-cats"    % KantanCsvVersion
+  lazy val KantanCsvDep         = "com.nrinaudo"           %% "kantan.csv"         % KantanCsvVersion
+  lazy val KittensDep           = "org.typelevel"          %% "kittens"            % KittensVersion
+  lazy val Log4sDep             = "org.log4s"              %% "log4s"              % Log4sVersion
+  lazy val LogbackClassicDep    = "ch.qos.logback"         % "logback-classic"     % LogbackVersion
+  lazy val NewtypeDep           = "io.estatico"            %% "newtype"            % NewtypeVersion
+  lazy val PPrintDep            = "com.lihaoyi"            %% "pprint"             % PPrintVersion
+  lazy val PureConfigDep        = "com.github.pureconfig"  %% "pureconfig"         % PureConfigVersion
+  lazy val RefinedCatsDep       = "eu.timepit"             %% "refined-cats"       % RefinedVersion
+  lazy val RefinedDep           = "eu.timepit"             %% "refined"            % RefinedVersion
+  lazy val RefinedPureconfigDep = "eu.timepit"             %% "refined-pureconfig" % RefinedVersion
+  lazy val ScalaCheckDep        = "org.scalacheck"         %% "scalacheck"         % ScalaCheckVersion % "test"
+  lazy val ScalaTestCatsDep     = "com.ironcorelabs"       %% "cats-scalatest"     % ScalaTestCatsVersion % Test
+  lazy val ScalaTestDep         = "org.scalatest"          %% "scalatest"          % ScalaTestVersion % Test
+  lazy val ShapelessDep         = "com.chuusai"            %% "shapeless"          % ShapelessVersion
+  lazy val SimulacrumDep        = "org.typelevel"          %% "simulacrum"         % SimulacrumVersion
 
   // Circe
   lazy val CirceDep        = "io.circe" %% "circe-core"    % CirceVersion
@@ -98,6 +104,7 @@ object Dependencies {
   lazy val KantanCsvBundle  = Seq(KantanCatsCsvDep, KantanCsvDep)
   lazy val LoggingBundle    = Seq(Log4sDep, LogbackClassicDep)
   lazy val RefinedBundle    = Seq(RefinedDep, RefinedCatsDep)
+  lazy val TestingBundle    = Seq(ScalaTestDep, ScalaCheckDep, ScalaTestCatsDep)
   lazy val TapirBundle = Seq(
     TapirCatsDep,
     TapirCoreDep,

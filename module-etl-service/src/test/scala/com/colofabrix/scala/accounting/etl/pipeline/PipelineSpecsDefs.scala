@@ -3,7 +3,6 @@ package com.colofabrix.scala.accounting.etl.pipeline
 import cats.effect._
 import cats.implicits._
 import cats.scalatest._
-import com.colofabrix.scala.accounting.etl.definitions._
 import com.colofabrix.scala.accounting.etl.model._
 import com.colofabrix.scala.accounting.etl.pipeline._
 import com.colofabrix.scala.accounting.etl.readers._
@@ -37,14 +36,14 @@ trait PipelineSpecsDefs[T <: InputTransaction]
   }
 
   s"The ${name} processor" when {
-    "provied with a valid input" should {
+    "provided with a valid input" should {
       "return a valid result" in {
         val result = processAndClean(this.sampleCorrectCsvData).compiled
         forAll(result) { computed =>
           computed shouldBe valid
         }
       }
-      s"convert the input into List[${name}InputTransaction]" in {
+      s"convert the input into List[${name}Transaction]" in {
         val result   = processAndClean(this.sampleCorrectCsvData).compiled.sequence
         val expected = this.convertedCorrectData.aValid
         (result, expected).mapN { (computed, expected) =>
@@ -53,7 +52,7 @@ trait PipelineSpecsDefs[T <: InputTransaction]
       }
     }
 
-    "provied with an invalid input" should {
+    "provided with an invalid input" should {
       "return an invalid result" in {
         val result = processAndClean(this.sampleBadCsvData).compiled
         forAll(result) { computed =>

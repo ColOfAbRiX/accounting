@@ -44,7 +44,7 @@ class BarclaysApiInput
     genericCleaner(CleanerUtils.defaultCleaner)(transaction)
   }
 
-  def toTransaction(input: BarclaysTransaction): SingleTransaction =
+  def toTransaction(input: BarclaysTransaction): AValidated[SingleTransaction] =
     input
       .into[SingleTransaction]
       .withFieldConst(_.id, UUID.randomUUID)
@@ -54,6 +54,7 @@ class BarclaysApiInput
       .withFieldConst(_.subcategory, "")
       .withFieldConst(_.notes, "")
       .transform
+      .aValid
 
 }
 

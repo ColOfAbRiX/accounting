@@ -41,7 +41,7 @@ class AmexApiInput
   def cleanInputTransaction(transaction: AmexTransaction): AValidated[AmexTransaction] =
     genericCleaner(CleanerUtils.defaultCleaner)(transaction)
 
-  def toTransaction(input: AmexTransaction): SingleTransaction =
+  def toTransaction(input: AmexTransaction): AValidated[SingleTransaction] =
     input
       .into[SingleTransaction]
       .withFieldConst(_.id, UUID.randomUUID)
@@ -50,6 +50,7 @@ class AmexApiInput
       .withFieldConst(_.subcategory, "")
       .withFieldConst(_.notes, "")
       .transform
+      .aValid
 
 }
 
