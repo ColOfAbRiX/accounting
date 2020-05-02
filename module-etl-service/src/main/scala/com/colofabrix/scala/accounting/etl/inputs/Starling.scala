@@ -40,7 +40,7 @@ class StarlingApiInput
   }
 
   def cleanInputTransaction(transaction: StarlingTransaction): AValidated[StarlingTransaction] = {
-    genericCleaner(CleanerUtils.defaultCleaner)(transaction)
+    genericApplyCleaner(CleanerUtils.defaultCleaner)(transaction)
   }
 
   def toTransaction(input: StarlingTransaction): AValidated[SingleTransaction] =

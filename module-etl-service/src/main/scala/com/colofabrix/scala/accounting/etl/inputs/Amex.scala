@@ -39,7 +39,7 @@ class AmexApiInput
   }
 
   def cleanInputTransaction(transaction: AmexTransaction): AValidated[AmexTransaction] =
-    genericCleaner(CleanerUtils.defaultCleaner)(transaction)
+    genericApplyCleaner(CleanerUtils.defaultCleaner)(transaction)
 
   def toTransaction(input: AmexTransaction): AValidated[SingleTransaction] =
     input

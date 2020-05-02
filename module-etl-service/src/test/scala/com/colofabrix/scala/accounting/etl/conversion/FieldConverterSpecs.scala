@@ -4,7 +4,6 @@ import java.time.LocalDate
 import cats.scalatest._
 import com.colofabrix.scala.accounting.etl.conversion.FieldConverter._
 import com.colofabrix.scala.accounting.utils.validation._
-import org.scalatest._
 import org.scalatest.wordspec._
 import org.scalatest.matchers.should._
 

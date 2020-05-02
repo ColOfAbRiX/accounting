@@ -19,10 +19,12 @@ trait PipelineTestData[T <: InputTransaction] {
   def sampleCorrectCsvData: List[RawRecord]
   /** Expected result for conversion of sampleCorrectCsvData */
   def convertedCorrectData: List[T]
+
   /** Test dataset of invalid CSV data */
   def sampleBadCsvData: List[RawRecord]
   /** Expected result for conversion of sampleBadCsvData */
   def convertedBadData: List[Invalid[NonEmptyChain[String]]]
+
   /** Data that the processor will drop */
   def sampleDroppedCsvData: List[RawRecord]
 }
@@ -35,14 +37,14 @@ trait BarclaysTestData extends PipelineTestData[BarclaysTransaction] {
   val sampleCorrectCsvData: List[RawRecord] = List(
     List("Number", "Date", "Account", "Amount", "Subcategory", "Memo"),
     List(" ", "08/11/2019", "20-32-06 13152170", "6.88", "DIRECTDEP", "DELLELLE           Food 31/10         BGC"),
-    List("	 ", "08/11/2019", "20-32-06 13152170", "-235.00", "FT", "ANDREW CUMMING         TUNNEL D4          FT"),
-    List("	 ", "08/11/2019", "20-32-06 13152170", "-23.63", "FT", "C DELLELLE    GROCERY            FT"),
-    List("	 ", "08/11/2019", "20-32-06 13152170", "-2.00", "PAYMENT", "CRV*BEST FOOD CENT    ON 07 NOV          BCC"),
-    List("	 ", "07/11/2019", "20-32-06 13152170", "-5.70", "PAYMENT", "CRV*EASY BIKE BAR    ON 06 NOV          BCC"),
-    List("	 ", "07/11/2019", "20-32-06 13152170", "-4.86", "PAYMENT", "CRV*BEST FOOD CENT    ON 06 NOV          BCC"),
-    List("	 ", "05/11/2019", "20-32-06 13152170", "-430.00", "PAYMENT", "HALIFAX CLARITY MA    5353130107545290   BBP"),
-    List("	 ", "05/11/2019", "20-32-06 13152170", "-4.95", "PAYMENT", "CRV*YOUWORK (1219)     ON 04 NOV          BCC"),
-    List("	 ", "04/11/2019", "20-32-06 13152170", "-100.00", "FT", "THOR A"),
+    List("\t", "08/11/2019", "20-32-06 13152170", "-235.00", "FT", "ANDREW CUMMING         TUNNEL D4          FT"),
+    List("\t", "08/11/2019", "20-32-06 13152170", "-23.63", "FT", "C DELLELLE    GROCERY            FT"),
+    List("\t", "08/11/2019", "20-32-06 13152170", "-2.00", "PAYMENT", "CRV*BEST FOOD CENT    ON 07 NOV          BCC"),
+    List("\t", "07/11/2019", "20-32-06 13152170", "-5.70", "PAYMENT", "CRV*EASY BIKE BAR    ON 06 NOV          BCC"),
+    List("\t", "07/11/2019", "20-32-06 13152170", "-4.86", "PAYMENT", "CRV*BEST FOOD CENT    ON 06 NOV          BCC"),
+    List("\t", "05/11/2019", "20-32-06 13152170", "-430.00", "PAYMENT", "HALIFAX CLARITY MA    5353130107545290   BBP"),
+    List("\t", "05/11/2019", "20-32-06 13152170", "-4.95", "PAYMENT", "CRV*YOUWORK (1219)     ON 04 NOV          BCC"),
+    List("\t", "04/11/2019", "20-32-06 13152170", "-100.00", "FT", "THOR A"),
     List(),
     List(),
   )

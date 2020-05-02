@@ -41,7 +41,7 @@ class BarclaysApiInput
 
   def cleanInputTransaction(transaction: BarclaysTransaction): AValidated[BarclaysTransaction] = {
     import cats.implicits._
-    genericCleaner(CleanerUtils.defaultCleaner)(transaction)
+    genericApplyCleaner(CleanerUtils.defaultCleaner)(transaction)
   }
 
   def toTransaction(input: BarclaysTransaction): AValidated[SingleTransaction] =

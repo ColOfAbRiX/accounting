@@ -39,7 +39,7 @@ class HalifaxApiInput
   }
 
   def cleanInputTransaction(transaction: HalifaxTransaction): AValidated[HalifaxTransaction] = {
-    genericCleaner(CleanerUtils.defaultCleaner)(transaction)
+    genericApplyCleaner(CleanerUtils.defaultCleaner)(transaction)
   }
 
   def toTransaction(input: HalifaxTransaction): AValidated[SingleTransaction] =

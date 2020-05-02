@@ -4,7 +4,6 @@ import cats.effect._
 import cats.implicits._
 import cats.scalatest._
 import com.colofabrix.scala.accounting.etl.model._
-import com.colofabrix.scala.accounting.etl.pipeline._
 import com.colofabrix.scala.accounting.etl.readers._
 import com.colofabrix.scala.accounting.utils.StreamHelpers
 import com.colofabrix.scala.accounting.utils.validation._
@@ -66,7 +65,7 @@ trait PipelineSpecsDefs[T <: InputTransaction]
     }
 
     "provided with specific record values" should {
-      "dropped these values" in {
+      "drop these values" in {
         val computed = processAndClean(this.sampleDroppedCsvData).compiled
         computed should have size 0
       }

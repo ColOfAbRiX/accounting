@@ -19,7 +19,7 @@ import simulacrum._
   def cleanInputTransaction(transaction: T): AValidated[T]
 
   // format: off
-  protected def genericCleaner[
+  protected def genericApplyCleaner[
     HT <: HList,
     HVT <: HList](
       cleaner: RefinedPoly1)(

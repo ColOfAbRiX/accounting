@@ -4,7 +4,6 @@ import com.colofabrix.scala.accounting.etl.model._
 import com.colofabrix.scala.accounting.etl.pipeline.InputProcessorUtils._
 import com.colofabrix.scala.accounting.utils.validation._
 import fs2.{ Pure, Stream }
-import org.scalatest._
 import org.scalatest.flatspec._
 import org.scalatest.matchers.should._
 
