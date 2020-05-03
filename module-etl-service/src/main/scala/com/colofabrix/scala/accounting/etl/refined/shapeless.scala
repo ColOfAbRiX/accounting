@@ -32,7 +32,10 @@ object shapeless {
       }
     }
 
-    /** Mapping case for F[A] => AValidated[F[A]] */
+    /**
+     * Mapping case for F[A] => AValidated[F[A]]
+     * Requires cats.Traverse to be in the scope of the caller
+     */
     implicit def caseFA[F[_]: Traverse, A](implicit baseCase: ValidatedCase[A]): ValidatedCase[F[A]] = at[F[A]] {
       Traverse[F].traverse(_)(baseCase.apply(_))
     }

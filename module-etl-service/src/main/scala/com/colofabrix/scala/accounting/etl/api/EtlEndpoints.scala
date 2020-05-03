@@ -89,6 +89,7 @@ final class EtlEndpointsImpl(client: EtlClient[IO]) extends EtlEndpoints[IO] wit
   /**
    * Returns the list of supported input types
    */
+  @SuppressWarnings(Array("org.wartremover.warts.Equals"))
   private[this] val listSupportedInputs: ShortEndpoint[Unit, Set[InputType]] =
     apiBaseEndpoint
       .get

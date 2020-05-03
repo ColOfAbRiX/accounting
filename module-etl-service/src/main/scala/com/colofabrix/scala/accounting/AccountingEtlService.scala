@@ -30,6 +30,6 @@ object AccountingEtlService extends IOApp with PureLogging {
     for {
       _ <- pureLogger.info[IO](s"STARTED ${etl.BuildInfo.description} version ${etl.BuildInfo.version}")
       _ <- pureLogger.trace[IO](server.toString)
-      _ <- IO(if (serviceConfig.server.debugMode) StdIn.readLine() else ())
+      _ <- if (serviceConfig.server.debugMode) IO(StdIn.readLine()) else IO.never
     } yield ()
 }

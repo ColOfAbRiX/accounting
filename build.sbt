@@ -15,6 +15,7 @@ ThisBuild / scalacOptions ++= Compiler.TpolecatOptions ++ Seq("-P:splain:all")
 
 // GIT version information
 ThisBuild / dynverVTagPrefix := false
+ThisBuild / dynverSeparator := "-"
 
 // Wartremover
 ThisBuild / wartremoverExcluded ++= (baseDirectory.value * "**" / "src" / "test").get
@@ -59,6 +60,7 @@ lazy val utils = project
   .settings(
     name := "utils",
     description := "Global Utilities",
+    // Dependencies
     libraryDependencies ++= Seq(
       LoggingBundle,
       TestingBundle
@@ -73,6 +75,7 @@ lazy val model = project
   .in(file("module-model"))
   .settings(
     name := "model",
+    // Dependencies
     libraryDependencies ++= Seq(
       EnumeratumBundle,
       RefinedBundle,
@@ -86,12 +89,18 @@ lazy val etlService = project
     utils % "compile->compile;test->test",
     model,
   )
-  .enablePlugins(BuildInfoPlugin)
+  .enablePlugins(BuildInfoPlugin, DockerPlugin, JavaServerAppPackaging)
   .settings(
     name := "etl-service",
     description := "Accounting ETL Service",
+    // Build Info
     buildInfoPackage := projectPackage.value,
     buildInfoKeys ++= projectBuildInfo.value,
+    // Docker
+    Docker / packageName := name.value,
+    dockerExposedPorts ++= Seq(8001),
+    dockerBaseImage := "openjdk:11.0-jre",
+    // Dependencies
     libraryDependencies ++= Seq(
       CatsBundle,
       ChimneyBundle,
@@ -119,12 +128,18 @@ lazy val transactionsService = project
     utils,
     model,
   )
-  .enablePlugins(BuildInfoPlugin)
+  .enablePlugins(BuildInfoPlugin, DockerPlugin, JavaServerAppPackaging)
   .settings(
     name := "transactions-service",
     description := "Accounting Transactions Service",
+    // Build Info
     buildInfoPackage := projectPackage.value,
     buildInfoKeys ++= projectBuildInfo.value,
+    // Docker
+    Docker / packageName := name.value,
+    dockerExposedPorts ++= Seq(8002),
+    dockerBaseImage := "openjdk:11.0-jre",
+    // Dependencies
     libraryDependencies ++= Seq(
       CatsBundle,
       ChimneyBundle,

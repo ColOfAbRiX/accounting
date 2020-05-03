@@ -32,5 +32,4 @@ final protected[logging] class PipeLogger(logger: Logger) {
 
   @inline def throwable[F[_], A](t: Throwable, show: A => String): Pipe[F, A, A] = _.debug(show, logger.error(t)(_))
   @inline def throwable[F[_], A](t: Throwable, msg: String): Pipe[F, A, A]       = throwable(t, _ => msg)
-
 }

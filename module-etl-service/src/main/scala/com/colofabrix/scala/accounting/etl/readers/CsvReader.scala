@@ -37,10 +37,10 @@ final class CsvReader[F[_]: Sync: ContextShift, A: CsvSource] private (input: A)
     def onError(e: ReadError) = Some((e.toString.aInvalid, iterator))
     def onValid(v: RawRecord) = Some((v.aValid, iterator))
     def log(r: Option[(AValidated[RawRecord], _)]) =
-      r.traverse(_ match {
+      r.traverse {
         case (Valid(v), _)   => pureLogger.trace(s"Reading record: ${v.toString}")
         case (Invalid(e), _) => pureLogger.warn(s"Reading error: ${e.toString}")
-      })
+      }
 
     for {
       _ <- ContextShift[F].shift

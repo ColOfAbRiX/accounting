@@ -4,15 +4,14 @@ object Dependencies {
 
   //  SCALA VERSION  //
 
-  lazy val ScalaLangVersion = "2.13.2"
+  lazy val ScalaLangVersion = "2.13.1"
 
   //  LIBRARIES VERSIONS  //
 
   lazy val CatsVersion           = "2.1.1"
   lazy val ChimneyVersion        = "0.5.1"
   lazy val CirceVersion          = "0.13.0"
-  lazy val EnumeratumCatsVersion = "1.5.16"
-  lazy val EnumeratumVersion     = "1.5.15"
+  lazy val EnumeratumVersion     = "1.6.0"
   lazy val FS2Version            = "2.3.0"
   lazy val Http4sVersion         = "0.21.4"
   lazy val KantanCsvVersion      = "0.6.0"
@@ -43,7 +42,7 @@ object Dependencies {
   lazy val CatsEffectDep        = "org.typelevel"          %% "cats-effect"        % CatsVersion
   lazy val ChimneyCatsDep       = "io.scalaland"           %% "chimney-cats"       % ChimneyVersion
   lazy val ChimneyDep           = "io.scalaland"           %% "chimney"            % ChimneyVersion
-  lazy val EnumeratumCatsDep    = "com.beachape"           %% "enumeratum-cats"    % EnumeratumCatsVersion
+  lazy val EnumeratumCatsDep    = "com.beachape"           %% "enumeratum-cats"    % EnumeratumVersion
   lazy val EnumeratumDep        = "com.beachape"           %% "enumeratum"         % EnumeratumVersion
   lazy val FS2CoreDep           = "co.fs2"                 %% "fs2-core"           % FS2Version
   lazy val KantanCatsCsvDep     = "com.nrinaudo"           %% "kantan.csv-cats"    % KantanCsvVersion

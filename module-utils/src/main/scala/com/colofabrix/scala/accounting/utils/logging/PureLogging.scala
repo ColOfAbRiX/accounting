@@ -21,5 +21,4 @@ final protected[logging] class PureLogger(logger: Logger) {
   @inline def warn[F[_]: Sync](msg: String): F[Unit]                    = Sync[F].delay(logger.warn(msg))
   @inline def error[F[_]: Sync](msg: String): F[Unit]                   = Sync[F].delay(logger.error(msg))
   @inline def throwable[F[_]: Sync](t: Throwable, msg: String): F[Unit] = Sync[F].delay(logger.error(t)(msg))
-
 }

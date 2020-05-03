@@ -31,6 +31,6 @@ object AccountingTransactionsService extends IOApp with PureLogging {
             s"STARTED ${transactions.BuildInfo.description} version ${transactions.BuildInfo.version}",
           )
       _ <- pureLogger.trace[IO](server.toString)
-      _ <- IO(if (serviceConfig.server.debugMode) StdIn.readLine() else ())
+      _ <- if (serviceConfig.server.debugMode) IO(StdIn.readLine()) else IO.never
     } yield ()
 }

@@ -13,7 +13,7 @@ lazy val ReloadQuickVersion     = "1.0.0"
 lazy val SbtStatsVersion        = "1.0.7"
 lazy val ScalafmtVersion        = "2.3.0"
 lazy val UpdatesVersion         = "0.5.0"
-lazy val WartremoverVersion     = "2.4.5"
+lazy val WartremoverVersion     = "2.4.7"
 
 //  PLUGIN LIBRARIES  //
 

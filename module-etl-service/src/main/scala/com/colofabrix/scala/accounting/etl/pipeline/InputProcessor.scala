@@ -7,12 +7,11 @@ import com.colofabrix.scala.accounting.utils.logging._
 import com.colofabrix.scala.accounting.utils.validation._
 import com.colofabrix.scala.accounting.utils.validation.streams._
 import fs2.Pure
-import simulacrum._
 
 /**
  * Converts an input source into transactions
  */
-@typeclass trait InputProcessor[T <: InputTransaction] {
+trait InputProcessor[T <: InputTransaction] {
   /** Converts one raw record into an input transaction */
   protected def convertRaw(record: RawRecord): AValidated[T]
 
