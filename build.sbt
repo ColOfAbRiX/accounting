@@ -83,7 +83,7 @@ lazy val model = project
 lazy val etlService = project
   .in(file("module-etl-service"))
   .dependsOn(
-    utils,
+    utils % "compile->compile;test->test",
     model,
   )
   .enablePlugins(BuildInfoPlugin)
