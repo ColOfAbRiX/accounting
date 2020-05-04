@@ -1,5 +1,6 @@
 import Dependencies._
 import AllProjectsKeys.autoImport._
+import BuildEnvPlugin.autoImport.BuildEnv
 
 // General
 Global / onChangedBuildSource := ReloadOnSourceChanges
@@ -11,7 +12,13 @@ ThisBuild / developers := List(
 )
 
 // Compiler options
-ThisBuild / scalacOptions ++= Compiler.TpolecatOptions ++ Seq("-P:splain:all")
+ThisBuild / scalacOptions ++= (buildEnv.value match {
+  case BuildEnv.Production =>
+    sLog.value.log(sbt.util.Level.Info, "Using scalac optimizer for production build")
+    Compiler.OptionsForOptimizer ++ Compiler.TpolecatOptions
+  case _ =>
+    Compiler.TpolecatOptions ++ Seq("-P:splain:all")
+})
 
 // GIT version information
 ThisBuild / dynverVTagPrefix := false
@@ -48,6 +55,7 @@ lazy val rootProject: Project = project
   .settings(
     name := "accounting",
     description := "Accounting",
+    packageDescription := description.value,
   )
   .aggregate(
     etlService,
@@ -59,7 +67,8 @@ lazy val utils = project
   .in(file("module-utils"))
   .settings(
     name := "utils",
-    description := "Global Utilities",
+    description := "Global Accounting Utilities",
+    packageDescription := description.value,
     // Dependencies
     libraryDependencies ++= Seq(
       LoggingBundle,
@@ -75,6 +84,8 @@ lazy val model = project
   .in(file("module-model"))
   .settings(
     name := "model",
+    description := "Accounting Shared Model",
+    packageDescription := description.value,
     // Dependencies
     libraryDependencies ++= Seq(
       EnumeratumBundle,
@@ -93,13 +104,22 @@ lazy val etlService = project
   .settings(
     name := "etl-service",
     description := "Accounting ETL Service",
+    packageDescription := description.value,
     // Build Info
     buildInfoPackage := projectPackage.value,
     buildInfoKeys ++= projectBuildInfo.value,
     // Docker
     Docker / packageName := name.value,
-    dockerExposedPorts ++= Seq(8001),
+    Docker / packageSummary := description.value,
+    Docker / maintainer := "@ColOfAbRiX",
     dockerBaseImage := "openjdk:11.0-jre",
+    dockerExposedPorts ++= Seq(8001),
+    dockerEntrypoint ++= Seq(
+      "server.port=8001",
+      "server.debug-mode=false",
+    ).map { prop =>
+      s"-D${organization.value}.${name.value.replace("-service", "")}.$prop"
+    },
     // Dependencies
     libraryDependencies ++= Seq(
       CatsBundle,
@@ -132,13 +152,22 @@ lazy val transactionsService = project
   .settings(
     name := "transactions-service",
     description := "Accounting Transactions Service",
+    packageDescription := description.value,
     // Build Info
     buildInfoPackage := projectPackage.value,
     buildInfoKeys ++= projectBuildInfo.value,
     // Docker
     Docker / packageName := name.value,
-    dockerExposedPorts ++= Seq(8002),
+    Docker / packageSummary := description.value,
+    Docker / maintainer := "@ColOfAbRiX",
     dockerBaseImage := "openjdk:11.0-jre",
+    dockerExposedPorts ++= Seq(8002),
+    dockerEntrypoint ++= Seq(
+      "server.port=8002",
+      "server.debug-mode=false",
+    ).map { prop =>
+      s"-D${organization.value}.${name.value.replace("-service", "")}.$prop"
+    },
     // Dependencies
     libraryDependencies ++= Seq(
       CatsBundle,

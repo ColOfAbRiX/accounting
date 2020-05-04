@@ -46,6 +46,25 @@ object Compiler {
     "-Ycache-macro-class-loader:last-modified",  // and macro definitions. This can lead to performance improvements.
   )
 
+  // Optimization options
+  // https://www.lightbend.com/blog/scala-inliner-optimizer
+  lazy val OptionsForOptimizer = Seq(
+    //"-Xmaxerrs", "1000",     // The optimizer can sometimes print large numbers of errors and we'd like to see all of them
+    //"-Xmaxwarns", "1000",    // The optimizer can sometimes print large numbers of warnings and we'd like to see all of them
+    //"-Vopt", "_",            // Trace the optimizer progress for methods; `_` to print all, prefix match to select.
+    //                         // -Vopt replaced -Yopt-trace
+    //"-Vinline", "_",         // print a summary of inliner activity; `_` to print all, prefix match to select.
+    //                         // -Vinline replaced -Yopt-log-inline
+    //"-opt-warnings:-none,_", // Enable optimizer warnings; the "_" means all warnings; the first "-none" is a workaround
+    //                         // for "_" turning on the "none" flag and in fact disabling all warnings; currently the
+    //                         // "warnings" emitted by this flag seem to be compile errors that fail the build
+    //                         // https://github.com/scala/bug/issues/11746
+    "-opt-inline-from:scala.*",
+    "-opt:-l:none,_",        // Enable all optimizations; the "_" means all optimizations; the first "-l:none" is a
+                             // workaround for "_" turning on the "none" flag and in fact disabling all optimizations
+                             // https://github.com/scala/bug/issues/11746
+  )
+
   // Stricter compile option to filter out in specific situation
   lazy val FilterStrictOptions: Set[String] = Set[String](
     "-Ywarn-unused-import",
