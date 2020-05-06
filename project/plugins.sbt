@@ -1,5 +1,8 @@
 scalaVersion := "2.12.11"
 
+// Structured SBT plugins
+Compile / scalaSource := baseDirectory.value / "src"
+
 //  VERSIONS  //
 
 lazy val AssemblyVersion        = "0.14.6"

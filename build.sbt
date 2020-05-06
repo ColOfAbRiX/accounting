@@ -1,6 +1,6 @@
+import autoplugins.DockerAutoPlugin.autoImport._
+import autoplugins.BuildEnvAutoPlugin.autoImport._
 import Dependencies._
-import AllProjectsKeys.autoImport._
-import BuildEnvPlugin.autoImport.BuildEnv
 
 // General
 Global / onChangedBuildSource := ReloadOnSourceChanges
@@ -39,7 +39,6 @@ ThisBuild / scalafmtOnCompile := true
 
 // Global dependencies and compiler plugins
 ThisBuild / libraryDependencies ++= Seq(
-  ).flatten ++ Seq(
   BetterMonadicForPlugin,
   KindProjectorPlugin,
   PPrintDep,
@@ -55,7 +54,6 @@ lazy val rootProject: Project = project
   .settings(
     name := "accounting",
     description := "Accounting",
-    packageDescription := description.value,
   )
   .aggregate(
     etlService,
@@ -68,12 +66,12 @@ lazy val utils = project
   .settings(
     name := "utils",
     description := "Global Accounting Utilities",
-    packageDescription := description.value,
     // Dependencies
-    libraryDependencies ++= Seq(
+    bundledDependencies ++= Seq(
       LoggingBundle,
-      TestingBundle
-    ).flatten ++ Seq(
+      TestingBundle,
+    ),
+    libraryDependencies ++= Seq(
       CatsCoreDep,
       FS2CoreDep,
     ),
@@ -85,12 +83,11 @@ lazy val model = project
   .settings(
     name := "model",
     description := "Accounting Shared Model",
-    packageDescription := description.value,
     // Dependencies
-    libraryDependencies ++= Seq(
+    bundledDependencies ++= Seq(
       EnumeratumBundle,
       RefinedBundle,
-    ).flatten ++ Seq(),
+    ),
   )
 
 // ETL Service project
@@ -104,24 +101,14 @@ lazy val etlService = project
   .settings(
     name := "etl-service",
     description := "Accounting ETL Service",
-    packageDescription := description.value,
-    // Build Info
-    buildInfoPackage := projectPackage.value,
-    buildInfoKeys ++= projectBuildInfo.value,
     // Docker
-    Docker / packageName := name.value,
-    Docker / packageSummary := description.value,
-    Docker / maintainer := "@ColOfAbRiX",
-    dockerBaseImage := "openjdk:11.0-jre",
     dockerExposedPorts ++= Seq(8001),
-    dockerEntrypoint ++= Seq(
+    dockerJavaProperties ++= Seq(
       "server.port=8001",
       "server.debug-mode=false",
-    ).map { prop =>
-      s"-D${organization.value}.${name.value.replace("-service", "")}.$prop"
-    },
+    ),
     // Dependencies
-    libraryDependencies ++= Seq(
+    bundledDependencies ++= Seq(
       CatsBundle,
       ChimneyBundle,
       CirceBundle,
@@ -133,7 +120,8 @@ lazy val etlService = project
       RefinedBundle,
       TapirBundle,
       TestingBundle,
-    ).flatten ++ Seq(
+    ),
+    libraryDependencies ++= Seq(
       CirceGenericDep,
       SimulacrumDep,
       FS2CoreDep,
@@ -152,24 +140,14 @@ lazy val transactionsService = project
   .settings(
     name := "transactions-service",
     description := "Accounting Transactions Service",
-    packageDescription := description.value,
-    // Build Info
-    buildInfoPackage := projectPackage.value,
-    buildInfoKeys ++= projectBuildInfo.value,
     // Docker
-    Docker / packageName := name.value,
-    Docker / packageSummary := description.value,
-    Docker / maintainer := "@ColOfAbRiX",
-    dockerBaseImage := "openjdk:11.0-jre",
     dockerExposedPorts ++= Seq(8002),
-    dockerEntrypoint ++= Seq(
+    dockerJavaProperties ++= Seq(
       "server.port=8002",
       "server.debug-mode=false",
-    ).map { prop =>
-      s"-D${organization.value}.${name.value.replace("-service", "")}.$prop"
-    },
+    ),
     // Dependencies
-    libraryDependencies ++= Seq(
+    bundledDependencies ++= Seq(
       CatsBundle,
       ChimneyBundle,
       CirceBundle,
@@ -180,7 +158,8 @@ lazy val transactionsService = project
       LoggingBundle,
       TapirBundle,
       TestingBundle,
-    ).flatten ++ Seq(
+    ),
+    libraryDependencies ++= Seq(
       CirceGenericDep,
       FS2CoreDep,
       ShapelessDep,

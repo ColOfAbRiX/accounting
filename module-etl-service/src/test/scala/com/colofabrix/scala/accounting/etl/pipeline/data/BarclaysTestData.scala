@@ -132,9 +132,7 @@ trait BarclaysTestData extends PipelineDefinitions[BarclaysTransaction] {
     )
 
     def malformedData: List[BarclaysTransaction] = List.empty
-
     def expectedErrorMatches: List[List[String]] = List.empty
-
     def removedData: List[BarclaysTransaction] = List.empty
   }
 
@@ -155,13 +153,9 @@ trait BarclaysTestData extends PipelineDefinitions[BarclaysTransaction] {
     }
 
     def inputData: List[RawRecord] = processingStep.inputData
-
     def expectedOutputData: List[Transaction] = normalizingStep.expectedOutputData
-
     def malformedData: List[RawRecord] = List.empty
-
     def expectedErrorMatches: List[List[String]] = List.empty
-
     def removedData: List[RawRecord] = List.empty
   }
 

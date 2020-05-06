@@ -8,8 +8,6 @@ import org.scalatest.flatspec._
 import org.scalatest.matchers.should._
 import shapeless._
 
-// format: on
-
 /**
  * Defines the tests for all input conversions
  */

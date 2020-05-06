@@ -121,9 +121,7 @@ trait StarlingTestData extends PipelineDefinitions[StarlingTransaction] {
     )
 
     def malformedData: List[StarlingTransaction] = List.empty
-
     def expectedErrorMatches: List[List[String]] = List.empty
-
     def removedData: List[StarlingTransaction] = List.empty
   }
 
@@ -144,13 +142,9 @@ trait StarlingTestData extends PipelineDefinitions[StarlingTransaction] {
     }
 
     def inputData: List[RawRecord] = processingStep.inputData
-
     def expectedOutputData: List[Transaction] = normalizingStep.expectedOutputData
-
     def malformedData: List[RawRecord] = List.empty
-
     def expectedErrorMatches: List[List[String]] = List.empty
-
     def removedData: List[RawRecord] = List.empty
   }
 

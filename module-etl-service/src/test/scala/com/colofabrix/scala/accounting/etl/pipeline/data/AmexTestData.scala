@@ -128,9 +128,7 @@ trait AmexTestData extends PipelineDefinitions[AmexTransaction] {
     )
 
     def malformedData: List[AmexTransaction] = List.empty
-
     def expectedErrorMatches: List[List[String]] = List.empty
-
     def removedData: List[AmexTransaction] = List.empty
   }
 
@@ -151,13 +149,9 @@ trait AmexTestData extends PipelineDefinitions[AmexTransaction] {
     }
 
     def inputData: List[RawRecord] = processingStep.inputData
-
     def expectedOutputData: List[Transaction] = normalizingStep.expectedOutputData
-
     def malformedData: List[RawRecord] = List.empty
-
     def expectedErrorMatches: List[List[String]] = List.empty
-
     def removedData: List[RawRecord] = List.empty
   }
 

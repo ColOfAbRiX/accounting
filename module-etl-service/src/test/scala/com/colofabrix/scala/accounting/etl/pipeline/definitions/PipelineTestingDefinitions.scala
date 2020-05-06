@@ -51,19 +51,19 @@ trait PipelineDefinitions[T <: InputTransaction] {
   /** Shortcuts for dates */
   def date(y: Int, m: Int, d: Int): LocalDate = LocalDate.of(y, m, d)
 
-  /** Unwrap a list of Valid items */
+  /** Unwrap a list of Valid items and discards the invalid items */
   def unwrapValid[A](data: List[AValidated[A]]): List[A] =
     data.flatMap {
       _.fold(_ => List.empty, List(_))
     }
 
-  /** Unwrap a list of Invalid error descriptions */
+  /** Unwrap a list of Invalid error descriptions and discards the valid items */
   def unwrapInvalid[A](data: List[AValidated[A]]): List[List[String]] =
     data.flatMap {
       _.fold(x => List(x.toList), _ => List.empty)
     }
 
-  /** The complete pipeline to test */
+  /** The complete pipeline to test as shapeless.HList to preserve types */
   def pipelineSteps: PipelineStep[RawRecord, T] ::
   PipelineStep[T, T] ::
   PipelineStep[T, Transaction] ::
