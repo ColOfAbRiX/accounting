@@ -3,9 +3,9 @@ package com.colofabrix.scala.accounting.etl.api
 import cats.data._
 import cats.effect._
 import cats.implicits._
-import com.colofabrix.scala.accounting.etl.BuildInfo
 import com.colofabrix.scala.accounting.etl.api.CirceCodecs._
 import com.colofabrix.scala.accounting.etl.api.TapirInputs._
+import com.colofabrix.scala.accounting.etl.BuildInfo
 import com.colofabrix.scala.accounting.etl.client.EtlClient
 import com.colofabrix.scala.accounting.etl.model.Api._
 import com.colofabrix.scala.accounting.etl.model.Config._
@@ -23,8 +23,8 @@ import sttp.tapir._
 import sttp.tapir.codec.cats._
 import sttp.tapir.docs.openapi._
 import sttp.tapir.json.circe._
-import sttp.tapir.openapi.OpenAPI
 import sttp.tapir.openapi.circe.yaml._
+import sttp.tapir.openapi.OpenAPI
 import sttp.tapir.redoc.http4s.RedocHttp4s
 import sttp.tapir.server._
 import sttp.tapir.server.http4s._

@@ -1,7 +1,8 @@
-scalaVersion := "2.12.11"
-
-// Structured SBT plugins
+// SBT Sources
 Compile / scalaSource := baseDirectory.value / "src"
+
+// SBT Scala version
+scalaVersion := "2.12.11"
 
 //  VERSIONS  //
 

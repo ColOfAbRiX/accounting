@@ -18,6 +18,9 @@ object BuildEnvAutoPlugin extends AutoPlugin {
 
   override def trigger  = AllRequirements
   override def requires = JvmPlugin
+  override def globalSettings = Seq(
+    buildEnv := BuildEnv.Development,
+  )
   override def projectSettings: Seq[Setting[_]] = Seq(
     buildEnv := {
       sys

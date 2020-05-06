@@ -9,7 +9,7 @@ The target of the project is to learn pure FP programming and distributed archit
 The project make use of the following technologies and libraries:
 
 * [Scala 2.13](https://www.scala-lang.org)
-* [SBT multi-projects](https://www.scala-sbt.org/)
+* [SBT](https://www.scala-sbt.org/)
 * [Cats](https://typelevel.org/cats/)
 * [Shapeless](https://github.com/milessabin/shapeless)
 * [Enumeratum](https://github.com/lloydmeta/enumeratum)

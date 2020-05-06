@@ -1,6 +1,6 @@
-import autoplugins.DockerAutoPlugin.autoImport._
 import autoplugins.BuildEnvAutoPlugin.autoImport._
-import Dependencies._
+import autoplugins.DockerAutoPlugin.autoImport._
+import dependencies.Dependencies._
 
 // General
 Global / onChangedBuildSource := ReloadOnSourceChanges

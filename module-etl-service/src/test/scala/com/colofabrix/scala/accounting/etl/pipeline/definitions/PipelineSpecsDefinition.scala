@@ -11,6 +11,7 @@ import shapeless._
 /**
  * Defines the tests for all input conversions
  */
+@SuppressWarnings(Array("org.wartremover.warts.NonUnitStatements"))
 trait PipelineSpecsDefinition[T <: InputTransaction]
     extends AnyFlatSpec
     with Matchers
@@ -19,6 +20,7 @@ trait PipelineSpecsDefinition[T <: InputTransaction]
     with PPrintPrettifier { this: PipelineDefinitions[T] =>
 
   def runTests(): Unit = {
+    @SuppressWarnings(Array("org.wartremover.warts.ExplicitImplicitTypes", "org.wartremover.warts.PublicInference"))
     object runTest extends Poly1 {
       implicit def caseStep[I, O] = at[PipelineStep[I, O]](runStep)
     }
