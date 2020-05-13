@@ -28,8 +28,13 @@ object AccountingEtlService extends IOApp with PureLogging {
 
   private[this] def server(server: Server[IO]): IO[_] =
     for {
-      _ <- pureLogger.info[IO](s"STARTED ${etl.BuildInfo.description} version ${etl.BuildInfo.version}")
+      _ <- pureLogger.info[IO](
+            s"${etl.BuildInfo.description}, " +
+            s"version ${etl.BuildInfo.version}, " +
+            s"${etl.BuildInfo.environment} build",
+          )
       _ <- pureLogger.trace[IO](server.toString)
+      _ <- pureLogger.info[IO]("STARTED")
       _ <- if (serviceConfig.server.debugMode) IO(StdIn.readLine()) else IO.never
     } yield ()
 }

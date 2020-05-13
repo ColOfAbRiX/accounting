@@ -11,17 +11,17 @@ import sbt.librarymanagement.ModuleID
  */
 object AllProjectsAutoPlugin extends AutoPlugin {
   object autoImport {
-    val projectPackage      = settingKey[String]("The root package where a project resides")
-    val bundledDependencies = settingKey[Seq[Seq[ModuleID]]]("Library dependencies bundled together")
+    val projectPackage      = settingKey[String]("The root package of a project")
+    val bundledDependencies = settingKey[Seq[Seq[ModuleID]]]("Declares managed dependencies as collection of bundles.")
   }
   import autoImport._
 
-  override def trigger = AllRequirements
-  override def globalSettings = Seq(
+  override def trigger: PluginTrigger = AllRequirements
+  override def globalSettings: Seq[Setting[_]] = Seq(
     projectPackage := (ThisBuild / organization).value,
     bundledDependencies := Seq(),
   )
-  override def projectSettings = Seq(
+  override def projectSettings: Seq[Setting[_]] = Seq(
     bundledDependencies := Seq(),
     libraryDependencies ++= bundledDependencies.value.flatten,
     projectPackage := organization.value + "." + name.value.replaceAll("-service$", "").replaceAll("-", ""),

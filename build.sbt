@@ -14,10 +14,10 @@ ThisBuild / developers := List(
 // Compiler options
 ThisBuild / scalacOptions ++= (buildEnv.value match {
   case BuildEnv.Production =>
-    sLog.value.log(sbt.util.Level.Info, "Using scalac optimizer for production build")
-    Compiler.OptionsForOptimizer ++ Compiler.TpolecatOptions
+    sLog.value.log(sbt.util.Level.Info, "Using scalac optimizations for production build")
+    Compiler.TpolecatOptions ++ Compiler.OptionsForOptimizer
   case _ =>
-    Compiler.TpolecatOptions ++ Seq("-P:splain:all")
+    Compiler.TpolecatOptions ++ Compiler.StrictOptions ++ Seq("-P:splain:all")
 })
 
 // GIT version information
@@ -58,6 +58,7 @@ lazy val rootProject: Project = project
   .aggregate(
     etlService,
     transactionsService,
+    gatling,
   )
 
 // Utils project
@@ -74,6 +75,30 @@ lazy val utils = project
     libraryDependencies ++= Seq(
       CatsCoreDep,
       FS2CoreDep,
+    ),
+  )
+
+// Gatling testing project
+lazy val gatling = project
+  .in(file("testing-gatling"))
+  .enablePlugins(GatlingPlugin)
+  .disablePlugins(WartRemover)
+  .settings(
+    name := "gatling",
+    description := "Gatling testing project",
+    scalaVersion := "2.12.11",
+    scalacOptions := Compiler
+      .scala212compat(scalacOptions.value)
+      .filter(Compiler.StrictOptions.contains),
+    // Dependencies
+    bundledDependencies ++= Seq(
+      CatsBundle,
+      LoggingBundle,
+      TestingBundle,
+    ),
+    libraryDependencies ++= Seq(
+      GatlingChartsDep,
+      GatlingTestDep,
     ),
   )
 

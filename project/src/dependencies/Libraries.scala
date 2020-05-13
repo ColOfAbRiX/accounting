@@ -13,6 +13,7 @@ trait Libraries {
   lazy val CirceVersion         = "0.13.0"
   lazy val EnumeratumVersion    = "1.6.0"
   lazy val FS2Version           = "2.3.0"
+  lazy val GatlingVersion       = "3.3.0"
   lazy val Http4sVersion        = "0.21.4"
   lazy val KantanCsvVersion     = "0.6.0"
   lazy val KittensVersion       = "2.1.0"
@@ -30,29 +31,31 @@ trait Libraries {
   lazy val TapirVersion         = "0.14.3"
 
   // Generic
-  lazy val CatsCoreDep          = "org.typelevel"         %% "cats-core"          % CatsVersion
-  lazy val CatsEffectDep        = "org.typelevel"         %% "cats-effect"        % CatsVersion
-  lazy val ChimneyCatsDep       = "io.scalaland"          %% "chimney-cats"       % ChimneyVersion
-  lazy val ChimneyDep           = "io.scalaland"          %% "chimney"            % ChimneyVersion
-  lazy val EnumeratumCatsDep    = "com.beachape"          %% "enumeratum-cats"    % EnumeratumVersion
-  lazy val EnumeratumDep        = "com.beachape"          %% "enumeratum"         % EnumeratumVersion
-  lazy val FS2CoreDep           = "co.fs2"                %% "fs2-core"           % FS2Version
-  lazy val KantanCatsCsvDep     = "com.nrinaudo"          %% "kantan.csv-cats"    % KantanCsvVersion
-  lazy val KantanCsvDep         = "com.nrinaudo"          %% "kantan.csv"         % KantanCsvVersion
-  lazy val KittensDep           = "org.typelevel"         %% "kittens"            % KittensVersion
-  lazy val Log4sDep             = "org.log4s"             %% "log4s"              % Log4sVersion
-  lazy val LogbackClassicDep    = "ch.qos.logback"        % "logback-classic"     % LogbackVersion
-  lazy val NewtypeDep           = "io.estatico"           %% "newtype"            % NewtypeVersion
-  lazy val PPrintDep            = "com.lihaoyi"           %% "pprint"             % PPrintVersion
-  lazy val PureConfigDep        = "com.github.pureconfig" %% "pureconfig"         % PureConfigVersion
-  lazy val RefinedCatsDep       = "eu.timepit"            %% "refined-cats"       % RefinedVersion
-  lazy val RefinedDep           = "eu.timepit"            %% "refined"            % RefinedVersion
-  lazy val RefinedPureconfigDep = "eu.timepit"            %% "refined-pureconfig" % RefinedVersion
-  lazy val ScalaCheckDep        = "org.scalacheck"        %% "scalacheck"         % ScalaCheckVersion % "test"
-  lazy val ScalaTestCatsDep     = "com.ironcorelabs"      %% "cats-scalatest"     % ScalaTestCatsVersion % Test
-  lazy val ScalaTestDep         = "org.scalatest"         %% "scalatest"          % ScalaTestVersion % Test
-  lazy val ShapelessDep         = "com.chuusai"           %% "shapeless"          % ShapelessVersion
-  lazy val SimulacrumDep        = "org.typelevel"         %% "simulacrum"         % SimulacrumVersion
+  lazy val CatsCoreDep          = "org.typelevel"         %% "cats-core"                % CatsVersion
+  lazy val CatsEffectDep        = "org.typelevel"         %% "cats-effect"              % CatsVersion
+  lazy val ChimneyCatsDep       = "io.scalaland"          %% "chimney-cats"             % ChimneyVersion
+  lazy val ChimneyDep           = "io.scalaland"          %% "chimney"                  % ChimneyVersion
+  lazy val EnumeratumCatsDep    = "com.beachape"          %% "enumeratum-cats"          % EnumeratumVersion
+  lazy val EnumeratumDep        = "com.beachape"          %% "enumeratum"               % EnumeratumVersion
+  lazy val FS2CoreDep           = "co.fs2"                %% "fs2-core"                 % FS2Version
+  lazy val KantanCatsCsvDep     = "com.nrinaudo"          %% "kantan.csv-cats"          % KantanCsvVersion
+  lazy val KantanCsvDep         = "com.nrinaudo"          %% "kantan.csv"               % KantanCsvVersion
+  lazy val KittensDep           = "org.typelevel"         %% "kittens"                  % KittensVersion
+  lazy val Log4sDep             = "org.log4s"             %% "log4s"                    % Log4sVersion
+  lazy val LogbackClassicDep    = "ch.qos.logback"        % "logback-classic"           % LogbackVersion
+  lazy val NewtypeDep           = "io.estatico"           %% "newtype"                  % NewtypeVersion
+  lazy val PPrintDep            = "com.lihaoyi"           %% "pprint"                   % PPrintVersion
+  lazy val PureConfigDep        = "com.github.pureconfig" %% "pureconfig"               % PureConfigVersion
+  lazy val RefinedCatsDep       = "eu.timepit"            %% "refined-cats"             % RefinedVersion
+  lazy val RefinedDep           = "eu.timepit"            %% "refined"                  % RefinedVersion
+  lazy val RefinedPureconfigDep = "eu.timepit"            %% "refined-pureconfig"       % RefinedVersion
+  lazy val ScalaCheckDep        = "org.scalacheck"        %% "scalacheck"               % ScalaCheckVersion % Test
+  lazy val ScalaTestCatsDep     = "com.ironcorelabs"      %% "cats-scalatest"           % ScalaTestCatsVersion % Test
+  lazy val ScalaTestDep         = "org.scalatest"         %% "scalatest"                % ScalaTestVersion % Test
+  lazy val ShapelessDep         = "com.chuusai"           %% "shapeless"                % ShapelessVersion
+  lazy val SimulacrumDep        = "org.typelevel"         %% "simulacrum"               % SimulacrumVersion
+  lazy val GatlingChartsDep     = "io.gatling.highcharts" % "gatling-charts-highcharts" % GatlingVersion % Test
+  lazy val GatlingTestDep       = "io.gatling"            % "gatling-test-framework"    % GatlingVersion % Test
 
   // Circe
   lazy val CirceDep        = "io.circe" %% "circe-core"    % CirceVersion

@@ -16,12 +16,12 @@ object DockerAutoPlugin extends AutoPlugin {
   }
   import autoImport._
 
-  override def requires = DockerPlugin && JavaAppPackaging
-  override def trigger  = AllRequirements
-  override def globalSettings = Seq(
+  override def requires: Plugins      = DockerPlugin && JavaAppPackaging
+  override def trigger: PluginTrigger = AllRequirements
+  override def globalSettings: Seq[Setting[_]] = Seq(
     dockerJavaProperties := Seq(),
   )
-  override def projectSettings = Seq(
+  override def projectSettings: Seq[Setting[_]] = Seq(
     dockerBaseImage := "openjdk:11.0-jre",
     dockerEntrypoint ++= dockerJavaProperties
       .value

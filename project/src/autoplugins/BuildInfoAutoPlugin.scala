@@ -10,9 +10,9 @@ import sbtbuildinfo.BuildInfoPlugin.autoImport._
  * Adds default settings for the BuildInfoPlugin
  */
 object BuildInfoAutoPlugin extends AutoPlugin {
-  override def requires = AllProjectsAutoPlugin && BuildInfoPlugin
-  override def trigger  = AllRequirements
-  override def projectSettings = Seq(
+  override def requires: Plugins      = AllProjectsAutoPlugin && BuildInfoPlugin
+  override def trigger: PluginTrigger = AllRequirements
+  override def projectSettings: Seq[Setting[_]] = Seq(
     buildInfoPackage := projectPackage.value,
     buildInfoKeys ++= Seq[BuildInfoKey](
       "organization"   -> organization.value,

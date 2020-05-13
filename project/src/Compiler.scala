@@ -14,7 +14,6 @@ object Compiler {
     "-language:implicitConversions",             // Allow definition of implicit functions called views
     "-unchecked",                                // Enable additional warnings where generated code depends on assumptions.
     "-Xcheckinit",                               // Wrap field accessors to throw an exception on uninitialized access.
-    "-Xfatal-warnings",                          // Fail the compilation if there are any warnings.
     "-Xlint:adapted-args",                       // Warn if an argument list is modified to match the receiver.
     "-Xlint:constant",                           // Evaluation of a constant arithmetic expression results in an error.
     "-Xlint:delayedinit-select",                 // Selecting member of DelayedInit.
@@ -59,17 +58,20 @@ object Compiler {
     //                         // for "_" turning on the "none" flag and in fact disabling all warnings; currently the
     //                         // "warnings" emitted by this flag seem to be compile errors that fail the build
     //                         // https://github.com/scala/bug/issues/11746
-    "-opt-inline-from:scala.*",
+    "-opt-inline-from:scala.*,java.*,sun.*",
     "-opt:-l:none,_",        // Enable all optimizations; the "_" means all optimizations; the first "-l:none" is a
                              // workaround for "_" turning on the "none" flag and in fact disabling all optimizations
                              // https://github.com/scala/bug/issues/11746
   )
 
   // Stricter compile option to filter out in specific situation
-  lazy val FilterStrictOptions: Set[String] = Set[String](
-    "-Ywarn-unused-import",
-    "-Xfatal-warnings",
-    "-Xlint",
+  lazy val StrictOptions: Set[String] = Set[String](
+    "-Xfatal-warnings",    // Fail the compilation if there are any warnings.
   )
+
+  def scala212compat(compilerOptions: Seq[String]): Seq[String] =
+    compilerOptions
+      .filter(_ != "-Ymacro-annotations")
+      .+:("-Ypartial-unification")
 
 }
