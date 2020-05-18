@@ -9,7 +9,7 @@
     </encoder>
   </appender>
 
-  <logger name="com.colofabrix.scala" level="INFO"/>
+  <logger name="com.colofabrix.scala" level="TRACE"/>
 
   <root level="INFO">
     <appender-ref ref="STDOUT" />

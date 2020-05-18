@@ -89,7 +89,8 @@ lazy val gatling = project
     scalaVersion := "2.12.11",
     scalacOptions := Compiler
       .scala212compat(scalacOptions.value)
-      .filter(Compiler.StrictOptions.contains),
+      .filter(Compiler.StrictOptions.contains) ++:
+      Seq("-feature"),
     // Dependencies
     bundledDependencies ++= Seq(
       CatsBundle,
