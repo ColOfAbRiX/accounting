@@ -4,6 +4,7 @@
 .metals
 .vscode
 *.class
+*.hprof
 *.iml
 *.ipr
 *.iws

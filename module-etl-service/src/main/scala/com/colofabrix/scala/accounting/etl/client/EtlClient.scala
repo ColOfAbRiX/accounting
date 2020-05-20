@@ -34,14 +34,16 @@ final class EtlClientImpl(cs: ContextShift[IO]) extends EtlClient[IO] with PureL
   /** Returns the list of supported input types */
   def listSupportedInputs: IO[Set[InputType]] =
     for {
-      _ <- pureLogger.info[IO]("Requested listSupportedInputs")
+      _ <- pureLogger.info[IO]("Requested to list the supported inputs (listSupportedInputs)")
       r <- IO(serviceConfig.inputTypes)
     } yield r
 
   /** Converts one single input record into one output transaction */
   def convertRecord(inputType: InputType, record: String): IO[AValidated[SingleTransaction]] =
     for {
-      _ <- pureLogger.info[IO](s"Requested convertRecord with input type ${inputType.entryName}")
+      _ <- pureLogger.info[IO](
+            s"Requested to convert a single record with input type '${inputType.entryName}' (convertRecord)",
+          )
       r <- CsvReader[IO, String](record)
             .read
             .through(pipelineForType(inputType))
@@ -55,7 +57,9 @@ final class EtlClientImpl(cs: ContextShift[IO]) extends EtlClient[IO] with PureL
   /** Converts a list of input records into output transactions */
   def convertRecords(inputType: InputType, records: String): IO[List[AValidated[SingleTransaction]]] =
     for {
-      _ <- pureLogger.info[IO](s"Requested convertRecords with input type ${inputType.entryName}")
+      _ <- pureLogger.info[IO](
+            s"Requested to convert multiple records with input type '${inputType.entryName}' (convertRecords)",
+          )
       r <- CsvReader[IO, String](records)
             .read
             .through(pipelineForType(inputType))

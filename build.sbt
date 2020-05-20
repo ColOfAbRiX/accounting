@@ -62,7 +62,7 @@ lazy val rootProject: Project = project
   )
 
 // Utils project
-lazy val utils = project
+lazy val utils: Project = project
   .in(file("module-utils"))
   .settings(
     name := "utils",
@@ -79,7 +79,7 @@ lazy val utils = project
   )
 
 // Gatling testing project
-lazy val gatling = project
+lazy val gatling: Project = project
   .in(file("testing-gatling"))
   .enablePlugins(GatlingPlugin)
   .disablePlugins(WartRemover)
@@ -87,10 +87,7 @@ lazy val gatling = project
     name := "gatling",
     description := "Gatling testing project",
     scalaVersion := "2.12.11",
-    scalacOptions := Compiler
-      .scala212compat(scalacOptions.value)
-      .filter(Compiler.StrictOptions.contains) ++:
-      Seq("-feature"),
+    scalacOptions := Compiler.scala212compat(Compiler.TpolecatOptions) ++: Seq("-feature"),
     // Dependencies
     bundledDependencies ++= Seq(
       CatsBundle,
@@ -104,7 +101,7 @@ lazy val gatling = project
   )
 
 // Business Model project
-lazy val model = project
+lazy val model: Project = project
   .in(file("module-model"))
   .settings(
     name := "model",
@@ -117,7 +114,7 @@ lazy val model = project
   )
 
 // ETL Service project
-lazy val etlService = project
+lazy val etlService: Project = project
   .in(file("module-etl-service"))
   .dependsOn(
     utils % "compile->compile;test->test",
@@ -156,7 +153,7 @@ lazy val etlService = project
   )
 
 // Transactions service
-lazy val transactionsService = project
+lazy val transactionsService: Project = project
   .in(file("module-transactions-service"))
   .dependsOn(
     utils,
